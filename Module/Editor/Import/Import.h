@@ -17,6 +17,7 @@ public:
     static void MergeNode(xxNodePtr const& target, xxNodePtr const& source, xxNodePtr const& root);
     static void MergeTexture(xxNodePtr const& node);
     static xxNodePtr GetNodeByName(xxNodePtr const& root, std::string const& name);
+    static std::string CheckDuplicateName(xxNodePtr const& node, std::string const& name);
 public:
     static bool EnableAxisUpYToZ;
     static bool EnableMergeNode;

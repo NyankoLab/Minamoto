@@ -14,7 +14,9 @@ struct RuntimeAPI DrawTools
         xxCameraPtr     camera3D;
     };
 
+    static void Cull(xxNodePtr const& node, xxCameraPtr const& camera, std::vector<xxNode*>& array, bool append = false);
     static void Draw(DrawData& drawData, xxNodePtr const& node);
 protected:
+    static void CullTraversal(xxNodePtr const& node, xxMatrix4x2 const frustum[6], std::vector<xxNode*>& array, char planes);
     static void DrawTraversal(DrawData& drawData, xxNodePtr const& node);
 };

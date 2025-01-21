@@ -38,6 +38,8 @@ static xxNodePtr sceneGrid;
 static xxVector2 viewPos;
 static xxVector2 viewSize;
 static ImGuiViewport* viewViewport;
+static std::vector<xxNode*> drawArrays;
+static bool cullEnabled = false;
 static bool drawBoneLine = false;
 static bool drawNodeLine = false;
 static bool drawNodeBound = false;
@@ -109,6 +111,7 @@ void Scene::Shutdown(bool suspend)
     sceneGrid = nullptr;
     selected = nullptr;
     viewViewport = nullptr;
+    drawArrays = std::vector<xxNode*>();
 }
 //------------------------------------------------------------------------------
 void Scene::Select(xxNodePtr const& node)
@@ -204,6 +207,38 @@ void Scene::DrawNodeBound(xxNodePtr const& root)
             }
             return true;
         });
+    }
+}
+//------------------------------------------------------------------------------
+static void SelectMouse()
+{
+    if (Scene::selected)
+    {
+        ImGuizmo::gContext.mbOverGizmoHotspot = false;
+        ImGuizmo::SetRect(viewPos.x, viewPos.y, viewSize.x, viewSize.y);
+        if (Scene::selected->Camera)
+        {
+            static ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE | ImGuizmo::ROTATE_X | ImGuizmo::ROTATE_Z;
+            static ImGuizmo::MODE mode = ImGuizmo::WORLD;
+            xxMatrix4 camera;
+            camera[0].xyz = Scene::selected->Camera->Up;
+            camera[1].xyz = Scene::selected->Camera->Right;
+            camera[2].xyz = Scene::selected->Camera->Direction;
+            camera[3].xyz = Scene::selected->Camera->Location;
+            camera[3].w = 1.0f;
+            ImGuizmo::Manipulate(Scene::mainCamera->ViewMatrix, Scene::mainCamera->ProjectionMatrix, operation, mode, camera);
+            Scene::selected->Camera->Up = camera[0].xyz;
+            Scene::selected->Camera->Right = camera[1].xyz;
+            Scene::selected->Camera->Direction = camera[2].xyz;
+            Scene::selected->Camera->Location = camera[3].xyz;
+            Scene::selected->Camera->Update();
+        }
+        else
+        {
+            static ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE | ImGuizmo::ROTATE;
+            static ImGuizmo::MODE mode = ImGuizmo::LOCAL;
+            ImGuizmo::Manipulate(Scene::mainCamera->ViewMatrix, Scene::mainCamera->ProjectionMatrix, operation, mode, Scene::selected->LocalMatrix);
+        }
     }
 }
 //------------------------------------------------------------------------------
@@ -534,19 +569,25 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
 
     if (ImGui::Begin(ICON_FA_GLOBE "Scene", &show))
     {
-        ImGui::Checkbox("##1", &drawBoneLine);
+        ImGui::Checkbox("##1", &cullEnabled);
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip("%s", "Culling");
+        }
+        ImGui::SameLine();
+        ImGui::Checkbox("##2", &drawBoneLine);
         if (ImGui::IsItemHovered())
         {
             ImGui::SetTooltip("%s", "Draw Bone Line");
         }
         ImGui::SameLine();
-        ImGui::Checkbox("##2", &drawNodeLine);
+        ImGui::Checkbox("##3", &drawNodeLine);
         if (ImGui::IsItemHovered())
         {
             ImGui::SetTooltip("%s", "Draw Node Line");
         }
         ImGui::SameLine();
-        ImGui::Checkbox("##3", &drawNodeBound);
+        ImGui::Checkbox("##4", &drawNodeBound);
         if (ImGui::IsItemHovered())
         {
             ImGui::SetTooltip("%s", "Draw Node Bound");
@@ -589,34 +630,7 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
 #endif
 
         // Manipulate
-        if (selected)
-        {
-            ImGuizmo::gContext.mbOverGizmoHotspot = false;
-            ImGuizmo::SetRect(viewPos.x, viewPos.y, viewSize.x, viewSize.y);
-            if (selected->Camera)
-            {
-                static ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE | ImGuizmo::ROTATE_X | ImGuizmo::ROTATE_Z;
-                static ImGuizmo::MODE mode = ImGuizmo::WORLD;
-                xxMatrix4 camera;
-                camera[0].xyz = selected->Camera->Up;
-                camera[1].xyz = selected->Camera->Right;
-                camera[2].xyz = selected->Camera->Direction;
-                camera[3].xyz = selected->Camera->Location;
-                camera[3].w = 1.0f;
-                ImGuizmo::Manipulate(Scene::mainCamera->ViewMatrix, Scene::mainCamera->ProjectionMatrix, operation, mode, camera);
-                selected->Camera->Up = camera[0].xyz;
-                selected->Camera->Right = camera[1].xyz;
-                selected->Camera->Direction = camera[2].xyz;
-                selected->Camera->Location = camera[3].xyz;
-                selected->Camera->Update();
-            }
-            else
-            {
-                static ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE | ImGuizmo::ROTATE;
-                static ImGuizmo::MODE mode = ImGuizmo::LOCAL;
-                ImGuizmo::Manipulate(Scene::mainCamera->ViewMatrix, Scene::mainCamera->ProjectionMatrix, operation, mode, selected->LocalMatrix);
-            }
-        }
+        SelectMouse();
 
         // ViewManipulate
         ImVec2 maniSize = ImVec2(128, 128);
@@ -625,6 +639,8 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
 
         updated |= CameraMoveWASD(updateData, mani);
         updated |= CameraMoveManipulate(mani, maniSize, maniPos);
+
+        DrawTools::Cull(sceneRoot, sceneCamera, drawArrays);
     }
     ImGui::End();
 
@@ -693,15 +709,24 @@ void Scene::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
 
     DrawTools::Draw(drawData, sceneGrid);
 
-    xxMatrix4x2 frustum[6];
-    if (sceneCamera)
-    {
-        drawData.frustum = frustum;
-        sceneCamera->GetFrustumPlanes(frustum[0], frustum[1], frustum[2], frustum[3], frustum[4], frustum[5]);
-    }
-
     Profiler::Begin(xxHash("Scene Render"));
-    DrawTools::Draw(drawData, sceneRoot);
+    if (cullEnabled)
+    {
+        for (xxNode* node : drawArrays)
+        {
+            node->Draw(drawData);
+        }
+    }
+    else
+    {
+        xxMatrix4x2 frustum[6];
+        if (sceneCamera)
+        {
+            drawData.frustum = frustum;
+            sceneCamera->GetFrustumPlanes(frustum[0], frustum[1], frustum[2], frustum[3], frustum[4], frustum[5]);
+        }
+        DrawTools::Draw(drawData, sceneRoot);
+    }
     Profiler::End(xxHash("Scene Render"));
 }
 //------------------------------------------------------------------------------
