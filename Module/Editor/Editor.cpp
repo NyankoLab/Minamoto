@@ -5,6 +5,7 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
+#include "Event/Event.h"
 #include "Graphic/ShaderAssembler.h"
 #include "Graphic/ShaderDisassembler.h"
 #include "Import/Import.h"
@@ -183,6 +184,7 @@ moduleAPI bool Update(const UpdateData& updateData)
         ImGui::SetWindowFocus(ICON_FA_GLOBE     "Scene");
     }
 
+    Event::Dispatch(updateData.time);
     Runtime::Update();
 
     return updated;
@@ -191,4 +193,4 @@ moduleAPI bool Update(const UpdateData& updateData)
 moduleAPI void Render(const RenderData& renderData)
 {
 }
-//---------------------------------------------------------------------------
+//------------------------------------------------------------------------------

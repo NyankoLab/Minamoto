@@ -26,11 +26,39 @@ struct MaterialSelector
         if (string.size())
         {
             tab -= (string[0] == '}' || string[0] == ')') ? 1 : 0;
-            shader.append(4 * tab, ' ');
+            if (string[0] != '#')
+            {
+                shader.append(4 * tab, ' ');
+            }
             shader += string;
             shader += '\n';
             tab += (string[0] == '{' || string[0] == '(') ? 1 : 0;
         }
+    }
+    void Define(std::string_view name, std::string_view def, bool check = false)
+    {
+        if (check)
+        {
+            shader += "#ifndef";
+            shader += ' ';
+            shader += name;
+            shader += '\n';
+        }
+        shader += "#define";
+        shader += ' ';
+        shader += name;
+        shader += ' ';
+        shader += def;
+        shader += '\n';
+        if (check)
+        {
+            shader += "#endif";
+            shader += '\n';
+        }
+    }
+    void Define(std::string_view name, int number)
+    {
+        Define(name, std::to_string(number));
     }
     void operator () (bool available, std::string_view string)
     {
@@ -157,7 +185,7 @@ void Material::Draw(xxDrawData const& data) const
     uint64_t samplers[16] = {};
 
     unsigned int slot = m_fragmentTextureSlot;
-    for (int i = 0; i < 16; ++i)
+    for (unsigned int i = 0; i < 16; ++i)
     {
         slot &= ~(1 << i);
         if (i >= Textures.size())
@@ -282,9 +310,11 @@ void Material::UpdateConstant(xxDrawData const& data) const
         xxVector4* vector = reinterpret_cast<xxVector4*>(xxMapBuffer(m_device, constant));
         if (vector)
         {
-            UpdateCullingConstant(data, size, &vector);
             UpdateWorldViewProjectionConstant(data, size, &vector);
+            if (constantData->meshConstant)
+                UpdateCullingConstant(data, size, &vector);
             UpdateSkinningConstant(data, size, &vector);
+            UpdateTransformConstant(data, size, &vector);
             UpdateBlendingConstant(data, size, &vector);
             UpdateLightingConstant(data, size, &vector);
             xxUnmapBuffer(m_device, constant);
@@ -309,11 +339,6 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
 {
     xxMesh* mesh = data.mesh;
 
-    auto define = [](char const* name, size_t value)
-    {
-        return std::string("#define") + ' ' + name + ' ' + std::to_string(value) + '\n';
-    };
-
     char const* deviceString = xxGetInstanceName();
     int language = 0;
     if (language == 0 && strstr(deviceString, "Metal 2"))    language = 'MSL2';
@@ -323,30 +348,29 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
     if (language == 0 && strstr(deviceString, "Vulkan"))     language = 'HLSL';
     if (language == 0 && strstr(deviceString, "GL"))         language = 'GLSL';
 
+    std::string shader;
     uint16_t meshTextureSlot = 0;
     uint16_t vertexTextureSlot = 0;
     uint16_t fragmentTextureSlot = 0;
-    std::string shader;
-
-    shader += ShaderOption;
-    shader += define("SHADER_NORMAL", mesh->NormalCount);
-    shader += define("SHADER_COLOR", mesh->ColorCount);
-    shader += define("SHADER_TEXTURE", mesh->TextureCount);
-    shader += define("SHADER_LIGHTING", mesh->NormalCount && Lighting ? 1 : 0);
-    shader += define("SHADER_SPECULAR", mesh->NormalCount && Lighting && Specular ? 1 : 0);
-    shader += define("TEXTURE_BASE", mesh->TextureCount && GetTexture(BASE) ? 1 : 0);
-    shader += define("TEXTURE_BUMP", mesh->TextureCount && GetTexture(BUMP) ? 1 : 0);
 
     struct MaterialSelector s(shader, type, language);
+
+    shader += ShaderOption;
+    s.Define("SHADER_NORMAL", mesh->NormalCount);
+    s.Define("SHADER_COLOR", mesh->ColorCount);
+    s.Define("SHADER_TEXTURE", mesh->TextureCount);
+    s.Define("SHADER_LIGHTING", mesh->NormalCount && Lighting ? 1 : 0);
+    s.Define("SHADER_SPECULAR", mesh->NormalCount && Lighting && Specular ? 1 : 0);
+    s.Define("TEXTURE_BASE", mesh->TextureCount && GetTexture(BASE) ? 1 : 0);
+    s.Define("TEXTURE_BUMP", mesh->TextureCount && GetTexture(BUMP) ? 1 : 0);
 
     switch (type)
     {
     case 'mesh':
-        shader += define("SHADER_UNIFORM", GetMeshConstantSize(data) / sizeof(xxVector4));
-        shader += define("SHADER_BACKFACE_CULLING", BackfaceCulling ? 1 : 0);
-        shader += define("SHADER_FRUSTUM_CULLING", FrustumCulling ? 1 : 0);
-        shader += define("SHADER_SKINNING", mesh->Skinning ? 1 : 0);
-        shader += define("SHADER_OPACITY", Blending ? 1 : 0);
+        s.Define("SHADER_UNIFORM", GetMeshConstantSize(data) / sizeof(xxVector4));
+        s.Define("SHADER_BACKFACE_CULLING", BackfaceCulling ? 1 : 0);
+        s.Define("SHADER_FRUSTUM_CULLING", FrustumCulling ? 1 : 0);
+        s.Define("SHADER_OPACITY", Blending ? 1 : 0);
         ShaderDefault(data, s);
         ShaderAttribute(data, s);
         ShaderConstant(data, s);
@@ -354,9 +378,9 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
         ShaderMesh(data, s);
         break;
     case 'vert':
-        shader += define("SHADER_UNIFORM", GetVertexConstantSize(data) / sizeof(xxVector4));
-        shader += define("SHADER_SKINNING", mesh->Skinning ? 1 : 0);
-        shader += define("SHADER_OPACITY", Blending ? 1 : 0);
+        s.Define("SHADER_UNIFORM", GetVertexConstantSize(data) / sizeof(xxVector4));
+        s.Define("SHADER_SKINNING", mesh->Skinning ? 1 : 0);
+        s.Define("SHADER_OPACITY", Blending ? 1 : 0);
         ShaderDefault(data, s);
         ShaderAttribute(data, s);
         ShaderConstant(data, s);
@@ -364,8 +388,8 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
         ShaderVertex(data, s);
         break;
     case 'frag':
-        shader += define("SHADER_UNIFORM", GetFragmentConstantSize(data) / sizeof(xxVector4));
-        shader += define("SHADER_ALPHATEST", AlphaTest ? 1 : 0);
+        s.Define("SHADER_UNIFORM", GetFragmentConstantSize(data) / sizeof(xxVector4));
+        s.Define("SHADER_ALPHATEST", AlphaTest ? 1 : 0);
         ShaderDefault(data, s);
         ShaderConstant(data, s);
         ShaderVarying(data, s);
@@ -385,16 +409,15 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
     const_cast<uint16_t&>(m_vertexTextureSlot) = vertexTextureSlot;
     const_cast<uint16_t&>(m_fragmentTextureSlot) = fragmentTextureSlot;
 
-    //shader += Shader.empty() ? DefaultShader : Shader;
-
     return shader;
 }
 //------------------------------------------------------------------------------
 int Material::GetMeshConstantSize(xxDrawData const& data) const
 {
     int size = 0;
-    UpdateCullingConstant(data, size);
     UpdateWorldViewProjectionConstant(data, size);
+    UpdateCullingConstant(data, size);
+    UpdateTransformConstant(data, size);
     UpdateBlendingConstant(data, size);
     UpdateLightingConstant(data, size);
     return size;
@@ -405,6 +428,7 @@ int Material::GetVertexConstantSize(xxDrawData const& data) const
     int size = 0;
     UpdateWorldViewProjectionConstant(data, size);
     UpdateSkinningConstant(data, size);
+    UpdateTransformConstant(data, size);
     UpdateBlendingConstant(data, size);
     UpdateLightingConstant(data, size);
     return size;
@@ -420,63 +444,21 @@ int Material::GetFragmentConstantSize(xxDrawData const& data) const
 //------------------------------------------------------------------------------
 void Material::ShaderDefault(xxDrawData const& data, struct MaterialSelector& s) const
 {
-    auto macro = [&](std::string_view name, std::string_view def, bool check = true)
-    {
-        if (check)
-        {
-            s.shader += "#ifndef";
-            s.shader += ' ';
-            s.shader += name;
-            s.shader += '\n';
-        }
-        s.shader += "#define";
-        s.shader += ' ';
-        s.shader += name;
-        s.shader += ' ';
-        s.shader += def;
-        s.shader += '\n';
-        if (check)
-        {
-            s.shader += "#endif";
-            s.shader += '\n';
-        }
-    };
-
     if (s.language == 'GLSL')
     {
-        macro("SHADER_GLSL", "0");
-        macro("SHADER_HLSL", "0");
-        macro("SHADER_MSL", "0");
-        macro("SHADER_MESH", "0");
-        macro("SHADER_VERTEX", "0");
-        macro("SHADER_FRAGMENT", "0");
-        macro("SHADER_BACKFACE_CULLING", "0");
-        macro("SHADER_FRUSTUM_CULLING", "0");
-        macro("SHADER_SKINNING", "0");
-        macro("SHADER_NORMAL", "0");
-        macro("SHADER_COLOR", "1");
-        macro("SHADER_TEXTURE", "1");
-        macro("SHADER_UNIFORM", "12");
-        macro("SHADER_ALPHATEST", "0");
-        macro("SHADER_OPACITY", "0");
-        macro("SHADER_LIGHTING", "0");
-        macro("SHADER_SPECULAR", "0");
-        macro("TEXTURE_BASE", "0");
-        macro("TEXTURE_BUMP", "0");
-
-        macro("float2", "vec2", false);
-        macro("float3", "vec3", false);
-        macro("float4", "vec4", false);
-        macro("float2x2", "mat2", false);
-        macro("float3x3", "mat3", false);
-        macro("float4x4", "mat4", false);
-        macro("int2", "ivec2", false);
-        macro("int3", "ivec3", false);
-        macro("int4", "ivec4", false);
+        s.Define("float2", "vec2");
+        s.Define("float3", "vec3");
+        s.Define("float4", "vec4");
+        s.Define("float2x2", "mat2");
+        s.Define("float3x3", "mat3");
+        s.Define("float4x4", "mat4");
+        s.Define("int2", "ivec2");
+        s.Define("int3", "ivec3");
+        s.Define("int4", "ivec4");
     }
     if (s.language == 'GLSL' || s.language == 'MSL1' || s.language == 'MSL2')
     {
-        macro("mul(a, b)", "(b * a)", false);
+        s.Define("mul(a, b)", "(b * a)");
     }
 }
 //------------------------------------------------------------------------------
@@ -605,8 +587,7 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
     s.HMM(true,    "[numthreads(128, 1, 1)",           "",                                                        ""                                                        );
     s.HMM(true,    "void Main",                        "void Main",                                               "void Main"                                               );
     s.HMM(true,    "(",                                "(",                                                       "("                                                       );
-    s.HMM(true,    "",                                 "constant Uniform& uni [[buffer(30)]],",                   "constant Uniform& uni [[buffer(0)]],"                    );
-    s.HMM(true,    "",                                 "MeshBuffer mb,",                                          ""                                                        );
+    s.HMM(true,    "",                                 "constant Uniform& uni [[buffer(30)]], MeshBuffer mb,",    "constant Uniform& uni [[buffer(0)]],"                    );
     s.HMM(true,    "uint gtid : SV_GroupThreadID,",    "uint gtid [[thread_position_in_threadgroup]],",           "uint gtid [[thread_position_in_threadgroup]],"           );
     s.HMM(true,    "uint gid : SV_GroupID,",           "uint gid [[threadgroup_position_in_grid]],",              "uint gid [[threadgroup_position_in_grid]],"              );
     s.HMM(true,    "out indices uint3 triangles[64],", "mesh<Varying, void, 64, 128, topology::triangle> output", "mesh<Varying, void, 64, 128, topology::triangle> output" );
@@ -620,12 +601,13 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
     s.HMM(true,    "",                                 "device uint* TriangeIndices = mb.TriangeIndices;",        "device uint* TriangeIndices = uni.TriangeIndices;"       );
     s.HMM(true,    "Meshlet& m = Meshlets[gid];",      "device Meshlet& m = mb.Meshlets[gid];",                   "device Meshlet& m = uni.Meshlets[gid];"                  );
 
+    UpdateWorldViewProjectionConstant(data, size, nullptr, &s);
     UpdateCullingConstant(data, size, nullptr, &s);
 
     s(true,        "if (gtid == 0)"                                                                                                     );
     s(true,        "{"                                                                                                                  );
     s.HM(true,     "SetMeshOutputCounts(m.VertexCount, m.TriangleCount);", ""                                                           );
-    s.HM(true,     "", "output.set_primitive_count(m.TriangleCount);"                                                                   );
+    s.HM(true, "", "output.set_primitive_count(m.TriangleCount);"                                                                       );
     s(true,        "}"                                                                                                                  );
     s(true,        "if (gtid < m.TriangleCount)"                                                                                        );
     s(true,        "{"                                                                                                                  );
@@ -634,9 +616,9 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
     s.HM(true,     "triangles[gtid].x = (packed >>  0) & 0xFF);", ""                                                                    );
     s.HM(true,     "triangles[gtid].y = (packed >>  8) & 0xFF);", ""                                                                    );
     s.HM(true,     "triangles[gtid].z = (packed >> 16) & 0xFF);", ""                                                                    );
-    s.HM(true,     "", "output.set_index(index + 0, (packed >>  0) & 0xFF);"                                                            );
-    s.HM(true,     "", "output.set_index(index + 1, (packed >>  8) & 0xFF);"                                                            );
-    s.HM(true,     "", "output.set_index(index + 2, (packed >> 16) & 0xFF);"                                                            );
+    s.HM(true, "", "output.set_index(index + 0, (packed >>  0) & 0xFF);"                                                                );
+    s.HM(true, "", "output.set_index(index + 1, (packed >>  8) & 0xFF);"                                                                );
+    s.HM(true, "", "output.set_index(index + 2, (packed >> 16) & 0xFF);"                                                                );
     s(true,        "}"                                                                                                                  );
     s(true,        "if (gtid >= m.VertexCount) return;"                                                                                 );
     s(true,        "uint vertexIndex = VertexIndices[m.VertexOffset + gtid];"                                                           );
@@ -652,7 +634,7 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
     s(true,        "float4 color = float4(1.0, 1.0, 1.0, 1.0);"                                                                         );
     s(color,       "color = attrColor;"                                                                                                 );
 
-    UpdateWorldViewProjectionConstant(data, size, nullptr, &s);
+    UpdateTransformConstant(data, size, nullptr, &s);
     UpdateBlendingConstant(data, size, nullptr, &s);
     UpdateLightingConstant(data, size, nullptr, &s);
 
@@ -678,14 +660,17 @@ void Material::ShaderVertex(xxDrawData const& data, struct MaterialSelector& s) 
     int texture = mesh->TextureCount;
     int size = 0;
 
-    //          GLSL                       HLSL                            MSL
-    s.GHM(true, "",                        "",                             "vertex"                                    );
-    s.GHM(true, "void main()",             "Varying Main(Attribute attr)", "Varying Main(Attribute attr [[stage_in]]," );
-    s.GHM(true, "",                        "",                             "constant Uniform& uni [[buffer(0)]])"      );
-    s.GHM(true, "{",                       "{",                            "{"                                         );
-    s.GHM(true, "",                        "",                             "auto uniBuffer = uni.Buffer;"              );
-    s.GHM(true, "int uniIndex = 0;",       "int uniIndex = 0;",            "int uniIndex = 0;"                         );
-    s.GHM(true, "vec4 color = vec4(1.0);", "float4 color = float4(1.0);",  "float4 color = 1.0;"                       );
+    //          GLSL                       HLSL                           MSL
+    s.GHM(true, "",                        "",                            "vertex"                              );
+    s.GHM(true, "void main()",             "Varying Main",                "Varying Main"                        );
+    s.GHM(true, "",                        "(",                           "("                                   );
+    s.GHM(true, "",                        "Attribute attr",              "Attribute attr [[stage_in]],"        );
+    s.GHM(true, "",                        "",                            "constant Uniform& uni [[buffer(0)]]" );
+    s.GHM(true, "",                        ")",                           ")"                                   );
+    s.GHM(true, "{",                       "{",                           "{"                                   );
+    s.GHM(true, "",                        "",                            "auto uniBuffer = uni.Buffer;"        );
+    s.GHM(true, "int uniIndex = 0;",       "int uniIndex = 0;",           "int uniIndex = 0;"                   );
+    s.GHM(true, "vec4 color = vec4(1.0);", "float4 color = float4(1.0);", "float4 color = 1.0;"                 );
 
     //                GLSL                  HLSL / MSL
     s.GH(true,        "",                   "float3 attrPosition = attr.Position;"      );
@@ -700,6 +685,7 @@ void Material::ShaderVertex(xxDrawData const& data, struct MaterialSelector& s) 
 
     UpdateWorldViewProjectionConstant(data, size, nullptr, &s);
     UpdateSkinningConstant(data, size, nullptr, &s);
+    UpdateTransformConstant(data, size, nullptr, &s);
     UpdateBlendingConstant(data, size, nullptr, &s);
     UpdateLightingConstant(data, size, nullptr, &s);
 
@@ -724,21 +710,24 @@ void Material::ShaderFragment(xxDrawData const& data, struct MaterialSelector& s
     int texture = mesh->TextureCount;
     int size = 0;
 
-    bool base = GetTexture(BASE) != nullptr;
-    bool bump = GetTexture(BUMP) != nullptr;
+    bool base = texture && GetTexture(BASE) != nullptr;
+    bool bump = texture && GetTexture(BUMP) != nullptr;
 
-    //          GLSL                       HLSL                                  MSL
-    s.GHM(true, "",                        "",                                   "fragment"                               );
-    s.GHM(true, "void main()",             "float4 Main(Varying vary) : COLOR0", "float4 Main(Varying vary [[stage_in]]," );
-    s.GHM(true, "",                        "",                                   "constant Uniform& uni [[buffer(0)]],"   );
-    s.GHM(true, "",                        "",                                   "Sampler sam)"                           );
-    s.GHM(true, "{",                       "{",                                  "{"                                      );
-    s.GHM(true, "",                        "",                                   "#if SHADER_UNIFORM"                     );
-    s.GHM(true, "",                        "",                                   "auto uniBuffer = uni.Buffer;"           );
-    s.GHM(true, "",                        "",                                   "#endif"                                 );
-    s.GHM(true, "int uniIndex = 0;",       "int uniIndex = 0;",                  "int uniIndex = 0;"                      );
-    s.GHM(true, "vec4 color = vec4(1.0);", "float4 color = float4(1.0);",        "float4 color = 1.0;"                    );
-    s.GHM(bump, "vec4 bump = vec4(0.0);",  "float4 bump = float4(0.0);",         "float4 bump = 0.0;"                     );
+    //          GLSL                       HLSL                           MSL
+    s.GHM(true, "",                        "",                            "fragment"                             );
+    s.GHM(true, "void main()",             "float4 Main",                 "float4 Main"                          );
+    s.GHM(true, "",                        "(",                           "("                                    );
+    s.GHM(true, "",                        "Varying vary",                "Varying vary [[stage_in]],"           );
+    s.GHM(true, "",                        "",                            "constant Uniform& uni [[buffer(0)]]," );
+    s.GHM(true, "",                        "",                            "Sampler sam"                          );
+    s.GHM(true, "",                        ") : COLOR0",                  ")"                                    );
+    s.GHM(true, "{",                       "{",                           "{"                                    );
+    s.GHM(true, "",                        "",                            "#if SHADER_UNIFORM"                   );
+    s.GHM(true, "",                        "",                            "auto uniBuffer = uni.Buffer;"         );
+    s.GHM(true, "",                        "",                            "#endif"                               );
+    s.GHM(true, "int uniIndex = 0;",       "int uniIndex = 0;",           "int uniIndex = 0;"                    );
+    s.GHM(true, "vec4 color = vec4(1.0);", "float4 color = float4(1.0);", "float4 color = 1.0;"                  );
+    s.GHM(bump, "vec4 bump = vec4(0.0);",  "float4 bump = float4(0.0);",  "float4 bump = 0.0;"                   );
 
     //                           GLSL                  HLSL / MSL
     s.GH(Lighting || color,      "",                   "float4 varyColor = vary.Color;"                 );
@@ -847,38 +836,35 @@ void Material::UpdateCullingConstant(xxDrawData const& data, int& size, xxVector
     }
     if (s)
     {
-        (*s)(true,            "uint visible = 1;"                                                                                                                  );
-        (*s).GHM(true,        "if (subgroupElect())", "", ""                                                                                                       );
-        (*s).GHM(true,        "", "if (WaveIsFirstLane())", ""                                                                                                     );
-        (*s).GHM(true,        "", "", "if (simd_is_first())"                                                                                                       );
-        (*s)(true,            "{"                                                                                                                                  );
-        (*s)(true,            "float4x4 world = float4x4(uniBuffer[uniIndex + 12], uniBuffer[uniIndex + 13], uniBuffer[uniIndex + 14], uniBuffer[uniIndex + 15]);" );
-        (*s)(BackfaceCulling, "if (visible)"                                                                                                                       );
-        (*s)(BackfaceCulling, "{"                                                                                                                                  );
-        (*s)(BackfaceCulling, "float4 coneApex = mul(m.ConeApex, world);"                                                                                          );
-        (*s)(BackfaceCulling, "float4 coneAxisCutoff = mul(m.ConeAxisCutoff, world);"                                                                              );
-        (*s)(BackfaceCulling, "float c = m.ConeAxisCutoff.w;"                                                                                                      );
-        (*s)(BackfaceCulling, "float d = dot(coneAxisCutoff.xyz, normalize(coneApex.xyz - uniBuffer[uniIndex + 1].xyz));"                                          );
-        (*s)(BackfaceCulling, "if (d >= c) visible = 0;"                                                                                                           );
-        (*s)(BackfaceCulling, "}"                                                                                                                                  );
-        (*s)(FrustumCulling,  "if (visible)"                                                                                                                       );
-        (*s)(FrustumCulling,  "{"                                                                                                                                  );
-        (*s)(FrustumCulling,  "float4 centerRadius = mul(m.CenterRadius, world);"                                                                                  );
-        (*s)(FrustumCulling,  "float r = -m.CenterRadius.w;"                                                                                                       );
-        (*s)(FrustumCulling,  "float d0 = dot(uniBuffer[uniIndex + 0].xyz, centerRadius.xyz - uniBuffer[uniIndex + 1].xyz);"                                       );
-        (*s)(FrustumCulling,  "float d1 = dot(uniBuffer[uniIndex + 2].xyz, centerRadius.xyz - uniBuffer[uniIndex + 3].xyz);"                                       );
-        (*s)(FrustumCulling,  "float d2 = dot(uniBuffer[uniIndex + 4].xyz, centerRadius.xyz - uniBuffer[uniIndex + 5].xyz);"                                       );
-        (*s)(FrustumCulling,  "float d3 = dot(uniBuffer[uniIndex + 6].xyz, centerRadius.xyz - uniBuffer[uniIndex + 7].xyz);"                                       );
-        (*s)(FrustumCulling,  "float d4 = dot(uniBuffer[uniIndex + 8].xyz, centerRadius.xyz - uniBuffer[uniIndex + 9].xyz);"                                       );
-        (*s)(FrustumCulling,  "float d5 = dot(uniBuffer[uniIndex + 10].xyz, centerRadius.xyz - uniBuffer[uniIndex + 11].xyz);"                                     );
-        (*s)(FrustumCulling,  "if (d0 < r || d1 < r || d2 < r || d3 < r || d4 < r || d5 < r) visible = 0;"                                                         );
-        (*s)(FrustumCulling,  "}"                                                                                                                                  );
-        (*s)(true,            "}"                                                                                                                                  );
-        (*s).GHM(true,        "visible = subgroupBroadcastFirst(visible);", "", ""                                                                                 );
-        (*s).GHM(true,        "", "visible = WaveReadLaneFirst(visible);", ""                                                                                      );
-        (*s).GHM(true,        "", "", "visible = simd_broadcast_first(visible);"                                                                                   );
-        (*s)(true,            "if (visible == 0) return;"                                                                                                          );
-        (*s)(true,            "uniIndex += 12;"                                                                                                                    );
+        (*s)(true,            "uint visible = 1;"                                                                              );
+        (*s).HM(true,         "if (WaveIsFirstLane())", ""                                                                     );
+        (*s).HM(true,     "", "if (simd_is_first())"                                                                           );
+        (*s)(true,            "{"                                                                                              );
+        (*s)(BackfaceCulling, "if (visible)"                                                                                   );
+        (*s)(BackfaceCulling, "{"                                                                                              );
+        (*s)(BackfaceCulling, "float4 coneApex = mul(m.ConeApex, world);"                                                      );
+        (*s)(BackfaceCulling, "float4 coneAxisCutoff = mul(m.ConeAxisCutoff, world);"                                          );
+        (*s)(BackfaceCulling, "float c = m.ConeAxisCutoff.w;"                                                                  );
+        (*s)(BackfaceCulling, "float d = dot(coneAxisCutoff.xyz, normalize(coneApex.xyz - uniBuffer[uniIndex + 1].xyz));"      );
+        (*s)(BackfaceCulling, "if (d >= c) visible = 0;"                                                                       );
+        (*s)(BackfaceCulling, "}"                                                                                              );
+        (*s)(FrustumCulling,  "if (visible)"                                                                                   );
+        (*s)(FrustumCulling,  "{"                                                                                              );
+        (*s)(FrustumCulling,  "float4 centerRadius = mul(m.CenterRadius, world);"                                              );
+        (*s)(FrustumCulling,  "float r = -m.CenterRadius.w;"                                                                   );
+        (*s)(FrustumCulling,  "float d0 = dot(uniBuffer[uniIndex + 0].xyz, centerRadius.xyz - uniBuffer[uniIndex + 1].xyz);"   );
+        (*s)(FrustumCulling,  "float d1 = dot(uniBuffer[uniIndex + 2].xyz, centerRadius.xyz - uniBuffer[uniIndex + 3].xyz);"   );
+        (*s)(FrustumCulling,  "float d2 = dot(uniBuffer[uniIndex + 4].xyz, centerRadius.xyz - uniBuffer[uniIndex + 5].xyz);"   );
+        (*s)(FrustumCulling,  "float d3 = dot(uniBuffer[uniIndex + 6].xyz, centerRadius.xyz - uniBuffer[uniIndex + 7].xyz);"   );
+        (*s)(FrustumCulling,  "float d4 = dot(uniBuffer[uniIndex + 8].xyz, centerRadius.xyz - uniBuffer[uniIndex + 9].xyz);"   );
+        (*s)(FrustumCulling,  "float d5 = dot(uniBuffer[uniIndex + 10].xyz, centerRadius.xyz - uniBuffer[uniIndex + 11].xyz);" );
+        (*s)(FrustumCulling,  "if (d0 < r || d1 < r || d2 < r || d3 < r || d4 < r || d5 < r) visible = 0;"                     );
+        (*s)(FrustumCulling,  "}"                                                                                              );
+        (*s)(true,            "}"                                                                                              );
+        (*s).HM(true,         "visible = WaveReadLaneFirst(visible);", ""                                                      );
+        (*s).HM(true,     "", "visible = simd_broadcast_first(visible);"                                                       );
+        (*s)(true,            "if (visible == 0) return;"                                                                      );
+        (*s)(true,            "uniIndex += 12;"                                                                                );
     }
 }
 //------------------------------------------------------------------------------
@@ -975,18 +961,25 @@ void Material::UpdateSkinningConstant(xxDrawData const& data, int& size, xxVecto
     }
     if (s)
     {
-        (*s)(true, "float4 zero4 = float4(0.0, 0.0, 0.0, 0.0);"                                                                                                        );
-        (*s)(true, "float4 boneWeight = float4(attrBoneWeight, 1.0 - attrBoneWeight.x - attrBoneWeight.y - attrBoneWeight.z);"                                         );
-        (*s)(true, "int4 boneIndices = int4(attrBoneIndices);"                                                                                                         );
-        (*s)(true, "world  = float4x4(uniBuffer[boneIndices.x * 3 + 12], uniBuffer[boneIndices.x * 3 + 13], uniBuffer[boneIndices.x * 3 + 14], zero4) * boneWeight.x;" );
-        (*s)(true, "world += float4x4(uniBuffer[boneIndices.y * 3 + 12], uniBuffer[boneIndices.y * 3 + 13], uniBuffer[boneIndices.y * 3 + 14], zero4) * boneWeight.y;" );
-        (*s)(true, "world += float4x4(uniBuffer[boneIndices.z * 3 + 12], uniBuffer[boneIndices.z * 3 + 13], uniBuffer[boneIndices.z * 3 + 14], zero4) * boneWeight.z;" );
-        (*s)(true, "world += float4x4(uniBuffer[boneIndices.w * 3 + 12], uniBuffer[boneIndices.w * 3 + 13], uniBuffer[boneIndices.w * 3 + 14], zero4) * boneWeight.w;" );
-        (*s)(true, "world = transpose(world);"                                                                                                                         );
-        (*s)(true, "world[3][3] = 1.0;"                                                                                                                                );
-        (*s)(true, "worldPosition = mul(float4(attrPosition, 1.0), world);"                                                                                            );
-        (*s)(true, "screenPosition = mul(mul(worldPosition, view), projection);"                                                                                       );
-        (*s)(true, "uniIndex += 75 * 3;"                                                                                                                               );
+        (*s)(true, "float4 zero4 = float4(0.0, 0.0, 0.0, 0.0);"                                                                                     );
+        (*s)(true, "float4 boneWeight = float4(attrBoneWeight, 1.0 - attrBoneWeight.x - attrBoneWeight.y - attrBoneWeight.z);"                      );
+        (*s)(true, "int4 boneIndices = int4(attrBoneIndices) * int4(3, 3, 3, 3) + int4(uniIndex, uniIndex, uniIndex, uniIndex);"                    );
+        (*s)(true, "world  = float4x4(uniBuffer[boneIndices.x], uniBuffer[boneIndices.x + 1], uniBuffer[boneIndices.x + 2], zero4) * boneWeight.x;" );
+        (*s)(true, "world += float4x4(uniBuffer[boneIndices.y], uniBuffer[boneIndices.y + 1], uniBuffer[boneIndices.y + 2], zero4) * boneWeight.y;" );
+        (*s)(true, "world += float4x4(uniBuffer[boneIndices.z], uniBuffer[boneIndices.z + 1], uniBuffer[boneIndices.z + 2], zero4) * boneWeight.z;" );
+        (*s)(true, "world += float4x4(uniBuffer[boneIndices.w], uniBuffer[boneIndices.w + 1], uniBuffer[boneIndices.w + 2], zero4) * boneWeight.w;" );
+        (*s)(true, "world = transpose(world);"                                                                                                      );
+        (*s)(true, "world[3][3] = 1.0;"                                                                                                             );
+        (*s)(true, "uniIndex += 75 * 3;"                                                                                                            );
+    }
+}
+//------------------------------------------------------------------------------
+void Material::UpdateTransformConstant(xxDrawData const& data, int& size, xxVector4** pointer, struct MaterialSelector* s) const
+{
+    if (s)
+    {
+        (*s)(true, "float4 worldPosition = mul(float4(attrPosition, 1.0), world);"      );
+        (*s)(true, "float4 screenPosition = mul(mul(worldPosition, view), projection);" );
     }
 }
 //------------------------------------------------------------------------------
@@ -1020,8 +1013,6 @@ void Material::UpdateWorldViewProjectionConstant(xxDrawData const& data, int& si
         (*s)(true, "float4x4 world = float4x4(uniBuffer[uniIndex + 0], uniBuffer[uniIndex + 1], uniBuffer[uniIndex + 2], uniBuffer[uniIndex + 3]);"        );
         (*s)(true, "float4x4 view = float4x4(uniBuffer[uniIndex + 4], uniBuffer[uniIndex + 5], uniBuffer[uniIndex + 6], uniBuffer[uniIndex + 7]);"         );
         (*s)(true, "float4x4 projection = float4x4(uniBuffer[uniIndex + 8], uniBuffer[uniIndex + 9], uniBuffer[uniIndex + 10], uniBuffer[uniIndex + 11]);" );
-        (*s)(true, "float4 worldPosition = mul(float4(attrPosition, 1.0), world);"                                                                         );
-        (*s)(true, "float4 screenPosition = mul(mul(worldPosition, view), projection);"                                                                    );
         (*s)(true, "uniIndex += 12;"                                                                                                                       );
     }
 }

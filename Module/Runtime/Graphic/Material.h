@@ -45,6 +45,7 @@ protected:
     void                UpdateCullingConstant(xxDrawData const& data, int& size, xxVector4** pointer = nullptr, struct MaterialSelector* s = nullptr) const;
     void                UpdateLightingConstant(xxDrawData const& data, int& size, xxVector4** pointer = nullptr, struct MaterialSelector* s = nullptr) const;
     void                UpdateSkinningConstant(xxDrawData const& data, int& size, xxVector4** pointer = nullptr, struct MaterialSelector* s = nullptr) const;
+    void                UpdateTransformConstant(xxDrawData const& data, int& size, xxVector4** pointer = nullptr, struct MaterialSelector* s = nullptr) const;
     void                UpdateWorldViewProjectionConstant(xxDrawData const& data, int& size, xxVector4** pointer = nullptr, struct MaterialSelector* s = nullptr) const;
 
     uint64_t            m_meshShader = 0;

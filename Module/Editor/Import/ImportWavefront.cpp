@@ -32,31 +32,6 @@ static float ToFloat(char const* text)
     return text ? float(atof(text)) : 0.0f;
 }
 //------------------------------------------------------------------------------
-static std::string CheckDuplicateName(xxNodePtr const& node, std::string const& name)
-{
-    std::string output = name;
-    for (size_t i = node->GetChildCount(); i > 0; --i)
-    {
-        xxNodePtr const& child = node->GetChild(i - 1);
-        if (child == nullptr)
-            continue;
-        if (child->Name.find(name) != 0)
-            continue;
-        output += '#';
-        size_t sharp = child->Name.rfind('#');
-        if (sharp == std::string::npos)
-        {
-            output += '0';
-        }
-        else
-        {
-            output += std::to_string(std::stoi(child->Name.substr(sharp + 1)) + 1);
-        }
-        break;
-    }
-    return output;
-}
-//------------------------------------------------------------------------------
 static std::string GeneratePath(char const* path, char const* name)
 {
     std::string output = xxFile::GetPath(path) + '/' + (name ? name : "");
@@ -233,7 +208,7 @@ std::map<std::string, ImportWavefront::Material> ImportWavefront::CreateMaterial
     return materials;
 }
 //------------------------------------------------------------------------------
-xxNodePtr ImportWavefront::Create(char const* obj)
+xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&)> callback)
 {
     std::map<std::string, Material> materials;
     std::vector<xxVector3> vertices;
@@ -272,7 +247,14 @@ xxNodePtr ImportWavefront::Create(char const* obj)
                 child->Mesh = MeshTools::NormalizeMesh(child->Mesh, true);
             }
         }
-        root->AttachChild(child);
+        if (callback)
+        {
+            callback(child);
+        }
+        else
+        {
+            root->AttachChild(child);
+        }
         faceVertices.clear();
         faceNormals.clear();
         faceTextures.clear();

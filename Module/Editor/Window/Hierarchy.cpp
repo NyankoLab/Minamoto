@@ -12,6 +12,8 @@
 #include <MiniGUI/Window.h>
 #include <Runtime/Tools/NodeTools.h>
 #include <ImGuiFileDialog/ImGuiFileDialog.h>
+#include "Event/ImportEvent.h"
+#include "Import/Import.h"
 #include "Import/ImportFBX.h"
 #include "Import/ImportPLY.h"
 #include "Import/ImportWavefront.h"
@@ -95,24 +97,30 @@ void Hierarchy::Shutdown()
     exportFileDialog = nullptr;
 }
 //------------------------------------------------------------------------------
-static xxNodePtr ImportFile(char const* name)
+static xxNodePtr ImportFile(xxNodePtr const& node, char const* name)
 {
-    float begin = xxGetCurrentTime();
-    xxNodePtr node;
-    if (strcasestr(name, ".fbx"))
-        node = ImportFBX::Create(name);
-    if (strcasestr(name, ".obj"))
-        node = ImportWavefront::Create(name);
-    if (strcasestr(name, ".ply"))
-        node = ImportPLY::Create(name);
-    if (strcasestr(name, ".xxb"))
-        node = Binary::Load(name);
     if (node)
+    {
+        Event::Push(ImportEvent::Create(node, name));
+        return nullptr;
+    }
+
+    float begin = xxGetCurrentTime();
+    xxNodePtr output;
+    if (strcasestr(name, ".fbx"))
+        output = ImportFBX::Create(name);
+    if (strcasestr(name, ".obj"))
+        output = ImportWavefront::Create(name);
+    if (strcasestr(name, ".ply"))
+        output = ImportPLY::Create(name);
+    if (strcasestr(name, ".xxb"))
+        output = Binary::Load(name);
+    if (output)
     {
         float time = xxGetCurrentTime() - begin;
         xxLog("Hierarchy", "Import : %s (%0.fus)", xxFile::GetName(name).c_str(), time * 1000000);
     }
-    return node;
+    return output;
 }
 //------------------------------------------------------------------------------
 void Hierarchy::Select(xxNodePtr const& node)
@@ -161,7 +169,7 @@ void Hierarchy::Import(const UpdateData& updateData)
         ImGui::Checkbox("Texture Flip V", &Import::EnableTextureFlipV);
         if (ImGui::Button("Import"))
         {
-            xxNodePtr node = ImportFile(importName);
+            xxNodePtr node = ImportFile(nullptr, importName);
             if (node)
             {
                 if (Import::EnableMergeNode)
@@ -297,7 +305,7 @@ bool Hierarchy::Update(const UpdateData& updateData, bool& show, xxNodePtr const
                 if (payload)
                 {
                     std::string name((char*)payload->Data, payload->DataSize);
-                    xxNodePtr object = ImportFile(name.c_str());
+                    xxNodePtr object = ImportFile(node, name.c_str());
                     if (object)
                     {
                         if (node->GetParent())

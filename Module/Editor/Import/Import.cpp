@@ -171,4 +171,29 @@ xxNodePtr Import::GetNodeByName(xxNodePtr const& root, std::string const& name)
 
     return output;
 }
+//------------------------------------------------------------------------------
+std::string Import::CheckDuplicateName(xxNodePtr const& node, std::string const& name)
+{
+    std::string output = name;
+    for (size_t i = node->GetChildCount(); i > 0; --i)
+    {
+        xxNodePtr const& child = node->GetChild(i - 1);
+        if (child == nullptr)
+            continue;
+        if (child->Name.find(name) != 0)
+            continue;
+        output += '#';
+        size_t sharp = child->Name.rfind('#');
+        if (sharp == std::string::npos)
+        {
+            output += '0';
+        }
+        else
+        {
+            output += std::to_string(std::stoi(child->Name.substr(sharp + 1)) + 1);
+        }
+        break;
+    }
+    return output;
+}
 //==============================================================================
