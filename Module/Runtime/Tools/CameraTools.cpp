@@ -1,7 +1,7 @@
 //==============================================================================
 // Minamoto : CameraTools Source
 //
-// Copyright (c) 2019-2024 TAiGA
+// Copyright (c) 2023-2025 TAiGA
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Runtime.h"
