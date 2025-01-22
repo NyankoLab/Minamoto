@@ -38,7 +38,8 @@ static xxNodePtr sceneGrid;
 static xxVector2 viewPos;
 static xxVector2 viewSize;
 static ImGuiViewport* viewViewport;
-static std::vector<xxNode*> drawArrays;
+static std::vector<xxNode*> drawScenes;
+static std::vector<xxNode*> drawGUIs;
 static bool cullEnabled = false;
 static bool drawBoneLine = false;
 static bool drawNodeLine = false;
@@ -111,7 +112,8 @@ void Scene::Shutdown(bool suspend)
     sceneGrid = nullptr;
     selected = nullptr;
     viewViewport = nullptr;
-    drawArrays = std::vector<xxNode*>();
+    drawScenes = std::vector<xxNode*>();
+    drawGUIs = std::vector<xxNode*>();
 }
 //------------------------------------------------------------------------------
 void Scene::Select(xxNodePtr const& node)
@@ -259,7 +261,7 @@ static bool CameraMoveWASD(const UpdateData& updateData, bool mani)
         }
         if (ImGui::IsKeyDown(ImGuiKey_LeftShift))
         {
-            speed = 50.0f;
+            speed = 100.0f;
         }
         if (ImGui::IsKeyDown(ImGuiKey_A))
         {
@@ -629,6 +631,9 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
         MiniGUIEditor(MiniGUI::Window::Cast(selected));
 #endif
 
+        ImGui::Text("Scene : %zd", drawScenes.size());
+        ImGui::Text("GUI : %zd", drawGUIs.size());
+
         // Manipulate
         SelectMouse();
 
@@ -640,7 +645,7 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
         updated |= CameraMoveWASD(updateData, mani);
         updated |= CameraMoveManipulate(mani, maniSize, maniPos);
 
-        DrawTools::Cull(sceneRoot, sceneCamera, drawArrays);
+        DrawTools::Cull(sceneRoot, cullEnabled ? sceneCamera : mainCamera, drawScenes, &drawGUIs, false);
     }
     ImGui::End();
 
@@ -692,6 +697,9 @@ void Scene::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
     xxSetViewport(commandEncoder, int(viewport_x), int(viewport_y), int(viewport_width), int(viewport_height), 0.0f, 1.0f);
     xxSetScissor(commandEncoder, int(viewport_x), int(viewport_y), int(viewport_width), int(viewport_height));
 
+    mainCamera->SetFOV(viewport_width / viewport_height, 60.0f, 10000.0f);
+    mainCamera->Update();
+
     const UpdateData* updateData = (UpdateData*)cmd->UserCallbackData;
 
     DrawTools::DrawData drawData;
@@ -701,31 +709,25 @@ void Scene::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
     drawData.camera3D = mainCamera;
     drawData.materialIndex = 0;
 
-    if (mainCamera)
+    xxMatrix4x2 frustum[6];
+    if (sceneCamera)
     {
-        mainCamera->SetFOV(viewport_width / viewport_height, 60.0f, 10000.0f);
-        mainCamera->Update();
+        drawData.frustum = frustum;
+        sceneCamera->GetFrustumPlanes(frustum[0], frustum[1], frustum[2], frustum[3], frustum[4], frustum[5]);
     }
 
     DrawTools::Draw(drawData, sceneGrid);
 
     Profiler::Begin(xxHash("Scene Render"));
-    if (cullEnabled)
+    drawData.camera = drawData.camera3D.get();
+    for (xxNode* node : drawScenes)
     {
-        for (xxNode* node : drawArrays)
-        {
-            node->Draw(drawData);
-        }
+        node->Draw(drawData);
     }
-    else
+    drawData.camera = drawData.camera2D.get();
+    for (xxNode* node : drawGUIs)
     {
-        xxMatrix4x2 frustum[6];
-        if (sceneCamera)
-        {
-            drawData.frustum = frustum;
-            sceneCamera->GetFrustumPlanes(frustum[0], frustum[1], frustum[2], frustum[3], frustum[4], frustum[5]);
-        }
-        DrawTools::Draw(drawData, sceneRoot);
+        node->Draw(drawData);
     }
     Profiler::End(xxHash("Scene Render"));
 }
