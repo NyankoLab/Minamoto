@@ -14,10 +14,16 @@
 #include "DrawTools.h"
 
 //==============================================================================
-void DrawTools::Cull(xxNodePtr const& node, xxCameraPtr const& camera, std::vector<xxNode*>& array, bool append)
+void DrawTools::Cull(xxNodePtr const& node, xxCameraPtr const& camera, std::vector<xxNode*>& scene, std::vector<xxNode*>* gui, bool append)
 {
     if (append == false)
-        array.clear();
+    {
+        scene.clear();
+        if (gui)
+        {
+            gui->clear();
+        }
+    }
 
     xxMatrix4x2 frustum[6];
     if (camera)
@@ -25,7 +31,21 @@ void DrawTools::Cull(xxNodePtr const& node, xxCameraPtr const& camera, std::vect
         camera->GetFrustumPlanes(frustum[0], frustum[1], frustum[2], frustum[3], frustum[4], frustum[5]);
     }
 
-    CullTraversal(node, frustum, array, camera ? -1 : 0);
+    for (xxNodePtr const& child : (*node))
+    {
+#if HAVE_MINIGUI
+        auto window = MiniGUI::Window::Cast(child);
+        if (window)
+        {
+            if (gui)
+            {
+                CullTraversal(child, frustum, *gui, 0);
+            }
+            continue;
+        }
+#endif
+        CullTraversal(child, frustum, scene, camera ? -1 : 0);
+    }
 }
 //------------------------------------------------------------------------------
 void DrawTools::Draw(DrawData& drawData, xxNodePtr const& node)
@@ -87,16 +107,7 @@ void DrawTools::CullTraversal(xxNodePtr const& node, xxMatrix4x2 const frustum[6
     }
 
     for (xxNodePtr const& child : (*node))
-    {
-#if HAVE_MINIGUI
-        auto window = MiniGUI::Window::Cast(child);
-        if (window)
-        {
-            continue;
-        }
-#endif
         CullTraversal(child, frustum, array, planes);
-    }
 }
 //------------------------------------------------------------------------------
 void DrawTools::DrawTraversal(DrawData& drawData, xxNodePtr const& node)
