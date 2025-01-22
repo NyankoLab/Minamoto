@@ -1,7 +1,7 @@
 //==============================================================================
 // Minamoto : ImportFBX Source
 //
-// Copyright (c) 2023-2024 TAiGA
+// Copyright (c) 2023-2025 TAiGA
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"

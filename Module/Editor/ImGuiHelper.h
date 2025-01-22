@@ -1,7 +1,7 @@
 //==============================================================================
 // Minamoto : ImGui Helper
 //
-// Copyright (c) 2023-2024 TAiGA
+// Copyright (c) 2023-2025 TAiGA
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include <imgui/imgui.h>
