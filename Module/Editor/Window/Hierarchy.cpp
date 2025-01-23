@@ -556,7 +556,22 @@ bool Hierarchy::Update(const UpdateData& updateData, bool& show, xxNodePtr const
         else
 #endif
         {
-            Tools::Sphere(hovered->WorldBound.xyz, hovered->WorldBound.w);
+            if (ImGui::IsKeyDown(ImGuiKey_LeftShift))
+            {
+                xxNode::Traversal(hovered, [&](xxNodePtr const& node)
+                {
+                    xxVector4 const& bound = node->WorldBound;
+                    if (bound.w != 0.0f)
+                    {
+                        Tools::Sphere(bound.xyz, bound.w);
+                    }
+                    return true;
+                });
+            }
+            else
+            {
+                Tools::Sphere(hovered->WorldBound.xyz, hovered->WorldBound.w);
+            }
         }
     }
 

@@ -34,7 +34,7 @@ void DrawTools::Cull(xxNodePtr const& node, xxCameraPtr const& camera, std::vect
     for (xxNodePtr const& child : (*node))
     {
 #if HAVE_MINIGUI
-        auto window = MiniGUI::Window::Cast(child);
+        auto& window = MiniGUI::Window::Cast(child);
         if (window)
         {
             if (gui)
@@ -67,7 +67,7 @@ void DrawTools::Draw(DrawData& drawData, xxNodePtr const& node)
     for (xxNodePtr const& child : (*node))
     {
 #if HAVE_MINIGUI
-        auto window = MiniGUI::Window::Cast(child);
+        auto& window = MiniGUI::Window::Cast(child);
         if (window)
         {
             xxCamera* camera = drawData.camera;

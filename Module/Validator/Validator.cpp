@@ -7,6 +7,7 @@
 #include <Interface.h>
 
 #include <xxGraphicPlus/xxFile.h>
+#include <xxGraphicPlus/xxMath.h>
 #include <xxGraphicPlus/xxNode.h>
 
 #if DirectXMath
@@ -36,12 +37,15 @@ moduleAPI bool Update(const UpdateData& updateData)
 {
     static bool showValidate = false;
     static bool showAbout = false;
+    static bool showBoundIntersect = false;
 
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu(PLUGIN_NAME))
         {
             ImGui::MenuItem("Validate", nullptr, &showValidate);
+            ImGui::Separator();
+            ImGui::MenuItem("Bound Intersect", nullptr, &showBoundIntersect);
             ImGui::Separator();
             ImGui::MenuItem("About " PLUGIN_NAME, nullptr, &showAbout);
             ImGui::EndMenu();
@@ -66,9 +70,8 @@ moduleAPI bool Update(const UpdateData& updateData)
             {
                 ValidateNode(updateData.time, text, sizeof(text));
             }
-
-            ImGui::End();
         }
+        ImGui::End();
     }
 
     if (showAbout)
@@ -79,8 +82,47 @@ moduleAPI bool Update(const UpdateData& updateData)
             ImGui::Text("Build Date : %s %s", __DATE__, __TIME__);
             ImGui::Separator();
             ImGui::DumpBuildInformation();
-            ImGui::End();
         }
+        ImGui::End();
+    }
+
+    if (showBoundIntersect)
+    {
+        ImGui::SetNextWindowSize(ImVec2(512.0f, 384.0f));
+        if (ImGui::Begin("Bound Intersect", &showBoundIntersect, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking))
+        {
+            ImDrawList* drawList = ImGui::GetWindowDrawList();
+            ImVec2 pos = ImGui::GetWindowPos();
+
+            static xxVector3 left = xxVector3{ 150, 200, 100.0f };
+            static xxVector3 right = xxVector3{ 300, 200, 50.0f };
+
+            static int mode = 0;
+            ImGui::SliderFloat("Left", &left.x, 0, 500);
+            if (ImGui::IsItemHovered())
+                mode = 0;
+            ImGui::SliderFloat("Right", &right.x, 0, 500);
+            if (ImGui::IsItemHovered())
+                mode = 1;
+
+            ImU32 color = 0xFFFFFFFF;
+            switch (mode == 0 ? left.BoundIntersect(right) : right.BoundIntersect(left))
+            {
+            case 0:
+                color = 0xFFFF0000;
+                break;
+            case 1:
+                color = 0xFF00FF00;
+                break;
+            case 2:
+                color = 0xFF0000FF;
+                break;
+            }
+
+            drawList->AddCircle(ImVec2(pos.x + left.x, pos.y + left.y), left.z, color);
+            drawList->AddCircle(ImVec2(pos.x + right.x, pos.y + right.y), right.z, color);
+        }
+        ImGui::End();
     }
 
     return false;

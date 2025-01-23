@@ -55,8 +55,8 @@ void Scene::Initialize()
         mainCamera->LookAt(xxVector3::ZERO, xxVector3::Z);
         mainCamera->Update();
 
-        mainCamera->LightColor = {1.0f, 0.5f, 0.5f};
-        mainCamera->LightDirection = -xxVector3::Y;
+        mainCamera->LightColor = {1.0f, 1.0f, 1.0f};
+        mainCamera->LightDirection = xxVector3::Z;
     }
     if (screenCamera == nullptr)
     {
@@ -125,7 +125,7 @@ void Scene::DrawBoneLine(xxNodePtr const& root)
 {
     if (drawBoneLine)
     {
-        xxNode::Traversal(root, [&](xxNodePtr const& node)
+        xxNode::Traversal(root, [](xxNodePtr const& node)
         {
             for (auto const& data : node->Bones)
             {
@@ -184,7 +184,7 @@ void Scene::DrawNodeLine(xxNodePtr const& root)
 {
     if (drawNodeLine)
     {
-        xxNode::Traversal(root, [&](xxNodePtr const& node)
+        xxNode::Traversal(root, [](xxNodePtr const& node)
         {
             xxNodePtr const& parent = node->GetParent();
             if (parent)
@@ -200,7 +200,7 @@ void Scene::DrawNodeBound(xxNodePtr const& root)
 {
     if (drawNodeBound)
     {
-        xxNode::Traversal(root, [&](xxNodePtr const& node)
+        xxNode::Traversal(root, [](xxNodePtr const& node)
         {
             xxVector4 const& bound = node->WorldBound;
             if (bound.w != 0.0f)
@@ -329,10 +329,6 @@ static bool CameraMoveManipulate(bool mani, ImVec2 const& maniSize, ImVec2 const
     xxMatrix4 identityMatrix = xxMatrix4::IDENTITY;
     xxMatrix4 viewMatrix = Scene::mainCamera->ViewMatrix;
 
-    if (mani)
-    {
-        ImGui::ClearActiveID();
-    }
     ImGuizmo::SetDrawlist();
     ImGuizmo::SetRect(viewPos.x, viewPos.y, viewSize.x, viewSize.y);
     ImGuizmo::ViewManipulate(viewMatrix, Scene::mainCamera->ProjectionMatrix, ImGuizmo::ROTATE, ImGuizmo::WORLD, identityMatrix, 8.0f, maniPos, maniSize, 0x10101010);
@@ -542,19 +538,19 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
         sceneRoot->UpdateBound();
         Profiler::End(xxHash("Scene Update"));
 
+#if HAVE_MINIGUI
         // MiniGUI
         Profiler::Begin(xxHash("MiniGUI Update"));
         for (xxNodePtr const& node : (*sceneRoot))
         {
-#if HAVE_MINIGUI
             auto& window = MiniGUI::Window::Cast(node);
             if (window)
             {
                 MiniGUI::Window::Update(window, updateData.time, viewSize);
             }
-#endif
         }
         Profiler::End(xxHash("MiniGUI Update"));
+#endif
 
         if (show)
         {
@@ -631,6 +627,7 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
         MiniGUIEditor(MiniGUI::Window::Cast(selected));
 #endif
 
+        ImGui::Text("Screen : %.0f x %.0f", viewSize.x, viewSize.y);
         ImGui::Text("Scene : %zd", drawScenes.size());
         ImGui::Text("GUI : %zd", drawGUIs.size());
 
@@ -724,11 +721,16 @@ void Scene::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
     {
         node->Draw(drawData);
     }
+    Profiler::End(xxHash("Scene Render"));
+
+#if HAVE_MINIGUI
+    Profiler::Begin(xxHash("MiniGUI Render"));
     drawData.camera = drawData.camera2D.get();
     for (xxNode* node : drawGUIs)
     {
         node->Draw(drawData);
     }
-    Profiler::End(xxHash("Scene Render"));
+    Profiler::End(xxHash("MiniGUI Render"));
+#endif
 }
 //------------------------------------------------------------------------------
