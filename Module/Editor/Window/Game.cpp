@@ -23,6 +23,8 @@ static xxCameraPtr sceneCamera;
 static xxVector2 viewPos;
 static xxVector2 viewSize;
 static ImGuiViewport* viewViewport;
+static std::vector<xxNode*> drawScenes;
+static std::vector<xxNode*> drawGUIs;
 //------------------------------------------------------------------------------
 void Game::Initialize()
 {
@@ -50,6 +52,8 @@ void Game::Shutdown(bool suspend)
 
     screenCamera = nullptr;
     viewViewport = nullptr;
+    drawScenes = std::vector<xxNode*>();
+    drawGUIs = std::vector<xxNode*>();
 }
 //------------------------------------------------------------------------------
 bool Game::Update(const UpdateData& updateData, bool& show)
@@ -93,7 +97,7 @@ bool Game::Update(const UpdateData& updateData, bool& show)
         {
             if (ImGui::IsKeyDown(ImGuiKey_LeftShift))
             {
-                speed = 50.0f;
+                speed = 100.0f;
             }
             if (ImGui::IsKeyDown(ImGuiKey_Q))
             {
@@ -131,6 +135,8 @@ bool Game::Update(const UpdateData& updateData, bool& show)
         drawList->AddRectFilled({ viewPos.x, viewPos.y }, { viewPos.x + viewSize.x, viewPos.y + viewSize.y }, 0xFF998877);
         drawList->AddCallback(Callback, (void*)&updateData, sizeof(updateData));
         drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
+
+        DrawTools::Cull(Scene::sceneRoot, sceneCamera, drawScenes, &drawGUIs, false);
     }
     ImGui::End();
 
@@ -197,8 +203,22 @@ void Game::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
         sceneCamera->Update();
     }
 
-    Profiler::Begin(xxHash("Game Render"));
-    DrawTools::Draw(drawData, Scene::sceneRoot);
-    Profiler::End(xxHash("Game Render"));
+    Profiler::Begin(xxHash("Scene Render"));
+    drawData.camera = drawData.camera3D.get();
+    for (xxNode* node : drawScenes)
+    {
+        node->Draw(drawData);
+    }
+    Profiler::End(xxHash("Scene Render"));
+
+#if HAVE_MINIGUI
+    Profiler::Begin(xxHash("MiniGUI Render"));
+    drawData.camera = drawData.camera2D.get();
+    for (xxNode* node : drawGUIs)
+    {
+        node->Draw(drawData);
+    }
+    Profiler::End(xxHash("MiniGUI Render"));
+#endif
 }
 //------------------------------------------------------------------------------

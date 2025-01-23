@@ -924,19 +924,20 @@ void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVecto
         (*s)(true, "float3 specularColor = uniBuffer[uniIndex].xyz;"    );
         (*s)(true, "float specularHighlight = uniBuffer[uniIndex++].w;" );
 
-        (*s)(true,             "float3 L = lightDirection;"                                         );
-        (*s)(mesh || vert,     "float3 N = worldNormal;"                                            );
-        (*s)(frag,             "float3 N = varyWorldNormal;"                                        );
-        (*s)(frag && bump,     "N.z = dot(varyWorldNormal, bump.xyz);"                              );
-        (*s)(frag && bump,     "N.x = dot(varyWorldTangent, bump.xyz);"                             );
-        (*s)(frag && bump,     "N.y = dot(varyWorldBinormal, bump.xyz);"                            );
-        (*s)(frag == bump,     "float lambert = dot(N, L);"                                         );
-        (*s)(frag == bump,     "color.rgb *= (ambientColor + diffuseColor * lightColor * lambert);" );
-        (*s)(frag == bump,     "color.rgb += emissiveColor;"                                        );
-        (*s)(frag && Specular, "float3 V = normalize(cameraPosition - varyWorldPosition);"          );
-        (*s)(frag && Specular, "float3 H = normalize(V + L);"                                       );
-        (*s)(frag && Specular, "float phong = pow(max(dot(N, H), 0.0001), specularHighlight);"      );
-        (*s)(frag && Specular, "color.rgb = color.rgb + specularColor * phong;"                     );
+        (*s)(true,             "float3 L = lightDirection;"                                    );
+        (*s)(mesh || vert,     "float3 N = worldNormal;"                                       );
+        (*s)(frag,             "float3 N = varyWorldNormal;"                                   );
+        (*s)(frag && Specular, "float3 V = normalize(cameraPosition - varyWorldPosition);"     );
+        (*s)(frag && Specular, "float3 H = normalize(V + L);"                                  );
+        (*s)(frag && bump,     "N.z = dot(varyWorldNormal, bump.xyz);"                         );
+        (*s)(frag && bump,     "N.x = dot(varyWorldTangent, bump.xyz);"                        );
+        (*s)(frag && bump,     "N.y = dot(varyWorldBinormal, bump.xyz);"                       );
+        (*s)(frag == bump,     "float lambert = max(dot(N, L), 0.0);"                          );
+        (*s)(frag && Specular, "float phong = pow(max(dot(N, H), 0.0001), specularHighlight);" );
+        (*s)(frag == bump,     "color.rgb *= (ambientColor + diffuseColor * lambert);"         );
+        (*s)(frag && Specular, "color.rgb += specularColor * phong;"                           );
+        (*s)(frag == bump,     "color.rgb *= lightColor;"                                      );
+        (*s)(frag == bump,     "color.rgb += emissiveColor;"                                   );
     }
 }
 //------------------------------------------------------------------------------

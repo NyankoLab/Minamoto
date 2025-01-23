@@ -16,5 +16,7 @@ struct RuntimeAPI NodeTools
 #endif
     static xxNodePtr const& GetRoot(xxNodePtr const& node);
     static xxNodePtr const& GetObject(xxNodePtr const& node, std::string const& name);
+    static void ConvertQuadTree(xxNodePtr const& node);
+    static void RemoveEmptyNode(xxNodePtr const& node);
     static void UpdateNodeFlags(xxNodePtr const& node);
 };

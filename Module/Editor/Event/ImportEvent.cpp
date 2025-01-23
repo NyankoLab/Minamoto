@@ -8,6 +8,7 @@
 #include <xxGraphicPlus/xxFile.h>
 #include <xxGraphicPlus/xxNode.h>
 #include <Graphic/Binary.h>
+#include <Tools/NodeTools.h>
 #include "Import/ImportFBX.h"
 #include "Import/ImportPLY.h"
 #include "Import/ImportWavefront.h"
@@ -91,6 +92,10 @@ float ImportEvent::Execute()
         int count = output ? (int)output->GetChildCount() : 0;
         ImGui::InputText("File", name.data(), name.size(), ImGuiInputTextFlags_ReadOnly);
         ImGui::InputInt("Node", &count, 1, 100, ImGuiInputTextFlags_ReadOnly);
+        if (ImGui::Button("QuadTree"))
+        {
+            NodeTools::ConvertQuadTree(output);
+        }
     }
     ImGui::End();
 

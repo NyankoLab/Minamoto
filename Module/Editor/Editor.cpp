@@ -145,9 +145,9 @@ moduleAPI bool Update(const UpdateData& updateData)
     {
         dockPreInitialized = true;
 
-        ImGuiID right = ImGui::DockBuilderSplitNode(id, ImGuiDir_Right, 1.0f / 5.0f, nullptr, &id);
-        ImGuiID down = ImGui::DockBuilderSplitNode(id, ImGuiDir_Down, 1.0f / 3.0f, nullptr, &id);
-        ImGuiID left = ImGui::DockBuilderSplitNode(id, ImGuiDir_Left, 1.0f / 4.0f, nullptr, &id);
+        ImGuiID right = ImGui::DockBuilderSplitNode(id, ImGuiDir_Right, 1.0f / 6.0f, nullptr, &id);
+        ImGuiID down = ImGui::DockBuilderSplitNode(id, ImGuiDir_Down, 1.0f / 4.0f, nullptr, &id);
+        ImGuiID left = ImGui::DockBuilderSplitNode(id, ImGuiDir_Left, 1.0f / 5.0f, nullptr, &id);
         ImGui::DockBuilderDockWindow(ICON_FA_BOOKMARK   "Project", down);
         ImGui::DockBuilderDockWindow(ICON_FA_DESKTOP    "Log", down);
         ImGui::DockBuilderDockWindow(ICON_FA_LAPTOP     "Lua Console", down);
