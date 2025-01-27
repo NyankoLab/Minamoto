@@ -1,6 +1,6 @@
 [submodule "xxGraphic"]
 	path = SDK/xxGraphic
-	url = https://github.com/metarutaiga/xxGraphic
+	url = https://github.com/NyankoLab/xxGraphic
 [submodule "freetype"]
 	path = SDK/freetype
 	url = https://github.com/freetype/freetype
