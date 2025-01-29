@@ -81,7 +81,7 @@ void Tools::Draw(xxCameraPtr const& camera, xxVector2 const& scale, xxVector2 co
 //------------------------------------------------------------------------------
 void Tools::LookAtFromBound(xxCameraPtr const& camera, xxVector4 bound, xxVector3 const& up)
 {
-    if (bound.w == 0.0f)
+    if (bound.radius == 0.0f)
     {
         camera->Location = (xxVector3::Y * -10 + xxVector3::Z * 10);
         camera->LookAt(xxVector3::ZERO, up);
@@ -90,7 +90,7 @@ void Tools::LookAtFromBound(xxCameraPtr const& camera, xxVector4 bound, xxVector
     bound.x = std::roundf(bound.x);
 
     camera->Location.x = bound.x;
-    camera->Location.y = bound.w * -2.0f;
+    camera->Location.y = bound.radius * -2.0f;
     camera->Location.z = bound.z;
     camera->LookAt(bound.xyz, up);
 }

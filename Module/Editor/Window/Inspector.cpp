@@ -121,7 +121,7 @@ void Inspector::UpdateNode(const UpdateData& updateData, xxNodePtr const& node)
         ImGui::SliderFloat3("" Q, node->WorldMatrix[2], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
         ImGui::InputFloat3("" Q, node->WorldMatrix[3], "%.3f", ImGuiInputTextFlags_ReadOnly);
         ImGui::InputFloat3("Bound" Q, node->WorldBound, "%.3f", ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputFloat("" Q, &node->WorldBound.w, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputFloat("" Q, &node->WorldBound.radius, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
         ImGui::InputScalar("Flags" Q, ImGuiDataType_U32, &node->Flags, nullptr, nullptr, "%08X", ImGuiInputTextFlags_ReadOnly);
         if (node->Bones.empty() == false)
         {
@@ -166,7 +166,7 @@ void Inspector::UpdateNode(const UpdateData& updateData, xxNodePtr const& node)
                             ImGui::SliderFloat3("" Q, data.boneMatrix[2], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
                             ImGui::InputFloat3("" Q, data.boneMatrix[3], "%.3f", ImGuiInputTextFlags_ReadOnly);
                             ImGui::InputFloat3("Bound" Q, data.bound, "%.3f", ImGuiInputTextFlags_ReadOnly);
-                            ImGui::InputFloat("" Q, &data.bound.w, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
+                            ImGui::InputFloat("" Q, &data.bound.radius, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
                             ImGui::EndTooltip();
                         }
                         xxNodePtr const& parent = bone->GetParent();
@@ -336,7 +336,7 @@ void Inspector::UpdateMesh(const UpdateData& updateData, xxMeshPtr const& mesh)
         ImGui::InputInt2("Storage" Q, s,  ImGuiInputTextFlags_ReadOnly);
         if (ImGui::IsItemHovered()) ImGui::SetTooltip("Storage Count : %d\nStorage Stride : %d", s[0], s[1]);
         ImGui::InputFloat3("Bound" Q, (float*)&mesh->Bound, "%.3f", ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputFloat("" Q, (float*)&mesh->Bound.w, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputFloat("" Q, (float*)&mesh->Bound.radius, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
     }
 }
 //------------------------------------------------------------------------------

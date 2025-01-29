@@ -203,12 +203,40 @@ void Scene::DrawNodeBound(xxNodePtr const& root)
         xxNode::Traversal(root, [](xxNodePtr const& node)
         {
             xxVector4 const& bound = node->WorldBound;
-            if (bound.w != 0.0f)
+            if (bound.radius != 0.0f)
             {
-                Tools::Sphere(bound.xyz, bound.w);
+                Tools::Sphere(bound.xyz, bound.radius);
             }
             return true;
         });
+    }
+}
+//------------------------------------------------------------------------------
+static void PreSelectMouse()
+{
+    if (ImGui::IsMouseHoveringRect(ImVec2(viewPos.x, viewPos.y), ImVec2(viewPos.x + viewSize.x, viewPos.y + viewSize.y)))
+    {
+        xxVector2 mousePos = { ImGui::GetMousePos().x, ImGui::GetMousePos().y };
+        xxVector2 point = (mousePos - viewPos) / viewSize;
+        xxVector3 direction = CameraTools::GetDirectionFromScreenPos(Scene::mainCamera, point.x, point.y);
+        xxNodePtr const& node = NodeTools::Intersect(Scene::sceneRoot, Scene::mainCamera->Location, direction);
+        if (node)
+        {
+            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+            {
+                Hierarchy::Select(node);
+                Inspector::Select(node);
+                Scene::Select(node);
+            }
+            else
+            {
+                xxVector4 const& bound = node->WorldBound;
+                if (bound.radius != 0.0f)
+                {
+                    Tools::Sphere(bound.xyz, bound.radius);
+                }
+            }
+        }
     }
 }
 //------------------------------------------------------------------------------
@@ -620,6 +648,8 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
         drawList->AddRectFilled({ viewPos.x, viewPos.y }, { viewPos.x + viewSize.x, viewPos.y + viewSize.y }, 0xFF998877);
         drawList->AddCallback(Callback, (void*)&updateData, sizeof(updateData));
         drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
+
+        PreSelectMouse();
 
         Tools::Draw(mainCamera, viewSize, viewPos);
 

@@ -77,10 +77,10 @@ void CameraTools::SetViewport(xxCameraPtr const& camera, float fromWidth, float 
     float translateY = -(newCenterY - oldCenterY) * 2.0f / fromHeight;
 
     xxMatrix4 viewport;
-    viewport.v[0] = {     scaleX,          0, 0, 0 };
-    viewport.v[1] = {          0,     scaleY, 0, 0 };
-    viewport.v[2] = {          0,          0, 1, 0 };
-    viewport.v[3] = { translateX, translateY, 0, 1 };
+    viewport[0] = {     scaleX,          0, 0, 0 };
+    viewport[1] = {          0,     scaleY, 0, 0 };
+    viewport[2] = {          0,          0, 1, 0 };
+    viewport[3] = { translateX, translateY, 0, 1 };
 
     camera->ProjectionMatrix = viewport * camera->ProjectionMatrix;
     camera->ViewProjectionMatrix = camera->ProjectionMatrix * camera->ViewMatrix;
@@ -89,7 +89,7 @@ void CameraTools::SetViewport(xxCameraPtr const& camera, float fromWidth, float 
 xxVector3 CameraTools::GetDirectionFromScreenPos(xxCameraPtr const& camera, float x, float y)
 {
     float right = camera->FrustumLeft + x * (camera->FrustumRight - camera->FrustumLeft);
-    float up = camera->FrustumBottom + y * (camera->FrustumTop - camera->FrustumBottom);
+    float up = camera->FrustumTop + y * (camera->FrustumBottom - camera->FrustumTop);
 
     xxVector3 direction = camera->Direction + camera->Right * right + camera->Up * up;
     direction /= direction.Length();

@@ -561,16 +561,16 @@ bool Hierarchy::Update(const UpdateData& updateData, bool& show, xxNodePtr const
                 xxNode::Traversal(hovered, [&](xxNodePtr const& node)
                 {
                     xxVector4 const& bound = node->WorldBound;
-                    if (bound.w != 0.0f)
+                    if (bound.radius != 0.0f)
                     {
-                        Tools::Sphere(bound.xyz, bound.w);
+                        Tools::Sphere(bound.xyz, bound.radius);
                     }
                     return true;
                 });
             }
             else
             {
-                Tools::Sphere(hovered->WorldBound.xyz, hovered->WorldBound.w);
+                Tools::Sphere(hovered->WorldBound.xyz, hovered->WorldBound.radius);
             }
         }
     }
