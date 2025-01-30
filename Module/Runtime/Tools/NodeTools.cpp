@@ -67,26 +67,14 @@ xxNodePtr const& NodeTools::GetObject(xxNodePtr const& node, std::string const& 
 //------------------------------------------------------------------------------
 xxNodePtr const& NodeTools::Intersect(xxNodePtr const& node, xxVector3 const& position, xxVector3 const& direction)
 {
-    auto intersect = [](xxVector4 const& bound, xxVector3 const& position, xxVector3 const& direction)
-    {
-        xxVector3 diff = bound.xyz - position;
-        float t0 = diff.Dot(direction);
-        float distance = std::sqrtf(diff.Dot(diff) - t0 * t0);
-        if (distance > bound.w)
-            return false;
-        float t1 = std::sqrtf(bound.w * bound.w - distance * distance);
-        distance = t0 > t1 + FLT_EPSILON ? t0 - t1 : t0 + t1;
-        return distance > FLT_EPSILON;
-    };
-
     float nearDistance = FLT_MAX;
     xxNodePtr const* output = nullptr;
     xxNode::Traversal(node, [&](xxNodePtr const& node)
     {
         if (node->Mesh)
         {
-            float distance = (node->WorldBound.xyz - position).Length();
-            if (nearDistance > distance && intersect(node->WorldBound, position, direction))
+            float distance = (node->WorldBound.xyz - position).SquaredLength();
+            if (nearDistance > distance && node->WorldBound.Intersect(position, direction))
             {
                 nearDistance = distance;
                 output = &node;

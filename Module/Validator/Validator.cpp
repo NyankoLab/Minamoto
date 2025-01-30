@@ -106,7 +106,7 @@ moduleAPI bool Update(const UpdateData& updateData)
                 mode = 1;
 
             ImU32 color = 0xFFFFFFFF;
-            switch (mode == 0 ? left.BoundIntersect(right) : right.BoundIntersect(left))
+            switch (mode == 0 ? left.Intersect(right) : right.Intersect(left))
             {
             case 0:
                 color = 0xFFFF0000;
