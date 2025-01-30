@@ -92,9 +92,9 @@ void DrawTools::CullTraversal(xxNodePtr const& node, xxMatrix4x2 const frustum[6
             {
                 xxVector4 bound = node->WorldBound;
                 float direction = frustum[i][0].xyz.Dot(bound.xyz - frustum[i][1].xyz);
-                if (direction < -bound.w)
+                if (direction < -bound.radius)
                     return;
-                if (direction > bound.w)
+                if (direction > bound.radius)
                     planes &= ~bit;
             }
         }
