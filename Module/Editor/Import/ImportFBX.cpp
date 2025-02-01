@@ -347,7 +347,12 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
             bound = bound.BoundTransform(mat4(cluster->geometry_to_bone), 1.0f);
 
             // Add to list
-            node->Bones.push_back({ to, bound, mat4(cluster->geometry_to_bone) });
+            xxNode::BoneData bone;
+            bone.bone = to;
+            bone.bound = bound;
+            bone.classSkinMatrix = mat4(cluster->geometry_to_bone);
+            bone.classBoneMatrix = {};
+            node->Bones.push_back(bone);
         }
         for (auto& data : node->Bones)
         {

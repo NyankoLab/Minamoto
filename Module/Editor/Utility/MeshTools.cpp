@@ -521,4 +521,47 @@ xxMeshPtr MeshTools::OptimizeMesh(xxMeshPtr const& mesh)
 
     return mesh;
 }
+//------------------------------------------------------------------------------
+xxMeshPtr MeshTools::ResetMesh(xxMeshPtr const& mesh, xxVector3& origin)
+{
+    if (mesh == nullptr)
+        return nullptr;
+
+    float begin = xxGetCurrentTime();
+
+    MeshData data = CreateMeshDataFromMesh(mesh);
+    if (data.positions.empty())
+        return mesh;
+
+    xxVector3 min = { FLT_MAX, FLT_MAX, FLT_MAX };
+    xxVector3 max = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+    for (auto& position : data.positions)
+    {
+        min = min.Minimum(position);
+        max = max.Maximum(position);
+    }
+
+    xxVector3 from = origin;
+    xxVector3 to = { (min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f, min.z };
+    xxVector3 diff = to - from;
+    for (auto& position : data.positions)
+    {
+        position -= diff;
+    }
+    origin = to;
+
+    xxMeshPtr output = CreateMeshFromMeshData(data);
+    output->Name = mesh->Name;
+
+    float time = xxGetCurrentTime() - begin;
+
+    xxLog(TAG, "ResetMesh : %s (%.0fus)", mesh->Name.c_str(), time * 1000000);
+
+    if (mesh->Storage[xxMesh::STORAGE0])
+    {
+        output = CreateMeshlet(output);
+    }
+
+    return output;
+}
 //==============================================================================

@@ -191,7 +191,7 @@ void Window::SetOffset(xxVector2 const& offset)
 //==============================================================================
 WindowPtr const& Window::GetParent() const
 {
-    if (m_parent.expired())
+    if (m_parent.use_count() == 0)
     {
         static WindowPtr empty;
         return empty;
