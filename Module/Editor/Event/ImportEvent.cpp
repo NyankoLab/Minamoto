@@ -12,6 +12,7 @@
 #include "Import/ImportFBX.h"
 #include "Import/ImportPLY.h"
 #include "Import/ImportWavefront.h"
+#include "Utility/MeshTools.h"
 #include "ImportEvent.h"
 
 //==============================================================================
@@ -95,6 +96,20 @@ float ImportEvent::Execute()
         if (ImGui::Button("QuadTree"))
         {
             NodeTools::ConvertQuadTree(output);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Reset Mesh"))
+        {
+            xxNode::Traversal(output, [](xxNodePtr const& node)
+            {
+                if (node->Mesh)
+                {
+                    xxVector3 origin = node->GetTranslate();
+                    node->Mesh = MeshTools::ResetMesh(node->Mesh, origin);
+                    node->SetTranslate(origin);
+                }
+                return true;
+            });
         }
     }
     ImGui::End();

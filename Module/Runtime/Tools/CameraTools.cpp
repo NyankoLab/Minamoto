@@ -103,7 +103,7 @@ xxVector3 CameraTools::GetScreenPosToWorldPos(xxCameraPtr const& camera, xxVecto
 //------------------------------------------------------------------------------
 xxVector4 CameraTools::GetWorldPosToScreenPos(xxCameraPtr const& camera, xxVector3 const& point)
 {
-    xxVector4 screen = camera->ViewProjectionMatrix * xxVector4{point.x, point.y, point.z, 1.0f};
+    xxVector4 screen = xxVector4{ point.x, point.y, point.z, 1.0f } * camera->ViewProjectionMatrix;
     screen.xyz /= std::fabs(screen.w);
     screen.x = screen.x *  0.5f + 0.5f;
     screen.y = screen.y * -0.5f + 0.5f;

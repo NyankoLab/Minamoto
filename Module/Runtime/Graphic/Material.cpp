@@ -456,10 +456,6 @@ void Material::ShaderDefault(xxDrawData const& data, struct MaterialSelector& s)
         s.Define("int3", "ivec3");
         s.Define("int4", "ivec4");
     }
-    if (s.language == 'GLSL' || s.language == 'MSL1' || s.language == 'MSL2')
-    {
-        s.Define("mul(a, b)", "(b * a)");
-    }
 }
 //------------------------------------------------------------------------------
 void Material::ShaderAttribute(xxDrawData const& data, struct MaterialSelector& s) const
@@ -842,15 +838,15 @@ void Material::UpdateCullingConstant(xxDrawData const& data, int& size, xxVector
         (*s)(true,            "{"                                                                                              );
         (*s)(BackfaceCulling, "if (visible)"                                                                                   );
         (*s)(BackfaceCulling, "{"                                                                                              );
-        (*s)(BackfaceCulling, "float4 coneApex = mul(m.ConeApex, world);"                                                      );
-        (*s)(BackfaceCulling, "float4 coneAxisCutoff = mul(m.ConeAxisCutoff, world);"                                          );
+        (*s)(BackfaceCulling, "float4 coneApex = m.ConeApex * world;"                                                          );
+        (*s)(BackfaceCulling, "float4 coneAxisCutoff = m.ConeAxisCutoff * world;"                                              );
         (*s)(BackfaceCulling, "float c = m.ConeAxisCutoff.w;"                                                                  );
         (*s)(BackfaceCulling, "float d = dot(coneAxisCutoff.xyz, normalize(coneApex.xyz - uniBuffer[uniIndex + 1].xyz));"      );
         (*s)(BackfaceCulling, "if (d >= c) visible = 0;"                                                                       );
         (*s)(BackfaceCulling, "}"                                                                                              );
         (*s)(FrustumCulling,  "if (visible)"                                                                                   );
         (*s)(FrustumCulling,  "{"                                                                                              );
-        (*s)(FrustumCulling,  "float4 centerRadius = mul(m.CenterRadius, world);"                                              );
+        (*s)(FrustumCulling,  "float4 centerRadius = m.CenterRadius * world;"                                                  );
         (*s)(FrustumCulling,  "float r = -m.CenterRadius.w;"                                                                   );
         (*s)(FrustumCulling,  "float d0 = dot(uniBuffer[uniIndex + 0].xyz, centerRadius.xyz - uniBuffer[uniIndex + 1].xyz);"   );
         (*s)(FrustumCulling,  "float d1 = dot(uniBuffer[uniIndex + 2].xyz, centerRadius.xyz - uniBuffer[uniIndex + 3].xyz);"   );
@@ -911,9 +907,9 @@ void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVecto
 
         bool bump = GetTexture(BUMP) != nullptr;
 
-        (*s)((mesh || vert) && normal > 0, "float3 worldNormal = normalize(mul(float4(attrNormal, 1.0), world).xyz);"     );
-        (*s)((mesh || vert) && normal > 1, "float3 worldTangent = normalize(mul(float4(attrTangent, 1.0), world).xyz);"   );
-        (*s)((mesh || vert) && normal > 2, "float3 worldBinormal = normalize(mul(float4(attrBinormal, 1.0), world).xyz);" );
+        (*s)((mesh || vert) && normal > 0, "float3 worldNormal = normalize((world * float4(attrNormal, 1.0)).xyz);"     );
+        (*s)((mesh || vert) && normal > 1, "float3 worldTangent = normalize((world * float4(attrTangent, 1.0)).xyz);"   );
+        (*s)((mesh || vert) && normal > 2, "float3 worldBinormal = normalize((world * float4(attrBinormal, 1.0)).xyz);" );
 
         (*s)(true, "float3 cameraPosition = uniBuffer[uniIndex++].xyz;" );
         (*s)(true, "float3 lightDirection = uniBuffer[uniIndex++].xyz;" );
@@ -925,8 +921,8 @@ void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVecto
         (*s)(true, "float specularHighlight = uniBuffer[uniIndex++].w;" );
 
         (*s)(true,             "float3 L = lightDirection;"                                    );
-        (*s)(mesh || vert,     "float3 N = worldNormal;"                                       );
-        (*s)(frag,             "float3 N = varyWorldNormal;"                                   );
+        (*s)(mesh || vert,     "float3 N = normalize(worldNormal);"                            );
+        (*s)(frag,             "float3 N = normalize(varyWorldNormal);"                        );
         (*s)(frag && Specular, "float3 V = normalize(cameraPosition - varyWorldPosition);"     );
         (*s)(frag && Specular, "float3 H = normalize(V + L);"                                  );
         (*s)(frag && bump,     "N.z = dot(varyWorldNormal, bump.xyz);"                         );
@@ -969,9 +965,10 @@ void Material::UpdateSkinningConstant(xxDrawData const& data, int& size, xxVecto
         (*s)(true, "world += float4x4(uniBuffer[boneIndices.y], uniBuffer[boneIndices.y + 1], uniBuffer[boneIndices.y + 2], zero4) * boneWeight.y;" );
         (*s)(true, "world += float4x4(uniBuffer[boneIndices.z], uniBuffer[boneIndices.z + 1], uniBuffer[boneIndices.z + 2], zero4) * boneWeight.z;" );
         (*s)(true, "world += float4x4(uniBuffer[boneIndices.w], uniBuffer[boneIndices.w + 1], uniBuffer[boneIndices.w + 2], zero4) * boneWeight.w;" );
-        (*s)(true, "world = transpose(world);"                                                                                                      );
         (*s)(true, "world[3][3] = 1.0;"                                                                                                             );
         (*s)(true, "uniIndex += 75 * 3;"                                                                                                            );
+
+        (*s).GHM(true, "world = transpose(world);", "", "world = transpose(world);" );
     }
 }
 //------------------------------------------------------------------------------
@@ -979,8 +976,8 @@ void Material::UpdateTransformConstant(xxDrawData const& data, int& size, xxVect
 {
     if (s)
     {
-        (*s)(true, "float4 worldPosition = mul(float4(attrPosition, 1.0), world);"      );
-        (*s)(true, "float4 screenPosition = mul(mul(worldPosition, view), projection);" );
+        (*s)(true, "float4 worldPosition = float4(attrPosition, 1.0) * world;"  );
+        (*s)(true, "float4 screenPosition = worldPosition * view * projection;" );
     }
 }
 //------------------------------------------------------------------------------
@@ -1015,6 +1012,10 @@ void Material::UpdateWorldViewProjectionConstant(xxDrawData const& data, int& si
         (*s)(true, "float4x4 view = float4x4(uniBuffer[uniIndex + 4], uniBuffer[uniIndex + 5], uniBuffer[uniIndex + 6], uniBuffer[uniIndex + 7]);"         );
         (*s)(true, "float4x4 projection = float4x4(uniBuffer[uniIndex + 8], uniBuffer[uniIndex + 9], uniBuffer[uniIndex + 10], uniBuffer[uniIndex + 11]);" );
         (*s)(true, "uniIndex += 12;"                                                                                                                       );
+
+        (*s).GHM(true, "world = transpose(world);",           "", "world = transpose(world);"           );
+        (*s).GHM(true, "view = transpose(view);",             "", "view = transpose(view);"             );
+        (*s).GHM(true, "projection = transpose(projection);", "", "projection = transpose(projection);" );
     }
 }
 //------------------------------------------------------------------------------

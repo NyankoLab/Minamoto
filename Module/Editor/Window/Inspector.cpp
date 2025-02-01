@@ -147,7 +147,7 @@ void Inspector::UpdateNode(const UpdateData& updateData, xxNodePtr const& node)
                 if (hovered < node->Bones.size())
                 {
                     auto& data = node->Bones[hovered];
-                    if (data.bone.expired() == false)
+                    if (data.bone.use_count())
                     {
                         auto const& bone = (xxNodePtr&)data.bone;
                         if (ImGui::BeginTooltip())

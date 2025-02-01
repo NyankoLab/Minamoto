@@ -247,10 +247,10 @@ void ValidateNode(float time, char* text, size_t count)
     {
         step += snprintf(text + step, count - step, "Matrix Multiply (%u) : %f %f %f %f\n", i, c.v[i].x, c.v[i].y, c.v[i].z, c.v[i].w);
     }
-    c.v[0].v = __builtin_multiplyvector(&a.v->v, b.v[0].v);
-    c.v[1].v = __builtin_multiplyvector(&a.v->v, b.v[1].v);
-    c.v[2].v = __builtin_multiplyvector(&a.v->v, b.v[2].v);
-    c.v[3].v = __builtin_multiplyvector(&a.v->v, b.v[3].v);
+    c.v[0].v = __builtin_vectormultiply(b.v[0].v, &a.v->v);
+    c.v[1].v = __builtin_vectormultiply(b.v[1].v, &a.v->v);
+    c.v[2].v = __builtin_vectormultiply(b.v[2].v, &a.v->v);
+    c.v[3].v = __builtin_vectormultiply(b.v[3].v, &a.v->v);
     for (int i = 0; i < 4; ++i)
     {
         step += snprintf(text + step, count - step, "Matrix Multiply (%u) : %f %f %f %f\n", i, c.v[i].x, c.v[i].y, c.v[i].z, c.v[i].w);

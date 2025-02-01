@@ -35,4 +35,5 @@ struct MeshTools
     static xxMeshPtr IndexingMesh(xxMeshPtr const& mesh);
     static xxMeshPtr NormalizeMesh(xxMeshPtr const& mesh, bool tangent);
     static xxMeshPtr OptimizeMesh(xxMeshPtr const& mesh);
+    static xxMeshPtr ResetMesh(xxMeshPtr const& mesh, xxVector3& origin);
 };
