@@ -10,6 +10,7 @@
 #include "Graphic/Binding.h"
 #include "Graphic/Buffer.h"
 #include "Graphic/Material.h"
+#include "Graphic/Mesh.h"
 #include "Graphic/Pipeline.h"
 #include "Graphic/RenderPass.h"
 #include "Graphic/Sampler.h"
@@ -28,13 +29,10 @@ static bool initialized = false;
 //------------------------------------------------------------------------------
 void Runtime::Initialize()
 {
-    if (initialized)
-        return;
-    initialized = true;
-
     Binding::Initialize();
     Buffer::Initialize();
     Material::Initialize();
+    Mesh::Initialize();
     Modifier::Initialize();
     Pipeline::Initialize();
     RenderPass::Initialize();
@@ -42,6 +40,10 @@ void Runtime::Initialize()
     Sampler::Initialize();
     Texture::Initialize();
     VertexAttribute::Initialize();
+
+    if (initialized)
+        return;
+    initialized = true;
 
     Lua::Initialize();
     QuickJS::Initialize();
@@ -65,10 +67,6 @@ void Runtime::Update()
 //------------------------------------------------------------------------------
 void Runtime::Shutdown(bool suspend)
 {
-    if (initialized == false)
-        return;
-    initialized = suspend;
-
     VertexAttribute::Shutdown();
     Texture::Shutdown();
     Sampler::Shutdown();
@@ -76,9 +74,14 @@ void Runtime::Shutdown(bool suspend)
     RenderPass::Shutdown();
     Pipeline::Shutdown();
     Modifier::Shutdown();
-    Material::Initialize();
+    Mesh::Shutdown();
+    Material::Shutdown();
     Buffer::Shutdown();
     Binding::Shutdown();
+
+    if (initialized == false)
+        return;
+    initialized = suspend;
 
     if (suspend == false)
     {

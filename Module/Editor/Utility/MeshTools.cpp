@@ -5,7 +5,8 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
-#include <xxGraphicPlus/xxMesh.h>
+#include <xxGraphicPlus/xxNode.h>
+#include <Runtime/Graphic/Mesh.h>
 #include <meshoptimizer/src/meshoptimizer.h>
 #include "MeshTools.h"
 
@@ -73,7 +74,7 @@ MeshTools::MeshData MeshTools::CreateMeshDataFromMesh(xxMeshPtr const& mesh)
     xxStrideIterator<xxVector3> inputPositions = mesh->GetPosition();
     xxStrideIterator<xxVector3> inputBoneWeight = mesh->GetBoneWeight();
     xxStrideIterator<uint32_t> inputBoneIndices = mesh->GetBoneIndices();
-    xxStrideIterator<xxVector3> inputNormals[8] =
+    xxStrideIterator<uint32_t> inputNormals[8] =
     {
         mesh->GetNormal(0), mesh->GetNormal(1), mesh->GetNormal(2), mesh->GetNormal(3),
         mesh->GetNormal(4), mesh->GetNormal(5), mesh->GetNormal(6), mesh->GetNormal(7),
@@ -130,7 +131,7 @@ xxMeshPtr MeshTools::CreateMeshFromMeshData(MeshData const& data)
     xxStrideIterator<xxVector3> outputPositions = output->GetPosition();
     xxStrideIterator<xxVector3> outputBoneWeight = output->GetBoneWeight();
     xxStrideIterator<uint32_t> outputBoneIndices = output->GetBoneIndices();
-    xxStrideIterator<xxVector3> outputNormals[8] =
+    xxStrideIterator<uint32_t> outputNormals[8] =
     {
         output->GetNormal(0), output->GetNormal(1), output->GetNormal(2), output->GetNormal(3),
         output->GetNormal(4), output->GetNormal(5), output->GetNormal(6), output->GetNormal(7),
@@ -199,7 +200,7 @@ xxMeshPtr MeshTools::CreateMesh(std::vector<xxVector3> const& vertices, std::vec
         auto source = normals.begin();
         for (auto& normal : mesh->GetNormal(0))
         {
-            normal = (*source++);
+            normal = Mesh::NormalEncode(*source++);
         }
     }
 
@@ -429,7 +430,9 @@ xxMeshPtr MeshTools::NormalizeMesh(xxMeshPtr const& mesh, bool tangent)
         }
         else
         {
-            n = data.normals[i0] + data.normals[i1] + data.normals[i2];
+            n = Mesh::NormalDecode(data.normals[i0]);
+            n += Mesh::NormalDecode(data.normals[i1]);
+            n += Mesh::NormalDecode(data.normals[i2]);
         }
 
         if (data.normalCount == 3 && data.textureCount)
@@ -448,9 +451,9 @@ xxMeshPtr MeshTools::NormalizeMesh(xxMeshPtr const& mesh, bool tangent)
         }
         else if (mesh->NormalCount == 1)
         {
-            normals[data.normalCount * i0 + 0] = data.normals[i0];
-            normals[data.normalCount * i1 + 0] = data.normals[i1];
-            normals[data.normalCount * i2 + 0] = data.normals[i2];
+            normals[data.normalCount * i0 + 0] = Mesh::NormalDecode(data.normals[i0]);
+            normals[data.normalCount * i1 + 0] = Mesh::NormalDecode(data.normals[i1]);
+            normals[data.normalCount * i2 + 0] = Mesh::NormalDecode(data.normals[i2]);
         }
         if (data.normalCount == 3)
         {
@@ -462,14 +465,14 @@ xxMeshPtr MeshTools::NormalizeMesh(xxMeshPtr const& mesh, bool tangent)
             normals[data.normalCount * i2 + 2] += b;
         }
     }
+    data.normals.clear();
     for (xxVector3& n : normals)
     {
         float l = n.Length();
-        if (l == 0.0f)
-            continue;
-        n /= l;
+        if (l != 0.0f)
+            n /= l;
+        data.normals.push_back(Mesh::NormalEncode(n));
     }
-    data.normals.swap(normals);
 
     xxMeshPtr output = CreateMeshFromMeshData(data);
     output->Name = mesh->Name;
@@ -563,5 +566,73 @@ xxMeshPtr MeshTools::ResetMesh(xxMeshPtr const& mesh, xxVector3& origin)
     }
 
     return output;
+}
+//------------------------------------------------------------------------------
+void MeshTools::UnifyMesh(xxNodePtr const& node, float threshold)
+{
+    std::vector<xxMeshPtr> meshes;
+    xxNode::Traversal(node, [&](xxNodePtr const& node)
+    {
+        if (node->Mesh == nullptr)
+            return true;
+
+        float begin = xxGetCurrentTime();
+
+        auto left = node->Mesh->GetPosition();
+        int vertexCount = node->Mesh->VertexCount;
+        for (xxMeshPtr const& mesh : meshes)
+        {
+            if (node->Mesh == mesh)
+                break;
+            if (vertexCount != mesh->VertexCount)
+                continue;
+            auto right = mesh->GetPosition();
+            for (int i = 0; i < 4; ++i)
+            {
+                left = left.begin();
+                right = right.begin();
+                bool equal = true;
+                for (int x = 0; x < vertexCount; ++x)
+                {
+                    xxVector3 a = *left++;
+                    xxVector3 b = *right++;
+                    switch (i)
+                    {
+                    case 0: a = { a.x, a.y, a.z };   break;
+                    case 1: a = { -a.y, a.x, a.z };  break;
+                    case 2: a = { -a.x, -a.y, a.z }; break;
+                    case 3: a = { a.y, -a.x, a.z };  break;
+                    }
+                    if (std::fabsf(a.x - b.x) > threshold ||
+                        std::fabsf(a.y - b.y) > threshold ||
+                        std::fabsf(a.z - b.z) > threshold)
+                    {
+                        equal = false;
+                        break;
+                    }
+                }
+                if (equal == false)
+                    continue;
+
+                float time = xxGetCurrentTime() - begin;
+
+                xxLog(TAG, "UnifyMesh : %s == %s (%.0fus)", node->Mesh->Name.c_str(), mesh->Name.c_str(), time * 1000000);
+
+                node->Mesh = mesh;
+
+                static xxMatrix4 const rotateMatrix[4] =
+                {
+                    { xxVector4::X, xxVector4::Y, xxVector4::Z, xxVector4::W },
+                    { -xxVector4::Y, xxVector4::X, xxVector4::Z, xxVector4::W },
+                    { -xxVector4::X, -xxVector4::Y, xxVector4::Z, xxVector4::W },
+                    { xxVector4::Y, -xxVector4::X, xxVector4::Z, xxVector4::W },
+                };
+                node->LocalMatrix = node->LocalMatrix * rotateMatrix[i];
+                break;
+            }
+        }
+        meshes.push_back(node->Mesh);
+        return true;
+    });
 }
 //==============================================================================

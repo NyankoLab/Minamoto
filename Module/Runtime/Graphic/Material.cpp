@@ -456,6 +456,10 @@ void Material::ShaderDefault(xxDrawData const& data, struct MaterialSelector& s)
         s.Define("int3", "ivec3");
         s.Define("int4", "ivec4");
     }
+    if (s.language == 'GLSL' || s.language == 'MSL1' || s.language == 'MSL2')
+    {
+        s.Define("mul(a, b)", "(a * b)");
+    }
 }
 //------------------------------------------------------------------------------
 void Material::ShaderAttribute(xxDrawData const& data, struct MaterialSelector& s) const
@@ -475,9 +479,9 @@ void Material::ShaderAttribute(xxDrawData const& data, struct MaterialSelector& 
         s(true,        "float Position[3];"   );
         s(skinning,    "float BoneWeight[3];" );
         s(skinning,    "uint BoneIndices[4];" );
-        s(normal > 0,  "float Normal[3];"     );
-        s(normal > 1,  "float Tangent[3];"    );
-        s(normal > 2,  "float Binormal[3];"   );
+        s(normal > 0,  "int Normal;"          );
+        s(normal > 1,  "int Tangent;"         );
+        s(normal > 2,  "int Binormal;"        );
         s(color > 0,   "float Color[4];"      );
         s(texture > 0, "float UV0[2];"        );
         s(true,        "};"                   );
@@ -490,9 +494,9 @@ void Material::ShaderAttribute(xxDrawData const& data, struct MaterialSelector& 
         s.GHM(true,        "attribute vec3 attrPosition;",    "float3 Position : POSITION;",       "float3 Position [[attribute(__COUNTER__)]];"   );
         s.GHM(skinning,    "attribute vec3 attrBoneWeight;",  "float3 BoneWeight : BLENDWEIGHT;",  "float3 BoneWeight [[attribute(__COUNTER__)]];" );
         s.GHM(skinning,    "attribute vec4 attrBoneIndices;", "uint4 BoneIndices : BLENDINDICES;", "uint4 BoneIndices [[attribute(__COUNTER__)]];" );
-        s.GHM(normal > 0,  "attribute vec3 attrNormal;",      "float3 Normal : NORMAL;",           "float3 Normal [[attribute(__COUNTER__)]];"     );
-        s.GHM(normal > 1,  "attribute vec3 attrTangent;",     "float3 Tangent : TANGENT;",         "float3 Tangent [[attribute(__COUNTER__)]];"    );
-        s.GHM(normal > 2,  "attribute vec3 attrBinormal;",    "float3 Binormal : BINORMAL;",       "float3 Binormal [[attribute(__COUNTER__)]];"   );
+        s.GHM(normal > 0,  "attribute vec4 attrNormal;",      "float4 Normal : NORMAL;",           "float4 Normal [[attribute(__COUNTER__)]];"     );
+        s.GHM(normal > 1,  "attribute vec4 attrTangent;",     "float4 Tangent : TANGENT;",         "float4 Tangent [[attribute(__COUNTER__)]];"    );
+        s.GHM(normal > 2,  "attribute vec4 attrBinormal;",    "float4 Binormal : BINORMAL;",       "float4 Binormal [[attribute(__COUNTER__)]];"   );
         s.GHM(color > 0,   "attribute vec4 attrColor;",       "float4 Color : COLOR;",             "float4 Color [[attribute(__COUNTER__)]];"      );
         s.GHM(texture > 0, "attribute vec2 attrUV0;",         "float2 UV0 : TEXCOORD;",            "float2 UV0 [[attribute(__COUNTER__)]];"        );
         s.GHM(true,        "",                                "};",                                "};"                                            );
@@ -559,7 +563,7 @@ void Material::ShaderVarying(xxDrawData const& data, struct MaterialSelector& s)
     //                       GLSL                               HLSL                                 MSL
     s.GHM(true,              "",                                "struct Varying",                    "struct Varying"                );
     s.GHM(true,              "",                                "{",                                 "{"                             );
-    s.GHM(true,              "",                                "float4 Position : SV_POSITION",     "float4 Position [[position]];" );
+    s.GHM(true,              "",                                "float4 Position : SV_POSITION;",    "float4 Position [[position]];" );
     s.GHM(color || Lighting, "varying vec4 varyColor;",         "float4 Color : COLOR;",             "float4 Color;"                 );
     s.GHM(texture > 0,       "varying vec2 varyUV0;",           "float2 UV0 : TEXCOORD0;",           "float2 UV0;"                   );
     s.GHM(Specular,          "varying vec3 varyWorldPosition;", "float3 WorldPosition : TEXCOORD4;", "float3 WorldPosition;"         );
@@ -624,10 +628,13 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
     s(skinning,    "uint4 attrBoneIndices = uint4(attr.BoneIndices[0], attr.BoneIndices[1], attr.BoneIndices[2], attr.BoneIndices[3]);" );
     s(color,       "float4 attrColor = float4(attr.Color[0], attr.Color[1], attr.Color[2], attr.Color[3]);"                             );
     s(texture > 0, "float2 attrUV0 = float2(attr.UV0[0], attr.UV0[1]);"                                                                 );
-    s(normal > 0,  "float3 attrNormal = float3(attr.Normal[0], attr.Normal[1], attr.Normal[2]);"                                        );
-    s(normal > 1,  "float3 attrTangent = float3(attr.Tangent[0], attr.Tangent[1], attr.Tangent[2]);"                                    );
-    s(normal > 2,  "float3 attrBinormal = float3(attr.Binormal[0], attr.Binormal[1], attr.Binormal[2]);"                                );
+    s(normal > 0,  "float3 attrNormal = float3(attr.Normal & 0xFF, (attr.Normal >> 8) & 0xFF, (attr.Normal >> 16) & 0xFF);"             );
+    s(normal > 1,  "float3 attrTangent = float3(attr.Tangent & 0xFF, (attr.Tangent >> 8) & 0xFF, (attr.Tangent >> 16) & 0xFF);"         );
+    s(normal > 2,  "float3 attrBinormal = float3(attr.Binormal & 0xFF, (attr.Binormal >> 8) & 0xFF, (attr.Binormal >> 16) & 0xFF);"     );
     s(true,        "float4 color = float4(1.0, 1.0, 1.0, 1.0);"                                                                         );
+    s(normal > 0,  "float3 normal = attrNormal / 127.5 - 1.0;"                                                                          );
+    s(normal > 1,  "float3 tangent = attrTangent / 127.5 - 1.0;"                                                                        );
+    s(normal > 2,  "float3 binormal = attrBinormal / 127.5 - 1.0;"                                                                      );
     s(color,       "color = attrColor;"                                                                                                 );
 
     UpdateTransformConstant(data, size, nullptr, &s);
@@ -656,28 +663,33 @@ void Material::ShaderVertex(xxDrawData const& data, struct MaterialSelector& s) 
     int texture = mesh->TextureCount;
     int size = 0;
 
-    //          GLSL                       HLSL                           MSL
-    s.GHM(true, "",                        "",                            "vertex"                              );
-    s.GHM(true, "void main()",             "Varying Main",                "Varying Main"                        );
-    s.GHM(true, "",                        "(",                           "("                                   );
-    s.GHM(true, "",                        "Attribute attr",              "Attribute attr [[stage_in]],"        );
-    s.GHM(true, "",                        "",                            "constant Uniform& uni [[buffer(0)]]" );
-    s.GHM(true, "",                        ")",                           ")"                                   );
-    s.GHM(true, "{",                       "{",                           "{"                                   );
-    s.GHM(true, "",                        "",                            "auto uniBuffer = uni.Buffer;"        );
-    s.GHM(true, "int uniIndex = 0;",       "int uniIndex = 0;",           "int uniIndex = 0;"                   );
-    s.GHM(true, "vec4 color = vec4(1.0);", "float4 color = float4(1.0);", "float4 color = 1.0;"                 );
+    //          GLSL           HLSL              MSL
+    s.GHM(true, "",            "",               "vertex"                              );
+    s.GHM(true, "void main()", "Varying Main",   "Varying Main"                        );
+    s.GHM(true, "",            "(",              "("                                   );
+    s.GHM(true, "",            "Attribute attr", "Attribute attr [[stage_in]],"        );
+    s.GHM(true, "",            "",               "constant Uniform& uni [[buffer(0)]]" );
+    s.GHM(true, "",            ")",              ")"                                   );
+    s.GHM(true, "{",           "{",              "{"                                   );
+    s.GHM(true, "",            "",               "auto uniBuffer = uni.Buffer;"        );
 
-    //                GLSL                  HLSL / MSL
-    s.GH(true,        "",                   "float3 attrPosition = attr.Position;"      );
-    s.GH(skinning,    "",                   "float3 attrBoneWeight = attr.BoneWeight;"  );
-    s.GH(skinning,    "",                   "uint4 attrBoneIndices = attr.BoneIndices;" );
-    s.GH(color,       "",                   "float4 attrColor = attr.Color;"            );
-    s.GH(texture > 0, "",                   "float2 attrUV0 = attr.UV0;"                );
-    s.GH(normal > 0,  "",                   "float3 attrNormal = attr.Normal;"          );
-    s.GH(normal > 1,  "",                   "float3 attrTangent = attr.Tangent;"        );
-    s.GH(normal > 2,  "",                   "float3 attrBinormal = attr.Binormal;"      );
-    s.GH(color,       "color = attrColor;", "color = attrColor;"                        );
+    //                GLSL                       HLSL / MSL
+    s.GH(true,        "int uniIndex = 0;",       "int uniIndex = 0;"                         );
+    s.GH(true,        "vec4 color = vec4(1.0);", "float4 color = 1.0;"                       );
+    s.GH(true,        "",                        "float3 attrPosition = attr.Position;"      );
+    s.GH(skinning,    "",                        "float3 attrBoneWeight = attr.BoneWeight;"  );
+    s.GH(skinning,    "",                        "uint4 attrBoneIndices = attr.BoneIndices;" );
+    s.GH(color,       "",                        "float4 attrColor = attr.Color;"            );
+    s.GH(texture > 0, "",                        "float2 attrUV0 = attr.UV0;"                );
+    s.GH(normal > 0,  "",                        "float4 attrNormal = attr.Normal;"          );
+    s.GH(normal > 1,  "",                        "float4 attrTangent = attr.Tangent;"        );
+    s.GH(normal > 2,  "",                        "float4 attrBinormal = attr.Binormal;"      );
+
+    //            GLSL / HLSL / MSL
+    s(normal > 0, "float3 normal = attrNormal.xyz / 127.5 - 1.0;"     );
+    s(normal > 1, "float3 tangent = attrTangent.xyz / 127.5 - 1.0;"   );
+    s(normal > 2, "float3 binormal = attrBinormal.xyz / 127.5 - 1.0;" );
+    s(color,      "color = attrColor;"                                );
 
     UpdateWorldViewProjectionConstant(data, size, nullptr, &s);
     UpdateSkinningConstant(data, size, nullptr, &s);
@@ -709,30 +721,30 @@ void Material::ShaderFragment(xxDrawData const& data, struct MaterialSelector& s
     bool base = texture && GetTexture(BASE) != nullptr;
     bool bump = texture && GetTexture(BUMP) != nullptr;
 
-    //          GLSL                       HLSL                           MSL
-    s.GHM(true, "",                        "",                            "fragment"                             );
-    s.GHM(true, "void main()",             "float4 Main",                 "float4 Main"                          );
-    s.GHM(true, "",                        "(",                           "("                                    );
-    s.GHM(true, "",                        "Varying vary",                "Varying vary [[stage_in]],"           );
-    s.GHM(true, "",                        "",                            "constant Uniform& uni [[buffer(0)]]," );
-    s.GHM(true, "",                        "",                            "Sampler sam"                          );
-    s.GHM(true, "",                        ") : COLOR0",                  ")"                                    );
-    s.GHM(true, "{",                       "{",                           "{"                                    );
-    s.GHM(true, "",                        "",                            "#if SHADER_UNIFORM"                   );
-    s.GHM(true, "",                        "",                            "auto uniBuffer = uni.Buffer;"         );
-    s.GHM(true, "",                        "",                            "#endif"                               );
-    s.GHM(true, "int uniIndex = 0;",       "int uniIndex = 0;",           "int uniIndex = 0;"                    );
-    s.GHM(true, "vec4 color = vec4(1.0);", "float4 color = float4(1.0);", "float4 color = 1.0;"                  );
-    s.GHM(bump, "vec4 bump = vec4(0.0);",  "float4 bump = float4(0.0);",  "float4 bump = 0.0;"                   );
+    //          GLSL           HLSL            MSL
+    s.GHM(true, "",            "",             "fragment"                             );
+    s.GHM(true, "void main()", "float4 Main",  "float4 Main"                          );
+    s.GHM(true, "",            "(",            "("                                    );
+    s.GHM(true, "",            "Varying vary", "Varying vary [[stage_in]],"           );
+    s.GHM(true, "",            "",             "constant Uniform& uni [[buffer(0)]]," );
+    s.GHM(true, "",            "",             "Sampler sam"                          );
+    s.GHM(true, "",            ") : COLOR0",   ")"                                    );
+    s.GHM(true, "{",           "{",            "{"                                    );
+    s.GHM(true, "",            "",             "#if SHADER_UNIFORM"                   );
+    s.GHM(true, "",            "",             "auto uniBuffer = uni.Buffer;"         );
+    s.GHM(true, "",            "",             "#endif"                               );
 
-    //                           GLSL                  HLSL / MSL
-    s.GH(Lighting || color,      "",                   "float4 varyColor = vary.Color;"                 );
-    s.GH(texture > 0,            "",                   "float2 varyUV0 = vary.UV0;"                     );
-    s.GH(Lighting && Specular,   "",                   "float3 varyWorldPosition = vary.WorldPosition;" );
-    s.GH(Lighting && normal > 0, "",                   "float3 varyWorldNormal = vary.WorldNormal;"     );
-    s.GH(Lighting && normal > 1, "",                   "float3 varyWorldTangent = vary.WorldTangent;"   );
-    s.GH(Lighting && normal > 2, "",                   "float3 varyWorldBinormal = vary.WorldBinormal;" );
-    s.GH(Lighting || color,      "color = varyColor;", "color = varyColor;"                             );
+    //                           GLSL                       HLSL / MSL
+    s.GH(true,                   "int uniIndex = 0;",       "int uniIndex = 0;"                              );
+    s.GH(true,                   "vec4 color = vec4(1.0);", "float4 color = 1.0;"                            );
+    s.GH(bump,                   "vec4 bump = vec4(0.0);",  "float4 bump = 0.0;"                             );
+    s.GH(Lighting || color,      "",                        "float4 varyColor = vary.Color;"                 );
+    s.GH(texture > 0,            "",                        "float2 varyUV0 = vary.UV0;"                     );
+    s.GH(Lighting && Specular,   "",                        "float3 varyWorldPosition = vary.WorldPosition;" );
+    s.GH(Lighting && normal > 0, "",                        "float3 varyWorldNormal = vary.WorldNormal;"     );
+    s.GH(Lighting && normal > 1, "",                        "float3 varyWorldTangent = vary.WorldTangent;"   );
+    s.GH(Lighting && normal > 2, "",                        "float3 varyWorldBinormal = vary.WorldBinormal;" );
+    s.GH(Lighting || color,      "color = varyColor;",      "color = varyColor;"                             );
 
     //           GLSL HLSL MSL                                    MSL Argument
     s.GHMM(base, "",  "",  "auto Base = sam.Base;",               "auto Base = uni.Base;"               );
@@ -907,9 +919,9 @@ void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVecto
 
         bool bump = GetTexture(BUMP) != nullptr;
 
-        (*s)((mesh || vert) && normal > 0, "float3 worldNormal = normalize((world * float4(attrNormal, 1.0)).xyz);"     );
-        (*s)((mesh || vert) && normal > 1, "float3 worldTangent = normalize((world * float4(attrTangent, 1.0)).xyz);"   );
-        (*s)((mesh || vert) && normal > 2, "float3 worldBinormal = normalize((world * float4(attrBinormal, 1.0)).xyz);" );
+        (*s)((mesh || vert) && normal > 0, "float3 worldNormal = normalize(mul(float4(normal, 0.0), world).xyz);"     );
+        (*s)((mesh || vert) && normal > 1, "float3 worldTangent = normalize(mul(float4(tangent, 0.0), world).xyz);"   );
+        (*s)((mesh || vert) && normal > 2, "float3 worldBinormal = normalize(mul(float4(binormal, 0.0), world).xyz);" );
 
         (*s)(true, "float3 cameraPosition = uniBuffer[uniIndex++].xyz;" );
         (*s)(true, "float3 lightDirection = uniBuffer[uniIndex++].xyz;" );
@@ -921,8 +933,8 @@ void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVecto
         (*s)(true, "float specularHighlight = uniBuffer[uniIndex++].w;" );
 
         (*s)(true,             "float3 L = lightDirection;"                                    );
-        (*s)(mesh || vert,     "float3 N = normalize(worldNormal);"                            );
-        (*s)(frag,             "float3 N = normalize(varyWorldNormal);"                        );
+        (*s)(mesh || vert,     "float3 N = worldNormal;"                                       );
+        (*s)(frag,             "float3 N = varyWorldNormal;"                                   );
         (*s)(frag && Specular, "float3 V = normalize(cameraPosition - varyWorldPosition);"     );
         (*s)(frag && Specular, "float3 H = normalize(V + L);"                                  );
         (*s)(frag && bump,     "N.z = dot(varyWorldNormal, bump.xyz);"                         );
@@ -968,7 +980,7 @@ void Material::UpdateSkinningConstant(xxDrawData const& data, int& size, xxVecto
         (*s)(true, "world[3][3] = 1.0;"                                                                                                             );
         (*s)(true, "uniIndex += 75 * 3;"                                                                                                            );
 
-        (*s).GHM(true, "world = transpose(world);", "", "world = transpose(world);" );
+        (*s).GHM(true, "", "world = transpose(world);", "");
     }
 }
 //------------------------------------------------------------------------------
@@ -976,8 +988,8 @@ void Material::UpdateTransformConstant(xxDrawData const& data, int& size, xxVect
 {
     if (s)
     {
-        (*s)(true, "float4 worldPosition = float4(attrPosition, 1.0) * world;"  );
-        (*s)(true, "float4 screenPosition = worldPosition * view * projection;" );
+        (*s)(true, "float4 worldPosition = mul(float4(attrPosition, 1.0), world);"      );
+        (*s)(true, "float4 screenPosition = mul(mul(worldPosition, view), projection);" );
     }
 }
 //------------------------------------------------------------------------------
@@ -1042,5 +1054,13 @@ void Material::Shutdown()
     if (backupBinaryCreate == nullptr)
         return;
     xxMaterial::BinaryCreate = backupBinaryCreate;
+    backupBinaryCreate = nullptr;
 }
+//------------------------------------------------------------------------------
+#if defined(__clang__)
+char const xxMaterial::DefaultShader[] = "";
+#else
+extern char const xxMaterialDefaultShader[] = "";
+#pragma comment(linker, "/alternatename:?DefaultShader@xxMaterial@@2QBDB=?xxMaterialDefaultShader@@3QBDB")
+#endif
 //==============================================================================

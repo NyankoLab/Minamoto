@@ -66,7 +66,7 @@ void Folder::Window(Node& node, std::function<void(std::string const& root, std:
                     name.replace(0, sizeof(ICON_FA_FOLDER_OPEN) - 1, ICON_FA_FOLDER_OPEN);
 
                     directory.clear();
-                    Finder(Root + SubFolder(name), directory);
+                    Finder(Root + '/' + SubFolder(name), directory);
                 }
             }
         }

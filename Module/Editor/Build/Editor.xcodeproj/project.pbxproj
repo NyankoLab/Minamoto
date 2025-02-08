@@ -178,10 +178,11 @@
 		F53DE73A2D3FAF0C0083B457 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F53DE7382D3FAE590083B457 /* Event.cpp */; };
 		F53DE73B2D3FAF0C0083B457 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F53DE7382D3FAE590083B457 /* Event.cpp */; };
 		F53DE73C2D3FAF0C0083B457 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F53DE7382D3FAE590083B457 /* Event.cpp */; };
-		F53DE73F2D3FBD820083B457 /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F53DE73E2D3FBD800083B457 /* ImportEvent.cpp */; };
-		F53DE7402D3FBD820083B457 /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F53DE73E2D3FBD800083B457 /* ImportEvent.cpp */; };
-		F53DE7412D3FBD820083B457 /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F53DE73E2D3FBD800083B457 /* ImportEvent.cpp */; };
-		F53DE7422D3FBD820083B457 /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F53DE73E2D3FBD800083B457 /* ImportEvent.cpp */; };
+		F57864932D51B3D900EF5BCC /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57864922D51B3D900EF5BCC /* ImportEvent.cpp */; };
+		F57864942D51B3D900EF5BCC /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57864922D51B3D900EF5BCC /* ImportEvent.cpp */; };
+		F57864952D51B3D900EF5BCC /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57864922D51B3D900EF5BCC /* ImportEvent.cpp */; };
+		F57864962D51B3D900EF5BCC /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57864922D51B3D900EF5BCC /* ImportEvent.cpp */; };
+		F5E72CAA2D5651EB005A1A54 /* except.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E72CA92D5651EB005A1A54 /* except.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -343,8 +344,9 @@
 		F53DE7352D3DFD450083B457 /* ImGuizmo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ImGuizmo.cpp; path = ../../../SDK/ImGuizmo/ImGuizmo.cpp; sourceTree = SOURCE_ROOT; };
 		F53DE7372D3FAD3C0083B457 /* Event.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		F53DE7382D3FAE590083B457 /* Event.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Event.cpp; sourceTree = "<group>"; };
-		F53DE73D2D3FBD630083B457 /* ImportEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImportEvent.h; path = ../Event/ImportEvent.h; sourceTree = "<group>"; };
-		F53DE73E2D3FBD800083B457 /* ImportEvent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ImportEvent.cpp; path = ../Event/ImportEvent.cpp; sourceTree = "<group>"; };
+		F57864912D51B3D900EF5BCC /* ImportEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImportEvent.h; sourceTree = "<group>"; };
+		F57864922D51B3D900EF5BCC /* ImportEvent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ImportEvent.cpp; sourceTree = "<group>"; };
+		F5E72CA92D5651EB005A1A54 /* except.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = except.cpp; path = "../../../SDK/ClangPlatform/windows-msvc/except.cpp"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -451,6 +453,7 @@
 				D6AA5DBC2BD7DB4400AE1C30 /* ClangPlatform.Darwin.xcconfig */,
 				D60EC62B26A85B260051A948 /* ClangPlatform.Windows.xcconfig */,
 				D62FEBEC2BE50FD2004E9FDF /* dllmain.cpp */,
+				F5E72CA92D5651EB005A1A54 /* except.cpp */,
 				D6169D152BB17FE200E5490C /* new.cpp */,
 				D6169D1B2BB1802100E5490C /* tls.cpp */,
 				D6169D192BB1801100E5490C /* ucrt.cpp */,
@@ -493,8 +496,8 @@
 				D666E2E42BE1EB7C00EFA1F2 /* ufbx */,
 				D63370812B3958F3001D4057 /* Import.cpp */,
 				D63370802B3958F3001D4057 /* Import.h */,
-				F53DE73E2D3FBD800083B457 /* ImportEvent.cpp */,
-				F53DE73D2D3FBD630083B457 /* ImportEvent.h */,
+				F57864922D51B3D900EF5BCC /* ImportEvent.cpp */,
+				F57864912D51B3D900EF5BCC /* ImportEvent.h */,
 				D6530A002BB70A270006AD64 /* ImportFBX.cpp */,
 				D6530A012BB70A270006AD64 /* ImportFBX.h */,
 				D68CAE162D16706800ACE81B /* ImportPLY.cpp */,
@@ -819,7 +822,7 @@
 				D62CAC9B2C4F5ABC0035DBE9 /* ShaderAssemblerNV10.cpp in Sources */,
 				D666E3CF2BE3BCEC00EFA1F2 /* LuaConsole.cpp in Sources */,
 				D633707C2B382156001D4057 /* Hierarchy.cpp in Sources */,
-				F53DE7412D3FBD820083B457 /* ImportEvent.cpp in Sources */,
+				F57864932D51B3D900EF5BCC /* ImportEvent.cpp in Sources */,
 				D6C74DD82C298AE40078F7D1 /* ShaderAssemblerR200.cpp in Sources */,
 				D60790F72BF33502008810BD /* TextureTools.cpp in Sources */,
 				D6D26FA42BDEAF5400D57772 /* Scene.cpp in Sources */,
@@ -851,13 +854,14 @@
 				D6C74DDB2C298AE40078F7D1 /* ShaderAssemblerR200.cpp in Sources */,
 				D6B4C85C2C1C9BB9006123EF /* ShaderAssemblerD3D8.cpp in Sources */,
 				D6D26FA72BDEAF5400D57772 /* Scene.cpp in Sources */,
-				F53DE73F2D3FBD820083B457 /* ImportEvent.cpp in Sources */,
+				F57864952D51B3D900EF5BCC /* ImportEvent.cpp in Sources */,
 				D6EFE15F2D1EF6CA00E77042 /* ImCurveEdit.cpp in Sources */,
 				D6EFE1602D1EF6CA00E77042 /* GraphEditor.cpp in Sources */,
 				D6EFE1612D1EF6CA00E77042 /* ImSequencer.cpp in Sources */,
 				D6EFE1632D1EF6CA00E77042 /* ImGradient.cpp in Sources */,
 				D6169D1A2BB1801100E5490C /* ucrt.cpp in Sources */,
 				D6169D162BB17FE200E5490C /* new.cpp in Sources */,
+				F5E72CAA2D5651EB005A1A54 /* except.cpp in Sources */,
 				D6169D1C2BB1802100E5490C /* tls.cpp in Sources */,
 				D62FEBED2BE50FD3004E9FDF /* dllmain.cpp in Sources */,
 				D6E6B55B2C01CB70003F6D85 /* Document.cpp in Sources */,
@@ -893,7 +897,7 @@
 				D60790FE2BF501DC008810BD /* Console.cpp in Sources */,
 				D60790F82BF33502008810BD /* TextureTools.cpp in Sources */,
 				D6B4C85A2C1C9BB9006123EF /* ShaderAssemblerD3D8.cpp in Sources */,
-				F53DE7402D3FBD820083B457 /* ImportEvent.cpp in Sources */,
+				F57864962D51B3D900EF5BCC /* ImportEvent.cpp in Sources */,
 				D63370792B382156001D4057 /* Log.cpp in Sources */,
 				D6D26FA52BDEAF5400D57772 /* Scene.cpp in Sources */,
 				D6E6B5692C0234EE003F6D85 /* quickjs-io.c in Sources */,
@@ -938,7 +942,7 @@
 				D60790FF2BF501DC008810BD /* Console.cpp in Sources */,
 				D60790F92BF33502008810BD /* TextureTools.cpp in Sources */,
 				D6B4C85B2C1C9BB9006123EF /* ShaderAssemblerD3D8.cpp in Sources */,
-				F53DE7422D3FBD820083B457 /* ImportEvent.cpp in Sources */,
+				F57864942D51B3D900EF5BCC /* ImportEvent.cpp in Sources */,
 				D633707A2B382156001D4057 /* Log.cpp in Sources */,
 				D6D26FA62BDEAF5400D57772 /* Scene.cpp in Sources */,
 				D6E6B56A2C0234EE003F6D85 /* quickjs-io.c in Sources */,

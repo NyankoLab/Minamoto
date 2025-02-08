@@ -8,6 +8,7 @@
 #include <xxGraphicPlus/xxFile.h>
 #include <xxGraphicPlus/xxNode.h>
 #include <Graphic/Binary.h>
+#include <Runtime/Graphic/Mesh.h>
 #include <Tools/NodeTools.h>
 #include "Import/ImportFBX.h"
 #include "Import/ImportPLY.h"
@@ -57,42 +58,59 @@ ImportEvent::ImportEvent(xxNodePtr const& root, std::string name)
 //------------------------------------------------------------------------------
 float ImportEvent::Execute()
 {
-    if (root)
+    if (root && output)
     {
-        if (output)
+        if (output->GetParent() == nullptr)
         {
-            if (output->GetParent() == nullptr)
+            if (root->GetParent())
             {
-                if (root->GetParent())
-                {
-                    Import::MergeNode(root, output, root);
-                }
-                else
-                {
-                    root->AttachChild(output);
-                }
-                root->CreateLinearMatrix();
+                Import::MergeNode(root, output, root);
             }
-            if (nodes.empty() == false && nodesMutex.try_lock())
+            else
             {
-                for (xxNodePtr const& child : nodes)
-                {
-                    child->Name = Import::CheckDuplicateName(output, child->Name);
-                    output->AttachChild(child);
-                }
-                nodes.clear();
-                nodesMutex.unlock();
-                root->CreateLinearMatrix();
+                root->AttachChild(output);
             }
+            root->CreateLinearMatrix();
+        }
+        if (nodes.empty() == false && nodesMutex.try_lock())
+        {
+            for (xxNodePtr const& child : nodes)
+            {
+                child->Name = Import::CheckDuplicateName(output, child->Name);
+                output->AttachChild(child);
+            }
+            nodes.clear();
+            nodesMutex.unlock();
+            root->CreateLinearMatrix();
         }
     }
 
     bool show = true;
     if (ImGui::Begin(title.c_str(), &show, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking))
     {
-        int count = output ? (int)output->GetChildCount() : 0;
+        int nodeCount = output ? (int)output->GetChildCount() : 0;
+        int meshCount = 0;
+        int meshReferenceCounts[256] = {};
+        xxNode::Traversal(output, [&](xxNodePtr const& node)
+        {
+            if (node->Mesh)
+            {
+                size_t count = node->Mesh.use_count();
+                if (count < 256)
+                {
+                    meshReferenceCounts[count]++;
+                }
+            }
+            return true;
+        });
+        for (int i = 1; i < 256; ++i)
+        {
+            meshCount += meshReferenceCounts[i] / i;
+        }
+
         ImGui::InputText("File", name.data(), name.size(), ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputInt("Node", &count, 1, 100, ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputInt("Node", &nodeCount, 1, 100, ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputInt("Mesh", &meshCount, 1, 100, ImGuiInputTextFlags_ReadOnly);
         if (ImGui::Button("QuadTree"))
         {
             NodeTools::ConvertQuadTree(output);
@@ -110,6 +128,11 @@ float ImportEvent::Execute()
                 }
                 return true;
             });
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Unify Mesh"))
+        {
+            MeshTools::UnifyMesh(output, 1.0f);
         }
     }
     ImGui::End();

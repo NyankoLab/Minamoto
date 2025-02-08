@@ -5,7 +5,8 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Runtime.h"
-#include <xxGraphicPlus/xxMaterial.h>
+#include <Graphic/Material.h>
+#include <Graphic/Mesh.h>
 #include "Modifier/FloatModifier.h"
 #include "Modifier/ArrayModifier.h"
 #include "Modifier/StringModifier.h"

@@ -59,6 +59,4 @@ public:
 
     static void         Initialize();
     static void         Shutdown();
-
-    static char const   DefaultShader[];
 };

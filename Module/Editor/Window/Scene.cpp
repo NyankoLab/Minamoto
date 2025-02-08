@@ -6,11 +6,11 @@
 //==============================================================================
 #include "Editor.h"
 #include <xxGraphicPlus/xxCamera.h>
-#include <xxGraphicPlus/xxMaterial.h>
-#include <xxGraphicPlus/xxMesh.h>
 #include <xxGraphicPlus/xxModifier.h>
 #include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
+#include <Runtime/Graphic/Material.h>
+#include <Runtime/Graphic/Mesh.h>
 #include <ImGuizmo/ImGuizmo.cpp>
 #include <Tools/CameraTools.h>
 #include <Tools/DrawTools.h>
@@ -44,6 +44,7 @@ static bool cullEnabled = false;
 static bool drawBoneLine = false;
 static bool drawNodeLine = false;
 static bool drawNodeBound = false;
+static bool manipulateHovered = false;
 //------------------------------------------------------------------------------
 void Scene::Initialize()
 {
@@ -214,6 +215,9 @@ void Scene::DrawNodeBound(xxNodePtr const& root)
 //------------------------------------------------------------------------------
 static void PreSelectMouse()
 {
+    if (manipulateHovered)
+        return;
+
     if (ImGui::IsMouseHoveringRect(ImVec2(viewPos.x, viewPos.y), ImVec2(viewPos.x + viewSize.x, viewPos.y + viewSize.y)))
     {
         xxVector2 mousePos = { ImGui::GetMousePos().x, ImGui::GetMousePos().y };
@@ -242,6 +246,8 @@ static void PreSelectMouse()
 //------------------------------------------------------------------------------
 static void SelectMouse()
 {
+    manipulateHovered = false;
+
     if (Scene::selected)
     {
         ImGuizmo::gContext.mbOverGizmoHotspot = false;
@@ -269,6 +275,8 @@ static void SelectMouse()
             static ImGuizmo::MODE mode = ImGuizmo::LOCAL;
             ImGuizmo::Manipulate(Scene::mainCamera->ViewMatrix, Scene::mainCamera->ProjectionMatrix, operation, mode, Scene::selected->LocalMatrix);
         }
+
+        manipulateHovered = ImGuizmo::IsOver();
     }
 }
 //------------------------------------------------------------------------------

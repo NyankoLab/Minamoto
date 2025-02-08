@@ -7,10 +7,10 @@
 #include "Editor.h"
 #include <map>
 #include <xxGraphicPlus/xxFile.h>
-#include <xxGraphicPlus/xxMaterial.h>
-#include <xxGraphicPlus/xxMesh.h>
 #include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
+#include <Runtime/Graphic/Material.h>
+#include <Runtime/Graphic/Mesh.h>
 #include "Import.h"
 
 //#define STBI_NO_JPEG

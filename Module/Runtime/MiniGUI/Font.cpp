@@ -7,8 +7,8 @@
 #include "Runtime.h"
 #include <vector>
 #include <freetype/freetype.h>
-#include <xxGraphicPlus/xxMaterial.h>
-#include <xxGraphicPlus/xxMesh.h>
+#include <Graphic/Material.h>
+#include <Graphic/Mesh.h>
 #include <xxGraphicPlus/xxTexture.h>
 #include "Font.h"
 
