@@ -52,20 +52,20 @@ static const struct { char const* const shortName; char const* const fullName; u
 {
 #if defined(xxWINDOWS)
 #if defined(_M_IX86)
-    { "D3D5",           xxGetInstanceNameD3D5(),            xxCreateInstanceD3D5            },
-    { "D3D6",           xxGetInstanceNameD3D6(),            xxCreateInstanceD3D6            },
-    { "D3D7",           xxGetInstanceNameD3D7(),            xxCreateInstanceD3D7            },
-    { "D3D8",           xxGetInstanceNameD3D8(),            xxCreateInstanceD3D8            },
+//  { "D3D5",           xxGetInstanceNameD3D5(),            xxCreateInstanceD3D5            },
+//  { "D3D6",           xxGetInstanceNameD3D6(),            xxCreateInstanceD3D6            },
+//  { "D3D7",           xxGetInstanceNameD3D7(),            xxCreateInstanceD3D7            },
+//  { "D3D8",           xxGetInstanceNameD3D8(),            xxCreateInstanceD3D8            },
     { "D3D8PS",         xxGetInstanceNameD3D8PS(),          xxCreateInstanceD3D8PS          },
 #endif
-    { "D3D9",           xxGetInstanceNameD3D9(),            xxCreateInstanceD3D9            },
+//  { "D3D9",           xxGetInstanceNameD3D9(),            xxCreateInstanceD3D9            },
     { "D3D9PS",         xxGetInstanceNameD3D9PS(),          xxCreateInstanceD3D9PS          },
-    { "D3D9Ex",         xxGetInstanceNameD3D9Ex(),          xxCreateInstanceD3D9Ex          },
+//  { "D3D9Ex",         xxGetInstanceNameD3D9Ex(),          xxCreateInstanceD3D9Ex          },
     { "D3D9ExPS",       xxGetInstanceNameD3D9ExPS(),        xxCreateInstanceD3D9ExPS        },
-    { "D3D9On12",       xxGetInstanceNameD3D9On12(),        xxCreateInstanceD3D9On12        },
-    { "D3D9On12PS",     xxGetInstanceNameD3D9On12PS(),      xxCreateInstanceD3D9On12PS      },
-    { "D3D9On12Ex",     xxGetInstanceNameD3D9On12Ex(),      xxCreateInstanceD3D9On12Ex      },
-    { "D3D9On12ExPS",   xxGetInstanceNameD3D9On12ExPS(),    xxCreateInstanceD3D9On12ExPS    },
+//  { "D3D9On12",       xxGetInstanceNameD3D9On12(),        xxCreateInstanceD3D9On12        },
+//  { "D3D9On12PS",     xxGetInstanceNameD3D9On12PS(),      xxCreateInstanceD3D9On12PS      },
+//  { "D3D9On12Ex",     xxGetInstanceNameD3D9On12Ex(),      xxCreateInstanceD3D9On12Ex      },
+//  { "D3D9On12ExPS",   xxGetInstanceNameD3D9On12ExPS(),    xxCreateInstanceD3D9On12ExPS    },
     { "D3D10",          xxGetInstanceNameD3D10(),           xxCreateInstanceD3D10           },
     { "D3D10_1",        xxGetInstanceNameD3D10_1(),         xxCreateInstanceD3D10_1         },
     { "D3D11",          xxGetInstanceNameD3D11(),           xxCreateInstanceD3D11           },
@@ -73,11 +73,11 @@ static const struct { char const* const shortName; char const* const fullName; u
     { "D3D12",          xxGetInstanceNameD3D12(),           xxCreateInstanceD3D12           },
 #endif
 #if defined(xxMACOS) || defined(xxWINDOWS)
-    { "Glide",          xxGetInstanceNameGlide(),           xxCreateInstanceGlide           },
+//  { "Glide",          xxGetInstanceNameGlide(),           xxCreateInstanceGlide           },
 #endif
 #if defined(xxMACCATALYST)
 #else
-    { "GLES2",          xxGetInstanceNameGLES2(),           xxCreateInstanceGLES2           },
+//  { "GLES2",          xxGetInstanceNameGLES2(),           xxCreateInstanceGLES2           },
     { "GLES3",          xxGetInstanceNameGLES3(),           xxCreateInstanceGLES3           },
     { "GLES31",         xxGetInstanceNameGLES31(),          xxCreateInstanceGLES31          },
     { "GLES32",         xxGetInstanceNameGLES32(),          xxCreateInstanceGLES32          },

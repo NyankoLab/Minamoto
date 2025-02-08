@@ -37,7 +37,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdLine, in
     Module::Message({ "INIT" });
 
     // Show the window
-    ::ShowWindow(hWnd, SW_SHOWDEFAULT);
+    ::ShowWindow(hWnd, SW_SHOWMAXIMIZED);
     ::UpdateWindow(hWnd);
 
     // Main loop

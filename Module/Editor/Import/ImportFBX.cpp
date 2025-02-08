@@ -6,10 +6,10 @@
 //==============================================================================
 #include "Editor.h"
 #include <xxGraphicPlus/xxFile.h>
-#include <xxGraphicPlus/xxMaterial.h>
-#include <xxGraphicPlus/xxMesh.h>
 #include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
+#include <Runtime/Graphic/Material.h>
+#include <Runtime/Graphic/Mesh.h>
 #include <Runtime/Modifier/ConstantQuaternionModifier.h>
 #include <Runtime/Modifier/ConstantScaleModifier.h>
 #include <Runtime/Modifier/ConstantTranslateModifier.h>
@@ -258,9 +258,9 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
     xxStrideIterator<xxVector3> positions = output->GetPosition();
     xxStrideIterator<xxVector3> boneWeight = output->GetBoneWeight();
     xxStrideIterator<uint32_t> boneIndices = output->GetBoneIndices();
-    xxStrideIterator<xxVector3> normals = output->GetNormal(0);
-    xxStrideIterator<xxVector3> tangents = output->GetNormal(1);
-    xxStrideIterator<xxVector3> bitangents = output->GetNormal(2);
+    xxStrideIterator<uint32_t> normals = output->GetNormal(0);
+    xxStrideIterator<uint32_t> tangents = output->GetNormal(1);
+    xxStrideIterator<uint32_t> bitangents = output->GetNormal(2);
     xxStrideIterator<uint32_t> colors[8] =
     {
         output->GetColor(0), output->GetColor(1), output->GetColor(2), output->GetColor(3),
@@ -291,11 +291,11 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
             (*boneIndices++) = indices;
         }
         if (normalCount >= 1)
-            (*normals++) = vec3(ufbx_get_vertex_vec3(&mesh->vertex_normal, i));
+            (*normals++) = Mesh::NormalEncode(vec3(ufbx_get_vertex_vec3(&mesh->vertex_normal, i)));
         if (normalCount >= 2)
-            (*tangents++) = vec3(ufbx_get_vertex_vec3(&mesh->vertex_tangent, i));
+            (*tangents++) = Mesh::NormalEncode(vec3(ufbx_get_vertex_vec3(&mesh->vertex_tangent, i)));
         if (normalCount >= 3)
-            (*bitangents++) = vec3(ufbx_get_vertex_vec3(&mesh->vertex_bitangent, i));
+            (*bitangents++) = Mesh::NormalEncode(vec3(ufbx_get_vertex_vec3(&mesh->vertex_bitangent, i)));
         for (int j = 0; j < colorCount; ++j)
             (*colors[j]++) = vec4(ufbx_get_vertex_vec4(&mesh->color_sets[j].vertex_color, i)).ToInteger();
         for (int j = 0; j < textureCount; ++j)

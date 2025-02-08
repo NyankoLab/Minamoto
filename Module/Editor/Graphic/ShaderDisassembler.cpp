@@ -11,7 +11,14 @@
 #include <xxGraphicPlus/xxFile.h>
 #include "ShaderDisassembler.h"
 
-#if defined(__APPLE__)
+#if defined(xxWINDOWS)
+#include <unknwn.h>
+struct D3DBlob : public IUnknown
+{
+    virtual LPCSTR STDMETHODCALLTYPE GetBufferPointer() = 0;
+    virtual SIZE_T STDMETHODCALLTYPE GetBufferSize() = 0;
+};
+#elif defined(xxMACOS) || defined(xxIOS)
 #include <Metal/Metal.h>
 #include <Metal/MTLBinaryArchive.h>
 #endif
@@ -49,7 +56,45 @@ static void Disassemble(ShaderDisassemblyData& data)
     if (data.disassembly)
         return;
     data.disassembly = true;
-#if defined(__APPLE__)
+#if defined(xxWINDOWS)
+    if (strstr(xxGetInstanceName(), "Direct3D"))
+    {
+        void* d3dcompiler = xxLoadLibrary("d3dcompiler_47.dll");
+        if (d3dcompiler)
+        {
+            HRESULT (WINAPI* D3DDisassemble)(void const*, SIZE_T, int, char const*, D3DBlob**) = nullptr;
+            (void*&)D3DDisassemble = xxGetProcAddress(d3dcompiler, "D3DDisassemble");
+            if (D3DDisassemble)
+            {
+                auto disassemble = [&](uint64_t shader, std::string& disassembly)
+                {
+                    DWORD const* code = reinterpret_cast<DWORD const*>(shader);
+                    if (code == nullptr)
+                        return;
+                    D3DBlob* text = nullptr;
+                    if (code[0] == "DXBC"_cc)
+                    {
+                        D3DDisassemble(code, code[6], 0, "", &text);
+                    }
+                    else
+                    {
+                        size_t size = xxAllocSize(code);
+                        D3DDisassemble(code, size, 0, "", &text);
+                    }
+                    if (text)
+                    {
+                        disassembly.assign((char*)text->GetBufferPointer(), text->GetBufferSize());
+                        text->Release();
+                    }
+                };
+                disassemble(data.meshShader, data.meshDisassembly);
+                disassemble(data.vertexShader, data.vertexDisassembly);
+                disassemble(data.fragmentShader, data.fragmentDisassembly);
+            }
+            xxFreeLibrary(d3dcompiler);
+        }
+    }
+#elif defined(xxMACOS) || defined(xxIOS)
     if (@available(macOS 12, *))
     {
         NSError* error;
@@ -224,7 +269,11 @@ bool ShaderDisassembler::Update(const UpdateData& updateData, bool& show)
         static int archCurrent = 0;
         static char const* const archList[] =
         {
+#if defined(xxWINDOWS)
+            "Direct3D",
+#elif defined(xxMACOS) || defined(xxIOS)
             "Apple G13G",
+#endif
         };
         ImGui::SetNextItemWidth(128.0f);
         ImGui::Combo("Architecture", &archCurrent, archList, xxCountOf(archList));

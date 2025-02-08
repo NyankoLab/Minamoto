@@ -114,6 +114,9 @@
 		D6E6B5A32C0453A5003F6D85 /* udivti3.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346EFB2BFB55550075D7F1 /* udivti3.c */; };
 		D6E6B5A52C0453F3003F6D85 /* powidf2.c in Sources */ = {isa = PBXBuildFile; fileRef = D6E6B5A42C0453F3003F6D85 /* powidf2.c */; };
 		D6E6B5A62C0453F3003F6D85 /* powidf2.c in Sources */ = {isa = PBXBuildFile; fileRef = D6E6B5A42C0453F3003F6D85 /* powidf2.c */; };
+		F5E72CA62D5651A8005A1A54 /* d2s.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E72CA42D5651A8005A1A54 /* d2s.cpp */; };
+		F5E72CA72D5651A8005A1A54 /* d2fixed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E72CA32D5651A8005A1A54 /* d2fixed.cpp */; };
+		F5E72CA82D5651A8005A1A54 /* f2s.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E72CA52D5651A8005A1A54 /* f2s.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -167,18 +170,21 @@
 		D6169CC42BB1742700E5490C /* ios.instantiations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ios.instantiations.cpp; path = ../SDK/ClangPlatform/libcxx/src/ios.instantiations.cpp; sourceTree = "<group>"; };
 		D6169CC52BB1742700E5490C /* optional.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = optional.cpp; path = ../SDK/ClangPlatform/libcxx/src/optional.cpp; sourceTree = "<group>"; };
 		D6169CC62BB1742700E5490C /* variant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = variant.cpp; path = ../SDK/ClangPlatform/libcxx/src/variant.cpp; sourceTree = "<group>"; };
-		D6169CF72BB17A7B00E5490C /* thread_win32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = thread_win32.cpp; path = ../SDK/ClangPlatform/libcxx/src/support/win32/thread_win32.cpp; sourceTree = "<group>"; };
-		D6169CF82BB17A7B00E5490C /* locale_win32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = locale_win32.cpp; path = ../SDK/ClangPlatform/libcxx/src/support/win32/locale_win32.cpp; sourceTree = "<group>"; };
-		D6169CF92BB17A7B00E5490C /* support.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = support.cpp; path = ../SDK/ClangPlatform/libcxx/src/support/win32/support.cpp; sourceTree = "<group>"; };
-		D6346EFA2BFB55550075D7F1 /* udivmodti4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = udivmodti4.c; path = "../SDK/ClangPlatform/compiler-rt/udivmodti4.c"; sourceTree = "<group>"; };
-		D6346EFB2BFB55550075D7F1 /* udivti3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = udivti3.c; path = "../SDK/ClangPlatform/compiler-rt/udivti3.c"; sourceTree = "<group>"; };
+		D6169CF72BB17A7B00E5490C /* thread_win32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = thread_win32.cpp; path = win32/thread_win32.cpp; sourceTree = "<group>"; };
+		D6169CF82BB17A7B00E5490C /* locale_win32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = locale_win32.cpp; path = win32/locale_win32.cpp; sourceTree = "<group>"; };
+		D6169CF92BB17A7B00E5490C /* support.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = support.cpp; path = win32/support.cpp; sourceTree = "<group>"; };
+		D6346EFA2BFB55550075D7F1 /* udivmodti4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = udivmodti4.c; sourceTree = "<group>"; };
+		D6346EFB2BFB55550075D7F1 /* udivti3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = udivti3.c; sourceTree = "<group>"; };
 		D644A041231ED82900B75B77 /* libcxx.macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libcxx.macOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D68CADF72D14262700ACE81B /* call_once.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = call_once.cpp; path = ../SDK/ClangPlatform/libcxx/src/call_once.cpp; sourceTree = SOURCE_ROOT; };
 		D68CADF82D14262700ACE81B /* error_category.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = error_category.cpp; path = ../SDK/ClangPlatform/libcxx/src/error_category.cpp; sourceTree = SOURCE_ROOT; };
 		D68CADF92D14262700ACE81B /* fstream.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = fstream.cpp; path = ../SDK/ClangPlatform/libcxx/src/fstream.cpp; sourceTree = SOURCE_ROOT; };
 		D68CADFA2D14262700ACE81B /* ostream.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ostream.cpp; path = ../SDK/ClangPlatform/libcxx/src/ostream.cpp; sourceTree = SOURCE_ROOT; };
 		D6AA5DB92BD7DA9E00AE1C30 /* ClangPlatform.Darwin.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ClangPlatform.Darwin.xcconfig; sourceTree = "<group>"; };
-		D6E6B5A42C0453F3003F6D85 /* powidf2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = powidf2.c; path = "../SDK/ClangPlatform/compiler-rt/powidf2.c"; sourceTree = "<group>"; };
+		D6E6B5A42C0453F3003F6D85 /* powidf2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = powidf2.c; sourceTree = "<group>"; };
+		F5E72CA32D5651A8005A1A54 /* d2fixed.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = d2fixed.cpp; sourceTree = "<group>"; };
+		F5E72CA42D5651A8005A1A54 /* d2s.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = d2s.cpp; sourceTree = "<group>"; };
+		F5E72CA52D5651A8005A1A54 /* f2s.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = f2s.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -229,6 +235,7 @@
 				D6169CF62BB17A5E00E5490C /* win32 */,
 			);
 			name = support;
+			path = ../SDK/ClangPlatform/libcxx/src/support;
 			sourceTree = "<group>";
 		};
 		D6169CF62BB17A5E00E5490C /* win32 */ = {
@@ -249,6 +256,7 @@
 				D6346EFB2BFB55550075D7F1 /* udivti3.c */,
 			);
 			name = "compiler-rt";
+			path = "../SDK/ClangPlatform/compiler-rt";
 			sourceTree = "<group>";
 		};
 		D644A038231ED82900B75B77 = {
@@ -257,6 +265,7 @@
 				CE999BC925D21D9F00351116 /* Configs */,
 				D6346EF92BFB553B0075D7F1 /* compiler-rt */,
 				D6169CF52BB17A5500E5490C /* support */,
+				F5E72CA22D565112005A1A54 /* ryu */,
 				D6169CA12BB1742600E5490C /* algorithm.cpp */,
 				D6169C992BB1742600E5490C /* any.cpp */,
 				D6169C982BB1742600E5490C /* atomic.cpp */,
@@ -319,6 +328,17 @@
 				30A9A74A25ADC5C3000FA104 /* libcxx.Android.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F5E72CA22D565112005A1A54 /* ryu */ = {
+			isa = PBXGroup;
+			children = (
+				F5E72CA32D5651A8005A1A54 /* d2fixed.cpp */,
+				F5E72CA42D5651A8005A1A54 /* d2s.cpp */,
+				F5E72CA52D5651A8005A1A54 /* f2s.cpp */,
+			);
+			name = ryu;
+			path = ../SDK/ClangPlatform/libcxx/src/ryu;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -506,6 +526,9 @@
 				D6169CD72BB1742700E5490C /* charconv.cpp in Sources */,
 				D6169CC72BB1742700E5490C /* atomic.cpp in Sources */,
 				D6169CE12BB1742700E5490C /* exception.cpp in Sources */,
+				F5E72CA62D5651A8005A1A54 /* d2s.cpp in Sources */,
+				F5E72CA72D5651A8005A1A54 /* d2fixed.cpp in Sources */,
+				F5E72CA82D5651A8005A1A54 /* f2s.cpp in Sources */,
 				D6169CE32BB1742700E5490C /* locale.cpp in Sources */,
 				D6169CD42BB1742700E5490C /* functional.cpp in Sources */,
 				D6169CCE2BB1742700E5490C /* strstream.cpp in Sources */,

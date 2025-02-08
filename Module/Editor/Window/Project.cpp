@@ -41,7 +41,7 @@ void Project::Initialize()
     if (Root.empty())
     {
         Root = xxGetDocumentPath();
-        Root += "/Project/";
+        Root += "/Project";
     }
     DummyTexture = xxTexture::Create("RGBA8888"_CC, 1, 1, 1, 1, 1);
 }
@@ -90,7 +90,7 @@ static bool ShowSetup(bool& show)
 
         SetupFolder.Window([&](std::string const& root, std::string const& subfolder)
         {
-            SetupCurrent = root + subfolder;
+            SetupCurrent = root + '/' + subfolder;
         });
     }
     ImGui::End();
@@ -106,7 +106,7 @@ static void ShowFolders(std::string const& root, std::string& selected)
 
         Files.clear();
         uint64_t handle = 0;
-        std::string folder = root + subfolder;
+        std::string folder = root + '/' + subfolder;
         while (char* filename = xxOpenDirectory(&handle, folder.c_str(), nullptr))
         {
             if (filename[0] != '.' && strstr(filename, "/") == nullptr)
@@ -270,14 +270,14 @@ static void ShowFiles(const UpdateData& updateData, std::string const& root, std
 
                     if (callback)
                     {
-                        Document::OpenFile((root + subfolder + attribute.name).c_str(), callback);
+                        Document::OpenFile((root + '/' + subfolder + attribute.name).c_str(), callback);
                     }
                 }
             }
         }
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceNoDisableHover | ImGuiDragDropFlags_SourceNoHoldToOpenOthers))
         {
-            std::string file = root + subfolder + attribute.name;
+            std::string file = root + '/' + subfolder + attribute.name;
             ImGui::TextUnformatted(attribute.name.c_str());
             ImGui::SetDragDropPayload("DRAGFILE", file.data(), file.size());
             ImGui::EndDragDropSource();

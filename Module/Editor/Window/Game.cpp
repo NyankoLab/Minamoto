@@ -6,8 +6,8 @@
 //==============================================================================
 #include "Editor.h"
 #include <xxGraphicPlus/xxCamera.h>
-#include <xxGraphicPlus/xxMaterial.h>
 #include <xxGraphicPlus/xxNode.h>
+#include <Runtime/Graphic/Material.h>
 #include <Tools/CameraTools.h>
 #include <Tools/DrawTools.h>
 #if HAVE_MINIGUI

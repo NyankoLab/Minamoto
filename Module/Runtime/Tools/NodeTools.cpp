@@ -73,8 +73,9 @@ xxNodePtr const& NodeTools::Intersect(xxNodePtr const& node, xxVector3 const& po
     {
         if (node->Mesh)
         {
-            float distance = (node->WorldBound.xyz - position).SquaredLength();
-            if (nearDistance > distance && node->WorldBound.Intersect(position, direction))
+            xxVector3 diff = node->WorldBound.xyz - position;
+            float distance = diff.SquaredLength();
+            if (nearDistance > distance && distance > 1.0f && node->WorldBound.Intersect(position, direction) >= 0.0f)
             {
                 nearDistance = distance;
                 output = &node;

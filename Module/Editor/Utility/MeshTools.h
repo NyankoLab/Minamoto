@@ -20,7 +20,7 @@ struct MeshTools
         std::vector<xxVector3> positions;
         std::vector<xxVector3> boneWeights;
         std::vector<uint32_t> boneIndices;
-        std::vector<xxVector3> normals;
+        std::vector<uint32_t> normals;
         std::vector<uint32_t> colors;
         std::vector<xxVector2> textures;
         std::vector<uint32_t> indices;
@@ -36,4 +36,5 @@ struct MeshTools
     static xxMeshPtr NormalizeMesh(xxMeshPtr const& mesh, bool tangent);
     static xxMeshPtr OptimizeMesh(xxMeshPtr const& mesh);
     static xxMeshPtr ResetMesh(xxMeshPtr const& mesh, xxVector3& origin);
+    static void UnifyMesh(xxNodePtr const& node, float threshold);
 };

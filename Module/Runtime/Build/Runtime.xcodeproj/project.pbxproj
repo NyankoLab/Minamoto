@@ -176,6 +176,10 @@
 		F5E4C8332D219C5200111AC3 /* DrawTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C8312D219C5000111AC3 /* DrawTools.cpp */; };
 		F5E4C8342D219C5200111AC3 /* DrawTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C8312D219C5000111AC3 /* DrawTools.cpp */; };
 		F5E4C8352D219C5200111AC3 /* DrawTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C8312D219C5000111AC3 /* DrawTools.cpp */; };
+		F5FAA3742D54F80400A25CCB /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAA3732D54F80200A25CCB /* Mesh.cpp */; };
+		F5FAA3752D54F80400A25CCB /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAA3732D54F80200A25CCB /* Mesh.cpp */; };
+		F5FAA3762D54F80400A25CCB /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAA3732D54F80200A25CCB /* Mesh.cpp */; };
+		F5FAA3772D54F80400A25CCB /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAA3732D54F80200A25CCB /* Mesh.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -304,6 +308,8 @@
 		F5054E252D34FF2700D62FC6 /* Material.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
 		F5E4C8302D219C4700111AC3 /* DrawTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DrawTools.h; sourceTree = "<group>"; };
 		F5E4C8312D219C5000111AC3 /* DrawTools.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DrawTools.cpp; sourceTree = "<group>"; };
+		F5FAA3722D54F7FB00A25CCB /* Mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
+		F5FAA3732D54F80200A25CCB /* Mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -435,6 +441,8 @@
 				D68CADF12D1323CE00ACE81B /* Buffer.h */,
 				F5054E252D34FF2700D62FC6 /* Material.cpp */,
 				F5054E242D34FF2000D62FC6 /* Material.h */,
+				F5FAA3732D54F80200A25CCB /* Mesh.cpp */,
+				F5FAA3722D54F7FB00A25CCB /* Mesh.h */,
 				D6D26F972BDE11D900D57772 /* Pipeline.cpp */,
 				D6D26F962BDE11D900D57772 /* Pipeline.h */,
 				D6D26F8B2BDDFAC400D57772 /* RenderPass.cpp */,
@@ -684,6 +692,7 @@
 				D6FEF40D2C09C56E003272C2 /* Float3Modifier.cpp in Sources */,
 				D6F5640B2BEA15C7006D32D9 /* CameraTools.cpp in Sources */,
 				D6FEF4112C09C56E003272C2 /* Float4Modifier.cpp in Sources */,
+				F5FAA3742D54F80400A25CCB /* Mesh.cpp in Sources */,
 				D6FEF4242C0D9315003272C2 /* ArrayModifier.cpp in Sources */,
 				D6D26F922BDE0AF500D57772 /* VertexAttribute.cpp in Sources */,
 				D62286D52BD7936300440C24 /* BakedQuaternionModifier.cpp in Sources */,
@@ -722,6 +731,7 @@
 				D6F5641A2BEA69A3006D32D9 /* Sampler.cpp in Sources */,
 				D6F066842BC6EEF600C4DFE6 /* Runtime.cpp in Sources */,
 				D645C4D82BD145E700A89E16 /* QuaternionModifier.cpp in Sources */,
+				F5FAA3772D54F80400A25CCB /* Mesh.cpp in Sources */,
 				F5054E282D34FF2900D62FC6 /* Material.cpp in Sources */,
 				D6D26F9B2BDE11D900D57772 /* Pipeline.cpp in Sources */,
 				D62286C42BD559B000440C24 /* ConstantQuaternionModifier.cpp in Sources */,
@@ -735,18 +745,18 @@
 				D6346EE52BFA06520075D7F1 /* QuickJS.cpp in Sources */,
 				D60791062BF5F1B8008810BD /* CSV.cpp in Sources */,
 				D62286C82BD559B000440C24 /* ConstantTranslateModifier.cpp in Sources */,
-				D6169D162BB17FE200E5490C /* new.cpp in Sources */,
 				D6F5640E2BEA15C7006D32D9 /* CameraTools.cpp in Sources */,
 				D62286D22BD6C18900440C24 /* Quaternion16Modifier.cpp in Sources */,
 				D6FEF40C2C09C56E003272C2 /* Float2Modifier.cpp in Sources */,
 				D6FEF3FC2C09B011003272C2 /* StringModifier.cpp in Sources */,
 				D68CADF32D1323CE00ACE81B /* Buffer.cpp in Sources */,
-				D62FEBE52BE50F77004E9FDF /* dllmain.cpp in Sources */,
 				D645C4D22BD145C400A89E16 /* TranslateModifier.cpp in Sources */,
 				D6FEF41B2C09DCE3003272C2 /* Window.cpp in Sources */,
-				D6169D1C2BB1802100E5490C /* tls.cpp in Sources */,
 				D6F564082BEA004F006D32D9 /* NodeTools.cpp in Sources */,
 				D6FEF4212C0B4B0E003272C2 /* Font.cpp in Sources */,
+				D62FEBE52BE50F77004E9FDF /* dllmain.cpp in Sources */,
+				D6169D162BB17FE200E5490C /* new.cpp in Sources */,
+				D6169D1C2BB1802100E5490C /* tls.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -772,6 +782,7 @@
 				D6FEF40E2C09C56E003272C2 /* Float3Modifier.cpp in Sources */,
 				D6F5640C2BEA15C7006D32D9 /* CameraTools.cpp in Sources */,
 				D6FEF4122C09C56E003272C2 /* Float4Modifier.cpp in Sources */,
+				F5FAA3762D54F80400A25CCB /* Mesh.cpp in Sources */,
 				D6FEF4252C0D9315003272C2 /* ArrayModifier.cpp in Sources */,
 				D6D26F932BDE0AF500D57772 /* VertexAttribute.cpp in Sources */,
 				D62286D62BD7936300440C24 /* BakedQuaternionModifier.cpp in Sources */,
@@ -814,6 +825,7 @@
 				D6FEF40F2C09C56E003272C2 /* Float3Modifier.cpp in Sources */,
 				D6F5640D2BEA15C7006D32D9 /* CameraTools.cpp in Sources */,
 				D6FEF4132C09C56E003272C2 /* Float4Modifier.cpp in Sources */,
+				F5FAA3752D54F80400A25CCB /* Mesh.cpp in Sources */,
 				D6FEF4262C0D9315003272C2 /* ArrayModifier.cpp in Sources */,
 				D6D26F942BDE0AF500D57772 /* VertexAttribute.cpp in Sources */,
 				D62286D72BD7936300440C24 /* BakedQuaternionModifier.cpp in Sources */,
