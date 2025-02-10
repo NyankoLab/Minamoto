@@ -132,7 +132,11 @@ bool Game::Update(const UpdateData& updateData, bool& show)
         }
 
         ImDrawList* drawList = ImGui::GetWindowDrawList();
+#if defined(xxWINDOWS)
+        drawList->AddRectFilled({ viewPos.x, viewPos.y }, { viewPos.x + viewSize.x, viewPos.y + viewSize.y }, 0xFF778899);
+#else
         drawList->AddRectFilled({ viewPos.x, viewPos.y }, { viewPos.x + viewSize.x, viewPos.y + viewSize.y }, 0xFF998877);
+#endif
         drawList->AddCallback(Callback, (void*)&updateData, sizeof(updateData));
         drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
 

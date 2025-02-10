@@ -603,29 +603,13 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
 
     if (ImGui::Begin(ICON_FA_GLOBE "Scene", &show))
     {
-        ImGui::Checkbox("##1", &cullEnabled);
-        if (ImGui::IsItemHovered())
-        {
-            ImGui::SetTooltip("%s", "Culling");
-        }
+        ImGui::Checkbox("##1", &cullEnabled);   if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", "Culling");
         ImGui::SameLine();
-        ImGui::Checkbox("##2", &drawBoneLine);
-        if (ImGui::IsItemHovered())
-        {
-            ImGui::SetTooltip("%s", "Draw Bone Line");
-        }
+        ImGui::Checkbox("##2", &drawBoneLine);  if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", "Draw Bone Line");
         ImGui::SameLine();
-        ImGui::Checkbox("##3", &drawNodeLine);
-        if (ImGui::IsItemHovered())
-        {
-            ImGui::SetTooltip("%s", "Draw Node Line");
-        }
+        ImGui::Checkbox("##3", &drawNodeLine);  if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", "Draw Node Line");
         ImGui::SameLine();
-        ImGui::Checkbox("##4", &drawNodeBound);
-        if (ImGui::IsItemHovered())
-        {
-            ImGui::SetTooltip("%s", "Draw Node Bound");
-        }
+        ImGui::Checkbox("##4", &drawNodeBound); if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", "Draw Node Bound");
 
         sceneCamera = nullptr;
         for (xxNodePtr const& node : (*Scene::sceneRoot))
@@ -653,7 +637,11 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
         }
 
         ImDrawList* drawList = ImGui::GetWindowDrawList();
+#if defined(xxWINDOWS)
+        drawList->AddRectFilled({ viewPos.x, viewPos.y }, { viewPos.x + viewSize.x, viewPos.y + viewSize.y }, 0xFF778899);
+#else
         drawList->AddRectFilled({ viewPos.x, viewPos.y }, { viewPos.x + viewSize.x, viewPos.y + viewSize.y }, 0xFF998877);
+#endif
         drawList->AddCallback(Callback, (void*)&updateData, sizeof(updateData));
         drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
 

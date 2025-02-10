@@ -55,9 +55,9 @@ static const struct { char const* const shortName; char const* const fullName; u
 //  { "D3D5",           xxGetInstanceNameD3D5(),            xxCreateInstanceD3D5            },
 //  { "D3D6",           xxGetInstanceNameD3D6(),            xxCreateInstanceD3D6            },
 //  { "D3D7",           xxGetInstanceNameD3D7(),            xxCreateInstanceD3D7            },
+#endif
 //  { "D3D8",           xxGetInstanceNameD3D8(),            xxCreateInstanceD3D8            },
     { "D3D8PS",         xxGetInstanceNameD3D8PS(),          xxCreateInstanceD3D8PS          },
-#endif
 //  { "D3D9",           xxGetInstanceNameD3D9(),            xxCreateInstanceD3D9            },
     { "D3D9PS",         xxGetInstanceNameD3D9PS(),          xxCreateInstanceD3D9PS          },
 //  { "D3D9Ex",         xxGetInstanceNameD3D9Ex(),          xxCreateInstanceD3D9Ex          },
@@ -77,7 +77,7 @@ static const struct { char const* const shortName; char const* const fullName; u
 #endif
 #if defined(xxMACCATALYST)
 #else
-//  { "GLES2",          xxGetInstanceNameGLES2(),           xxCreateInstanceGLES2           },
+    { "GLES2",          xxGetInstanceNameGLES2(),           xxCreateInstanceGLES2           },
     { "GLES3",          xxGetInstanceNameGLES3(),           xxCreateInstanceGLES3           },
     { "GLES31",         xxGetInstanceNameGLES31(),          xxCreateInstanceGLES31          },
     { "GLES32",         xxGetInstanceNameGLES32(),          xxCreateInstanceGLES32          },

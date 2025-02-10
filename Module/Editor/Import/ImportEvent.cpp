@@ -7,13 +7,16 @@
 #include "Editor.h"
 #include <xxGraphicPlus/xxFile.h>
 #include <xxGraphicPlus/xxNode.h>
+#include <xxGraphicPlus/xxTexture.h>
 #include <Graphic/Binary.h>
+#include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
 #include <Tools/NodeTools.h>
 #include "Import/ImportFBX.h"
 #include "Import/ImportPLY.h"
 #include "Import/ImportWavefront.h"
 #include "Utility/MeshTools.h"
+#include "Utility/TextureTools.h"
 #include "ImportEvent.h"
 
 //==============================================================================
@@ -49,8 +52,7 @@ ImportEvent::ImportEvent(xxNodePtr const& root, std::string name)
             output = ImportPLY::Create(name);
         if (strcasestr(name, ".xxb"))
             output = Binary::Load(name);
-        float time = xxGetCurrentTime() - begin;
-        xxLog("Hierarchy", "Import : %s (%0.fus)", xxFile::GetName(name).c_str(), time * 1000000);
+        xxLog("Hierarchy", "Import : %s (%0.fus)", xxFile::GetName(name).c_str(), (xxGetCurrentTime() - begin) * 1000000);
         thiz->output = output;
         thiz->thread.detach();
     });
@@ -79,6 +81,7 @@ float ImportEvent::Execute()
                 child->Name = Import::CheckDuplicateName(output, child->Name);
                 output->AttachChild(child);
             }
+            Statistic();
             nodes.clear();
             nodesMutex.unlock();
             root->CreateLinearMatrix();
@@ -88,32 +91,15 @@ float ImportEvent::Execute()
     bool show = true;
     if (ImGui::Begin(title.c_str(), &show, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking))
     {
-        int nodeCount = output ? (int)output->GetChildCount() : 0;
-        int meshCount = 0;
-        int meshReferenceCounts[256] = {};
-        xxNode::Traversal(output, [&](xxNodePtr const& node)
-        {
-            if (node->Mesh)
-            {
-                size_t count = node->Mesh.use_count();
-                if (count < 256)
-                {
-                    meshReferenceCounts[count]++;
-                }
-            }
-            return true;
-        });
-        for (int i = 1; i < 256; ++i)
-        {
-            meshCount += meshReferenceCounts[i] / i;
-        }
-
         ImGui::InputText("File", name.data(), name.size(), ImGuiInputTextFlags_ReadOnly);
         ImGui::InputInt("Node", &nodeCount, 1, 100, ImGuiInputTextFlags_ReadOnly);
         ImGui::InputInt("Mesh", &meshCount, 1, 100, ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputInt("Texture", &textureCount, 1, 100, ImGuiInputTextFlags_ReadOnly);
         if (ImGui::Button("QuadTree"))
         {
             NodeTools::ConvertQuadTree(output);
+            Statistic();
+
         }
         ImGui::SameLine();
         if (ImGui::Button("Reset Mesh"))
@@ -128,11 +114,19 @@ float ImportEvent::Execute()
                 }
                 return true;
             });
+            Statistic();
         }
         ImGui::SameLine();
         if (ImGui::Button("Unify Mesh"))
         {
             MeshTools::UnifyMesh(output, 1.0f);
+            Statistic();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Mipmap Texture"))
+        {
+            TextureTools::MipmapTextures(output);
+            Statistic();
         }
     }
     ImGui::End();
@@ -143,6 +137,44 @@ float ImportEvent::Execute()
     }
     thiz = nullptr;
     return 0.0f;
+}
+//------------------------------------------------------------------------------
+void ImportEvent::Statistic()
+{
+    nodeCount = 0;
+    meshCount = 0;
+    textureCount = 0;
+
+    std::map<size_t, size_t> meshReferenceCounts;
+    std::map<size_t, size_t> textureReferenceCounts;
+    xxNode::Traversal(output, [&](xxNodePtr const& node)
+    {
+        if (node->Mesh)
+        {
+            size_t count = node->Mesh.use_count();
+            meshReferenceCounts[count]++;
+        }
+        if (node->Material)
+        {
+            for (xxTexturePtr const& texture : node->Material->Textures)
+            {
+                if (texture == nullptr)
+                    continue;
+                size_t count = texture.use_count() * node->Material.use_count();
+                textureReferenceCounts[count]++;
+            }
+        }
+        return true;
+    });
+    nodeCount = (int)output->GetChildCount();
+    for (auto [size, count] : meshReferenceCounts)
+    {
+        meshCount += count / size;
+    }
+    for (auto [size, count] : textureReferenceCounts)
+    {
+        textureCount += count / size;
+    }
 }
 //------------------------------------------------------------------------------
 std::shared_ptr<ImportEvent> ImportEvent::Create(xxNodePtr const& root, std::string name)

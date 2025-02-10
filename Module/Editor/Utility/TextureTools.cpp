@@ -5,9 +5,13 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
+#include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
+#include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Texture.h>
 #include "TextureTools.h"
+
+#define TAG "TextureTools"
 
 #define STB_DXT_IMPLEMENTATION
 #ifdef __clang__
@@ -142,5 +146,114 @@ void TextureTools::CompressTexture(xxTexturePtr const& texture, uint64_t format,
     case "BC5U"_cc: case "ATI2"_cc: ext = ".bc5u";  break;
     }
     Texture::DDSWriter(compressed, root + subfolder + uncompressed->Name + ext);
+}
+//------------------------------------------------------------------------------
+void TextureTools::MipmapTexture(xxTexturePtr const& texture)
+{
+    if (texture == nullptr)
+        return;
+    if (texture->Depth > 1 || texture->Mipmap > 1 || texture->Array > 1)
+        return;
+    if (texture->Format != "RGBA8888"_CC && texture->Format != "BGRA8888"_CC)
+        return;
+
+    size_t size = xxTexture::Calculate(texture->Format, texture->Width, texture->Height, texture->Depth);
+    if (size == 0)
+        return;
+
+    int max = std::max(std::max(texture->Width, texture->Height), texture->Depth);
+    int mipmap = (int)log2(max) + 1;
+
+    void* image = xxAlloc(unsigned char, size);
+    if (image == nullptr)
+        return;
+
+    float begin = xxGetCurrentTime();
+
+    memcpy(image, (*texture)(), size);
+    texture->Initialize(texture->Format, texture->Width, texture->Height, texture->Depth, mipmap, texture->Array);
+    memcpy((*texture)(), image, size);
+    xxFree(image);
+
+    for (int array = 0; array < texture->Array; ++array)
+    {
+        for (int mipmap = 1; mipmap < texture->Mipmap; ++mipmap)
+        {
+            int levelWidth = (texture->Width >> mipmap);
+            int levelHeight = (texture->Height >> mipmap);
+            int levelDepth = (texture->Depth >> mipmap);
+            if (levelWidth == 0)
+                levelWidth = 1;
+            if (levelHeight == 0)
+                levelHeight = 1;
+            if (levelDepth == 0)
+                levelDepth = 1;
+
+            for (int depth = 0; depth < levelDepth; ++depth)
+            {
+                for (int height = 0; height < levelHeight; ++height)
+                {
+                    for (int width = 0; width < levelWidth; ++width)
+                    {
+                        int r = 0;
+                        int g = 0;
+                        int b = 0;
+                        int a = 0;
+                        int count = 0;
+
+                        int width2 = width * 2;
+                        int height2 = height * 2;
+                        int depth2 = depth * 2;
+                        for (int z = 0; z < 2; ++z)
+                        {
+                            for (int y = 0; y < 2; ++y)
+                            {
+                                for (int x = 0; x < 2; ++x)
+                                {
+                                    unsigned char* right = (unsigned char*)(*texture)(width2 + x, height2 + y, depth2 + z, mipmap - 1, array);
+                                    if (right)
+                                    {
+                                        r += right[0];
+                                        g += right[1];
+                                        b += right[2];
+                                        a += right[3];
+                                        count++;
+                                    }
+                                }
+                            }
+                        }
+
+                        unsigned char* left = (unsigned char*)(*texture)(width, height, depth, mipmap, array);
+                        if (left && count)
+                        {
+                            left[0] = r / count;
+                            left[1] = g / count;
+                            left[2] = b / count;
+                            left[3] = a / count;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    texture->Invalidate();
+
+    xxLog(TAG, "MipmapTexture : %s (%.0fus)", texture->Name.c_str(), (xxGetCurrentTime() - begin) * 1000000);
+}
+//------------------------------------------------------------------------------
+void TextureTools::MipmapTextures(xxNodePtr const& node)
+{
+    xxNode::Traversal(node, [](xxNodePtr const& node)
+    {
+        if (node->Material)
+        {
+            for (xxTexturePtr const& texture : node->Material->Textures)
+            {
+                MipmapTexture(texture);
+            }
+        }
+        return true;
+    });
 }
 //==============================================================================

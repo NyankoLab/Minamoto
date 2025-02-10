@@ -117,8 +117,7 @@ static xxNodePtr ImportFile(xxNodePtr const& node, char const* name)
         output = Binary::Load(name);
     if (output)
     {
-        float time = xxGetCurrentTime() - begin;
-        xxLog("Hierarchy", "Import : %s (%0.fus)", xxFile::GetName(name).c_str(), time * 1000000);
+        xxLog("Hierarchy", "Import : %s (%0.fus)", xxFile::GetName(name).c_str(), (xxGetCurrentTime() - begin) * 1000000);
     }
     return output;
 }
@@ -256,8 +255,7 @@ void Hierarchy::Export(const UpdateData& updateData)
             float begin = xxGetCurrentTime();
             if (Binary::Save(exportName, exportNode))
             {
-                float time = xxGetCurrentTime() - begin;
-                xxLog("Hierarchy", "Export : %s (%0.fus)", xxFile::GetName(exportName).c_str(), time * 1000000);
+                xxLog("Hierarchy", "Export : %s (%0.fus)", xxFile::GetName(exportName).c_str(), (xxGetCurrentTime() - begin) * 1000000);
                 exportNode = nullptr;
                 show = false;
             }

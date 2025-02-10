@@ -23,9 +23,15 @@ class ImportEvent : public Event
     std::thread thread;
     xxNodePtr output;
 
+    int nodeCount = 0;
+    int meshCount = 0;
+    int textureCount = 0;
+
 public:
     ImportEvent(xxNodePtr const& root, std::string name);
+
     float Execute() override;
+    void Statistic();
 
     static std::shared_ptr<ImportEvent> Create(xxNodePtr const& root, std::string name);
 };
