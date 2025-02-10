@@ -205,6 +205,9 @@ void Inspector::UpdateMaterial(const UpdateData& updateData, xxMaterialPtr const
                 ImGui::SliderFloat("Power" Q, &material->SpecularHighlight, 0.0f, 256.0f);
             }
         }
+        if (ImGui::Checkbox("AlphaTest" Q, &material->AlphaTest))
+            invalidate = material;
+        ImGui::SliderFloat("Reference" Q, &material->AlphaTestReference, 0.0f, 1.0f);
         if (ImGui::Checkbox("Blending" Q, &material->Blending))
             invalidate = material;
         if (material->Blending)
@@ -263,6 +266,8 @@ void Inspector::UpdateMaterial(const UpdateData& updateData, xxMaterialPtr const
         if (ImGui::Checkbox("Backface Culling" Q, &material->BackfaceCulling))
             invalidate = material;
         if (ImGui::Checkbox("Frustum Culling" Q, &material->FrustumCulling))
+            invalidate = material;
+        if (ImGui::Checkbox("Debug Normal" Q, &material->DebugNormal))
             invalidate = material;
         for (auto& texture : material->Textures)
         {

@@ -312,9 +312,7 @@ xxMeshPtr MeshTools::CreateMeshlet(xxMeshPtr const& mesh)
     memcpy(mesh->Storage[xxMesh::STORAGE1], meshlet_vertices.data(), meshlet_vertices.size() * xxSizeOf(uint32_t));
     memcpy(mesh->Storage[xxMesh::STORAGE2], meshlet_triangles32.data(), meshlet_triangles32.size() * xxSizeOf(uint32_t));
 
-    float time = xxGetCurrentTime() - begin;
-
-    xxLog(TAG, "CreateMeshlet : %s (%.0fus)", mesh->Name.c_str(), time * 1000000);
+    xxLog(TAG, "CreateMeshlet : %s (%.0fus)", mesh->Name.c_str(), (xxGetCurrentTime() - begin) * 1000000);
 
     return mesh;
 }
@@ -385,9 +383,7 @@ xxMeshPtr MeshTools::IndexingMesh(xxMeshPtr const& mesh)
     xxMeshPtr output = CreateMeshFromMeshData(data);
     output->Name = mesh->Name;
 
-    float time = xxGetCurrentTime() - begin;
-
-    xxLog(TAG, "OptimizeMesh : %s Vertex count from %d to %d and index count %d (%.0fus)", mesh->Name.c_str(), mesh->Count[xxMesh::VERTEX], output->Count[xxMesh::VERTEX], output->Count[xxMesh::INDEX], time * 1000000);
+    xxLog(TAG, "OptimizeMesh : %s Vertex count from %d to %d and index count %d (%.0fus)", mesh->Name.c_str(), mesh->Count[xxMesh::VERTEX], output->Count[xxMesh::VERTEX], output->Count[xxMesh::INDEX], (xxGetCurrentTime() - begin) * 1000000);
 
     return output;
 }
@@ -477,9 +473,7 @@ xxMeshPtr MeshTools::NormalizeMesh(xxMeshPtr const& mesh, bool tangent)
     xxMeshPtr output = CreateMeshFromMeshData(data);
     output->Name = mesh->Name;
 
-    float time = xxGetCurrentTime() - begin;
-
-    xxLog(TAG, "NormalizeMesh : %s (%.0fus)", mesh->Name.c_str(), time * 1000000);
+    xxLog(TAG, "NormalizeMesh : %s (%.0fus)", mesh->Name.c_str(), (xxGetCurrentTime() - begin) * 1000000);
 
     return output;
 }
@@ -518,9 +512,7 @@ xxMeshPtr MeshTools::OptimizeMesh(xxMeshPtr const& mesh)
                                 mesh->Vertex, mesh->Count[xxMesh::VERTEX], mesh->VertexStride);
     SetIndexToMesh(mesh, indices);
 
-    float time = xxGetCurrentTime() - begin;
-
-    xxLog(TAG, "OptimizeMesh : %s (%.0fus)", mesh->Name.c_str(), time * 1000000);
+    xxLog(TAG, "OptimizeMesh : %s (%.0fus)", mesh->Name.c_str(), (xxGetCurrentTime() - begin) * 1000000);
 
     return mesh;
 }
@@ -556,9 +548,7 @@ xxMeshPtr MeshTools::ResetMesh(xxMeshPtr const& mesh, xxVector3& origin)
     xxMeshPtr output = CreateMeshFromMeshData(data);
     output->Name = mesh->Name;
 
-    float time = xxGetCurrentTime() - begin;
-
-    xxLog(TAG, "ResetMesh : %s (%.0fus)", mesh->Name.c_str(), time * 1000000);
+    xxLog(TAG, "ResetMesh : %s (%.0fus)", mesh->Name.c_str(), (xxGetCurrentTime() - begin) * 1000000);
 
     if (mesh->Storage[xxMesh::STORAGE0])
     {
@@ -614,9 +604,7 @@ void MeshTools::UnifyMesh(xxNodePtr const& node, float threshold)
                 if (equal == false)
                     continue;
 
-                float time = xxGetCurrentTime() - begin;
-
-                xxLog(TAG, "UnifyMesh : %s == %s (%.0fus)", node->Mesh->Name.c_str(), mesh->Name.c_str(), time * 1000000);
+                xxLog(TAG, "UnifyMesh : %s == %s (%.0fus)", node->Mesh->Name.c_str(), mesh->Name.c_str(), (xxGetCurrentTime() - begin) * 1000000);
 
                 node->Mesh = mesh;
 

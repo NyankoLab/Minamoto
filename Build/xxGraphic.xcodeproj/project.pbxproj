@@ -162,7 +162,6 @@
 		D690A340232AC52300A149EF /* vulkan_xcb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vulkan_xcb.h; path = ../SDK/xxGraphic/vulkan/vulkan_xcb.h; sourceTree = "<group>"; };
 		D690A341232AC52300A149EF /* vk_layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vk_layer.h; path = ../SDK/xxGraphic/vulkan/vk_layer.h; sourceTree = "<group>"; };
 		D690A342232AC52300A149EF /* vulkan_metal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vulkan_metal.h; path = ../SDK/xxGraphic/vulkan/vulkan_metal.h; sourceTree = "<group>"; };
-		D690A343232AC52300A149EF /* vk_sdk_platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vk_sdk_platform.h; path = ../SDK/xxGraphic/vulkan/vk_sdk_platform.h; sourceTree = "<group>"; };
 		D690A344232AC52300A149EF /* vulkan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vulkan.h; path = ../SDK/xxGraphic/vulkan/vulkan.h; sourceTree = "<group>"; };
 		D690A345232AC52300A149EF /* vk_platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vk_platform.h; path = ../SDK/xxGraphic/vulkan/vk_platform.h; sourceTree = "<group>"; };
 		D690A346232AC52300A149EF /* vulkan_macos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vulkan_macos.h; path = ../SDK/xxGraphic/vulkan/vulkan_macos.h; sourceTree = "<group>"; };
@@ -393,7 +392,6 @@
 				D690A351232AC52400A149EF /* vk_icd.h */,
 				D690A341232AC52300A149EF /* vk_layer.h */,
 				D690A345232AC52300A149EF /* vk_platform.h */,
-				D690A343232AC52300A149EF /* vk_sdk_platform.h */,
 				D690A350232AC52400A149EF /* vulkan_android.h */,
 				CE05B0B525DFB88A007B76D7 /* vulkan_beta.h */,
 				D690A33F232AC52300A149EF /* vulkan_core.h */,

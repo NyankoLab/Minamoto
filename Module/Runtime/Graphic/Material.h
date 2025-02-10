@@ -57,6 +57,8 @@ public:
     bool                BackfaceCulling = false;
     bool                FrustumCulling = false;
 
+    bool                DebugNormal = false;
+
     static void         Initialize();
     static void         Shutdown();
 };

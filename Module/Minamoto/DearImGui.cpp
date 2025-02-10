@@ -102,7 +102,7 @@ void DearImGui::Create(void* view, float scale, float font)
 #if defined(xxMACOS)
     io.Fonts->AddFontFromFileTTF("../Resources/" FONT_ICON_FILE_NAME_FA, 13.0f * io.FontGlobalScale, &font_config, icons_ranges);
 #elif defined(xxWINDOWS)
-    io.Fonts->AddFontFromFileTTF(FONT_ICON_FILE_NAME_FA, 13.0f * io.FontGlobalScale, &font_config, icons_ranges);
+    io.Fonts->AddFontFromFileTTF("module/" FONT_ICON_FILE_NAME_FA, 13.0f * io.FontGlobalScale, &font_config, icons_ranges);
 #endif
     font_config.GlyphOffset.y       = 0.0f;
     font_config.GlyphMinAdvanceX    = 0.0f;
