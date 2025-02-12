@@ -142,6 +142,12 @@ void Module::Message(std::initializer_list<char const*> list)
     {
         switch (xxHash(messageData.data[0]))
         {
+        case xxHash("INIT"):
+            DearImGui::Resume();
+            break;
+        case xxHash("SHUTDOWN"):
+            DearImGui::Suspend();
+            break;
         case xxHash("LOGGER_UPDATE"):
             Logger::Update(*(std::deque<char*>*)messageData.data[1]);
             break;

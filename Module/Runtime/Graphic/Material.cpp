@@ -16,11 +16,26 @@
 //==============================================================================
 struct MaterialSelector
 {
+    enum Language
+    {
+        GLSL,
+        HLSL,
+        HLSL10,
+        HLSLVK,
+        MSL1,
+        MSL2
+    };
+
     std::string& shader;
-    int language;
+    Language language;
     int type;
-    int tab = 0;
-    MaterialSelector(std::string& s, int t, int l) : shader(s), language(l), type(t) {}
+    int tab;
+
+    MaterialSelector(std::string& s, Language l, int t)
+        : shader(s), language(l), type(t)
+    {
+        tab = 0;
+    }
     void Append(std::string_view string)
     {
         if (string.size())
@@ -69,88 +84,108 @@ struct MaterialSelector
     {
         std::string_view string;
         if (available == false)      return;
-        else if (language == 'GLSL') { string = glsl; }
-        else if (language == 'HLSL') { string = glsl; }
-        else if (language == 'hlsl') { string = glsl; }
-        else if (language == 'MSL1') { string = msl;  }
-        else if (language == 'MSL2') { string = msl;  }
+        else if (language == GLSL)   { string = glsl; }
+        else if (language == HLSL)   { string = glsl; }
+        else if (language == HLSL10) { string = glsl; }
+        else if (language == HLSLVK) { string = glsl; }
+        else if (language == MSL1)   { string = msl;  }
+        else if (language == MSL2)   { string = msl;  }
         Append(string);
     }
     void GH(bool available, std::string_view glsl, std::string_view hlsl)
     {
         std::string_view string;
         if (available == false)      return;
-        else if (language == 'GLSL') { string = glsl; }
-        else if (language == 'HLSL') { string = hlsl; }
-        else if (language == 'hlsl') { string = hlsl; }
-        else if (language == 'MSL1') { string = hlsl;  }
-        else if (language == 'MSL2') { string = hlsl;  }
+        else if (language == GLSL)   { string = glsl; }
+        else if (language == HLSL)   { string = hlsl; }
+        else if (language == HLSL10) { string = hlsl; }
+        else if (language == HLSLVK) { string = hlsl; }
+        else if (language == MSL1)   { string = hlsl; }
+        else if (language == MSL2)   { string = hlsl; }
         Append(string);
     }
     void GHM(bool available, std::string_view glsl, std::string_view hlsl, std::string_view msl)
     {
         std::string_view string;
         if (available == false)      return;
-        else if (language == 'GLSL') { string = glsl; }
-        else if (language == 'HLSL') { string = hlsl; }
-        else if (language == 'hlsl') { string = hlsl; }
-        else if (language == 'MSL1') { string = msl;  }
-        else if (language == 'MSL2') { string = msl;  }
+        else if (language == GLSL)   { string = glsl; }
+        else if (language == HLSL)   { string = hlsl; }
+        else if (language == HLSL10) { string = hlsl; }
+        else if (language == HLSLVK) { string = hlsl; }
+        else if (language == MSL1)   { string = msl;  }
+        else if (language == MSL2)   { string = msl;  }
         Append(string);
     }
     void GHHM(bool available, std::string_view glsl, std::string_view hlsl, std::string_view hlsl10, std::string_view msl)
     {
         std::string_view string;
         if (available == false)      return;
-        else if (language == 'GLSL') { string = glsl;   }
-        else if (language == 'HLSL') { string = hlsl10; }
-        else if (language == 'hlsl') { string = hlsl;   }
-        else if (language == 'MSL1') { string = msl;    }
-        else if (language == 'MSL2') { string = msl;    }
+        else if (language == GLSL)   { string = glsl;   }
+        else if (language == HLSL)   { string = hlsl;   }
+        else if (language == HLSL10) { string = hlsl10; }
+        else if (language == HLSLVK) { string = hlsl10; }
+        else if (language == MSL1)   { string = msl;    }
+        else if (language == MSL2)   { string = msl;    }
         Append(string);
     }
     void GHMM(bool available, std::string_view glsl, std::string_view hlsl, std::string_view msl1, std::string_view msl2)
     {
         std::string_view string;
         if (available == false)      return;
-        else if (language == 'GLSL') { string = glsl; }
-        else if (language == 'HLSL') { string = hlsl; }
-        else if (language == 'hlsl') { string = hlsl; }
-        else if (language == 'MSL1') { string = msl1; }
-        else if (language == 'MSL2') { string = msl2; }
+        else if (language == GLSL)   { string = glsl; }
+        else if (language == HLSL)   { string = hlsl; }
+        else if (language == HLSL10) { string = hlsl; }
+        else if (language == HLSLVK) { string = hlsl; }
+        else if (language == MSL1)   { string = msl1; }
+        else if (language == MSL2)   { string = msl2; }
         Append(string);
     }
     void HM(bool available, std::string_view hlsl, std::string_view msl)
     {
         std::string_view string;
         if (available == false)      return;
-        else if (language == 'GLSL') { string = hlsl; }
-        else if (language == 'HLSL') { string = hlsl; }
-        else if (language == 'hlsl') { string = hlsl; }
-        else if (language == 'MSL1') { string = msl;  }
-        else if (language == 'MSL2') { string = msl;  }
+        else if (language == GLSL)   { string = hlsl; }
+        else if (language == HLSL)   { string = hlsl; }
+        else if (language == HLSL10) { string = hlsl; }
+        else if (language == HLSLVK) { string = hlsl; }
+        else if (language == MSL1)   { string = msl;  }
+        else if (language == MSL2)   { string = msl;  }
         Append(string);
     }
     void HMM(bool available, std::string_view hlsl, std::string_view msl1, std::string_view msl2)
     {
         std::string_view string;
         if (available == false)      return;
-        else if (language == 'GLSL') { string = hlsl; }
-        else if (language == 'HLSL') { string = hlsl; }
-        else if (language == 'hlsl') { string = hlsl; }
-        else if (language == 'MSL1') { string = msl1; }
-        else if (language == 'MSL2') { string = msl2; }
+        else if (language == GLSL)   { string = hlsl; }
+        else if (language == HLSL)   { string = hlsl; }
+        else if (language == HLSL10) { string = hlsl; }
+        else if (language == HLSLVK) { string = hlsl; }
+        else if (language == MSL1)   { string = msl1; }
+        else if (language == MSL2)   { string = msl2; }
         Append(string);
     }
     void HHMM(bool available, std::string_view hlsl, std::string_view hlsl10, std::string_view msl1, std::string_view msl2)
     {
         std::string_view string;
         if (available == false)      return;
-        else if (language == 'GLSL') { string = hlsl;   }
-        else if (language == 'HLSL') { string = hlsl10; }
-        else if (language == 'hlsl') { string = hlsl;   }
-        else if (language == 'MSL1') { string = msl1;   }
-        else if (language == 'MSL2') { string = msl2;   }
+        else if (language == GLSL)   { string = hlsl;   }
+        else if (language == HLSL)   { string = hlsl;   }
+        else if (language == HLSL10) { string = hlsl10; }
+        else if (language == HLSLVK) { string = hlsl10; }
+        else if (language == MSL1)   { string = msl1;   }
+        else if (language == MSL2)   { string = msl2;   }
+        Append(string);
+    }
+    void HHHMM(bool available, std::string_view hlsl, std::string_view hlsl10, std::string_view hlslvk, std::string_view msl1, std::string_view msl2)
+    {
+        std::string_view string;
+        if (available == false)      return;
+        else if (language == GLSL)   { string = hlsl;   }
+        else if (language == HLSL)   { string = hlsl;   }
+        else if (language == HLSL10) { string = hlsl10; }
+        else if (language == HLSLVK) { string = hlslvk; }
+        else if (language == MSL1)   { string = msl1;   }
+        else if (language == MSL2)   { string = msl2;   }
         Append(string);
     }
 };
@@ -349,20 +384,20 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
     xxMesh* mesh = data.mesh;
 
     char const* deviceString = xxGetInstanceName();
-    int language = 0;
-    if (language == 0 && strstr(deviceString, "Metal 2"))    language = 'MSL2';
-    if (language == 0 && strstr(deviceString, "Metal"))      language = 'MSL1';
-    if (language == 0 && strstr(deviceString, "Direct3D 1")) language = 'HLSL';
-    if (language == 0 && strstr(deviceString, "Direct3D"))   language = 'hlsl';
-    if (language == 0 && strstr(deviceString, "Vulkan"))     language = 'HLSL';
-    if (language == 0 && strstr(deviceString, "GL"))         language = 'GLSL';
+    MaterialSelector::Language language = MaterialSelector::GLSL;
+    if (language == 0 && strstr(deviceString, "Metal 2"))    language = MaterialSelector::MSL2;
+    if (language == 0 && strstr(deviceString, "Metal"))      language = MaterialSelector::MSL1;
+    if (language == 0 && strstr(deviceString, "Direct3D 1")) language = MaterialSelector::HLSL10;
+    if (language == 0 && strstr(deviceString, "Direct3D"))   language = MaterialSelector::HLSL;
+    if (language == 0 && strstr(deviceString, "Vulkan"))     language = MaterialSelector::HLSLVK;
+    if (language == 0 && strstr(deviceString, "GL"))         language = MaterialSelector::GLSL;
 
     std::string shader;
     uint16_t meshTextureSlot = 0;
     uint16_t vertexTextureSlot = 0;
     uint16_t fragmentTextureSlot = 0;
 
-    struct MaterialSelector s(shader, type, language);
+    struct MaterialSelector s(shader, language, type);
 
     shader += ShaderOption;
     s.Define("DEBUG_NORMAL", DebugNormal ? 1 : 0);
@@ -454,7 +489,7 @@ int Material::GetFragmentConstantSize(xxDrawData const& data) const
 //------------------------------------------------------------------------------
 void Material::ShaderDefault(xxDrawData const& data, struct MaterialSelector& s) const
 {
-    if (s.language == 'GLSL')
+    if (s.language == MaterialSelector::GLSL)
     {
         s.Define("float2", "vec2");
         s.Define("float3", "vec3");
@@ -466,7 +501,9 @@ void Material::ShaderDefault(xxDrawData const& data, struct MaterialSelector& s)
         s.Define("int3", "ivec3");
         s.Define("int4", "ivec4");
     }
-    if (s.language == 'GLSL' || s.language == 'MSL1' || s.language == 'MSL2')
+    if (s.language == MaterialSelector::GLSL ||
+        s.language == MaterialSelector::MSL1 ||
+        s.language == MaterialSelector::MSL2)
     {
         s.Define("mul(a, b)", "(a * b)");
     }
@@ -535,32 +572,36 @@ void Material::ShaderConstant(xxDrawData const& data, struct MaterialSelector& s
         s(true, "};"                     );
     }
 
-    //           GLSL / HLSL                                  HLSL10                               MSL                                           MSL Argument
-    s.HHMM(true, "",                                          "",                                  "",                                           "struct Uniform"                         );
-    s.HHMM(true, "",                                          "",                                  "",                                           "{"                                      );
-    s.HHMM(mesh, "",                                          "",                                  "struct MeshBuffer",                          ""                                       );
-    s.HHMM(mesh, "",                                          "",                                  "{",                                          ""                                       );
-    s.HHMM(mesh, "",                                          "",                                  "device Attribute* Vertices [[buffer(0)]];",  "device Attribute* Vertices [[id(0)]];"  );
-    s.HHMM(mesh, "",                                          "",                                  "device Meshlet* Meshlets [[buffer(1)]];",    "device Meshlet* Meshlets [[id(1)]];"    );
-    s.HHMM(mesh, "",                                          "",                                  "device uint* VertexIndices [[buffer(2)]];",  "device uint* VertexIndices [[id(2)]];"  );
-    s.HHMM(mesh, "",                                          "",                                  "device uint* TriangeIndices [[buffer(3)]];", "device uint* TriangeIndices [[id(3)]];" );
-    s.HHMM(mesh, "",                                          "",                                  "};",                                         ""                                       );
-    s.HHMM(true, "",                                          "",                                  "struct Uniform",                             ""                                       );
-    s.HHMM(true, "",                                          "",                                  "{",                                          ""                                       );
-    s.HHMM(true, "#if SHADER_UNIFORM",                        "#if SHADER_UNIFORM",                "#if SHADER_UNIFORM",                         ""                                       );
-    s.HHMM(mesh, "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];", "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(30)]];"      );
-    s.HHMM(vert, "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];", "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(0)]];"       );
-    s.HHMM(frag, "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];", "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(1)]];"       );
-    s.HHMM(true, "#endif",                                    "#endif",                            "#endif",                                     ""                                       );
-    s.HHMM(true, "",                                          "",                                  "};",                                         ""                                       );
-    s.HHMM(true, "",                                          "",                                  "struct Sampler",                             ""                                       );
-    s.HHMM(true, "",                                          "",                                  "{",                                          ""                                       );
-    s.HHMM(base, "",                                          "Texture2D<float4> Base;",           "texture2d<float> Base [[texture(0)]];",      "texture2d<float> Base [[id(4)]];"       );
-    s.HHMM(bump, "",                                          "Texture2D<float4> Bump;",           "texture2d<float> Bump [[texture(1)]];",      "texture2d<float> Bump [[id(5)]];"       );
-    s.HHMM(base, "uniform sampler2D BaseSampler;",            "sampler BaseSampler;",              "sampler BaseSampler [[sampler(0)]];",        "sampler BaseSampler [[id(18)]];"        );
-    s.HHMM(bump, "uniform sampler2D BumpSampler;",            "sampler BumpSampler;",              "sampler BumpSampler [[sampler(1)]];",        "sampler BumpSampler [[id(19)]];"        );
-    s.HHMM(true, "",                                          "",                                  "};",                                         "};"                                     );
-    s.HHMM(frag, "",                                          "",                                  "",                                           "struct Sampler {};"                     );
+    //            GLSL / HLSL                                  HLSL10                               MSL                                           MSL Argument
+    s.HHMM(true,  "",                                          "",                                  "",                                           "struct Uniform"                         );
+    s.HHMM(true,  "",                                          "",                                  "",                                           "{"                                      );
+    s.HHMM(mesh,  "",                                          "",                                  "struct MeshBuffer",                          ""                                       );
+    s.HHMM(mesh,  "",                                          "",                                  "{",                                          ""                                       );
+    s.HHMM(mesh,  "",                                          "",                                  "device Attribute* Vertices [[buffer(0)]];",  "device Attribute* Vertices [[id(0)]];"  );
+    s.HHMM(mesh,  "",                                          "",                                  "device Meshlet* Meshlets [[buffer(1)]];",    "device Meshlet* Meshlets [[id(1)]];"    );
+    s.HHMM(mesh,  "",                                          "",                                  "device uint* VertexIndices [[buffer(2)]];",  "device uint* VertexIndices [[id(2)]];"  );
+    s.HHMM(mesh,  "",                                          "",                                  "device uint* TriangeIndices [[buffer(3)]];", "device uint* TriangeIndices [[id(3)]];" );
+    s.HHMM(mesh,  "",                                          "",                                  "};",                                         ""                                       );
+    s.HHHMM(mesh, "", "cbuffer Uniform",         "[[vk::binding(30, 0)]] cbuffer Uniform",          "struct Uniform",                             ""                                       );
+    s.HHHMM(vert, "", "cbuffer Uniform",         "[[vk::binding(0, 0)]] cbuffer Uniform",           "struct Uniform",                             ""                                       );
+    s.HHHMM(frag, "", "cbuffer Uniform",         "[[vk::binding(1, 0)]] cbuffer Uniform",           "struct Uniform",                             ""                                       );
+    s.HHMM(true,  "",                                          "{",                                 "{",                                          ""                                       );
+    s.HHMM(true,  "#if SHADER_UNIFORM",                        "#if SHADER_UNIFORM",                "#if SHADER_UNIFORM",                         ""                                       );
+    s.HHMM(mesh,  "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];", "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(30)]];"      );
+    s.HHMM(vert,  "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];", "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(0)]];"       );
+    s.HHMM(frag,  "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];", "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(1)]];"       );
+    s.HHMM(true,  "#endif",                                    "#endif",                            "#endif",                                     ""                                       );
+    s.HHMM(true,  "",                                          "};",                                "};",                                         ""                                       );
+    s.HHMM(true,  "",                                          "",                                  "struct Sampler",                             ""                                       );
+    s.HHMM(true,  "",                                          "",                                  "{",                                          ""                                       );
+    s.HHHMM(base, "", "Texture2D<float4> Base;", "[[vk::binding(4, 0)]] Texture2D<float4> Base;",   "texture2d<float> Base [[texture(0)]];",      "texture2d<float> Base [[id(4)]];"       );
+    s.HHHMM(bump, "", "Texture2D<float4> Bump;", "[[vk::binding(5, 0)]] Texture2D<float4> Bump;",   "texture2d<float> Bump [[texture(1)]];",      "texture2d<float> Bump [[id(5)]];"       );
+    s.HHHMM(base, "", "sampler BaseSampler;",    "[[vk::binding(18, 0)]] sampler BaseSampler;",     "sampler BaseSampler [[sampler(0)]];",        "sampler BaseSampler [[id(18)]];"        );
+    s.HHHMM(bump, "", "sampler BumpSampler;",    "[[vk::binding(19, 0)]] sampler BumpSampler;",     "sampler BumpSampler [[sampler(1)]];",        "sampler BumpSampler [[id(19)]];"        );
+    s.HHMM(base,  "uniform sampler2D BaseSampler;",            "",                                  "",                                           ""                                       );
+    s.HHMM(bump,  "uniform sampler2D BumpSampler;",            "",                                  "",                                           ""                                       );
+    s.HHMM(true,  "",                                          "",                                  "};",                                         "};"                                     );
+    s.HHMM(frag,  "",                                          "",                                  "",                                           "struct Sampler {};"                     );
 }
 //------------------------------------------------------------------------------
 void Material::ShaderVarying(xxDrawData const& data, struct MaterialSelector& s) const
