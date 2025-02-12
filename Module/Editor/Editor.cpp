@@ -7,6 +7,7 @@
 #include "Editor.h"
 #include "Event/Event.h"
 #include "Graphic/ShaderAssembler.h"
+#include "Graphic/ShaderCompiler.h"
 #include "Graphic/ShaderDisassembler.h"
 #include "Import/Import.h"
 #include "Utility/Tools.h"
@@ -110,6 +111,7 @@ moduleAPI bool Update(const UpdateData& updateData)
     static bool showScene = true;
     static bool showGame = true;
     static bool showShaderAssembler = false;
+    static bool showShaderCompiler = false;
     static bool showShaderDisassembler = false;
     bool updated = false;
 
@@ -132,6 +134,7 @@ moduleAPI bool Update(const UpdateData& updateData)
             ImGui::MenuItem(ICON_FA_GAMEPAD         "Game", nullptr, &showGame);
             ImGui::Separator();
             ImGui::MenuItem(ICON_FA_PENCIL          "Shader Assembler", nullptr, &showShaderAssembler);
+            ImGui::MenuItem(ICON_FA_PENCIL_SQUARE_O "Shader Compiler", nullptr, &showShaderCompiler);
             ImGui::MenuItem(ICON_FA_FILE_TEXT       "Shader Disassembler", nullptr, &showShaderDisassembler);
             ImGui::EndMenu();
         }
@@ -173,6 +176,7 @@ moduleAPI bool Update(const UpdateData& updateData)
     updated |= Scene::Update(updateData, showScene);
     updated |= Game::Update(updateData, showGame);
     updated |= ShaderAssembler::Update(updateData, showShaderAssembler);
+    updated |= ShaderCompiler::Update(updateData, showShaderCompiler);
     updated |= ShaderDisassembler::Update(updateData, showShaderDisassembler);
 
     static bool dockPostInitialized = false;
