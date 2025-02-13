@@ -169,16 +169,16 @@ static void Disassemble(ShaderDisassemblyData& data)
                         return (found == 1) ? data.vertexDisassembly : data.fragmentDisassembly;
                     }();
 
-                    std::function<int(void const*, size_t)> instruction_length = [gpu]()
+                    std::function<std::pair<int, char const*>(void const*, size_t)> instruction_length = [gpu]()
                     {
                         switch (gpu)
                         {
                         case 'G13X':
-                            return ShaderDisassemblerAGX::InstructionLengthG13X;
+                            return ShaderDisassemblerAGX::InstructionG13X;
                         case 'G15X':
-                            return ShaderDisassemblerAGX::InstructionLengthG15X;
+                            return ShaderDisassemblerAGX::InstructionG15X;
                         }
-                        return ShaderDisassemblerAGX::InstructionLength;
+                        return ShaderDisassemblerAGX::Instruction;
                     }();
 
                     char line[128];
@@ -187,12 +187,14 @@ static void Disassemble(ShaderDisassemblyData& data)
                     for (size_t i = 0; i < size; i += 2)
                     {
                         unsigned char* code = (unsigned char*)binary + i;
-                        int length = instruction_length(code, size - i);
+                        auto pair = instruction_length(code, size - i);
+                        int length = pair.first;
                         snprintf(line, 128, "%4zd : ", i);
                         for (int i = 0; i < length; i += 2)
                         {
                             snprintf(line, 128, "%s%02X%02X", line, code[i], code[i + 1]);
                         }
+                        snprintf(line, 128, "%s%*s%s", line, 24 - length * 2 + 2, "", pair.second);
                         disassembly += line;
                         disassembly += "\n";
                         if (code[0] == 0x0E && code[1] == 0x00)
@@ -397,11 +399,11 @@ bool ShaderDisassembler::Update(const UpdateData& updateData, bool& show)
 
         ImGui::NextColumn();
 
-        static bool focus = false;
+        static uint64_t focus = 0;
         int flag = 0;
-        if (focus == false)
+        if (focus != updateData.renderPass)
         {
-            focus = true;
+            focus = updateData.renderPass;
             flag = ImGuiTabItemFlags_SetSelected;
         }
 
