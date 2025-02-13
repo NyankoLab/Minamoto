@@ -119,7 +119,12 @@ std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG13X(void const* d
         {
 //      case 0b0000001: return { 8, "???" };
         case 0b0001001: return { 8, "st_tile" };
-//      case 0b0010001: return { 8, "???" };
+        case 0b0010001:
+            switch (code[0] & 0x80)
+            {
+            case 0x80: return { 4, "st_var_final" };
+            }
+            return { 4, "st_var" };
 //      case 0b0011001: return { 8, "???" };
         case 0b0100001: return { L ? 8 : 4, "ld_var" };
         case 0b0101001: return { L ? 8 : 6, "threadgroup_store" };
@@ -127,9 +132,9 @@ std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG13X(void const* d
         case 0b0111001: return { L ? 8 : 6, "threadgroup_store" };
 //      case 0b1000001: return { 8, "???" };
         case 0b1001001: return { 8, "ld_tile" };
-//      case 0b1010001: return { 8, "???" };
+        case 0b1010001: return { 4, "no_var" };
 //      case 0b1011001: return { 8, "???" };
-        case 0b1100001: return { L ? 8 : 4, "ld_var" };
+        case 0b1100001: return { L ? 8 : 4, "ld_var_perspective" };
         case 0b1101001: return { L ? 8 : 6, "threadgroup_load" };
         case 0b1110001: return { L ? 12 : 8, "texture_load" };
         case 0b1111001: return { L ? 8 : 6, "threadgroup_load" };
