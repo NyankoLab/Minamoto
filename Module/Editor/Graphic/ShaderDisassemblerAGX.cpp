@@ -87,12 +87,12 @@ void ShaderDisassemblerAGX::Disassemble(std::vector<uint32_t> const& archive, st
     }
 }
 //------------------------------------------------------------------------------
-std::pair<int, char const*> ShaderDisassemblerAGX::Instruction(void const* data, size_t size)
+ShaderDisassemblerAGX::Instruction ShaderDisassemblerAGX::Decode(void const* data, size_t size)
 {
     return { 2, "???" };
 }
 //------------------------------------------------------------------------------
-std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG13X(void const* data, size_t size)
+ShaderDisassemblerAGX::Instruction ShaderDisassemblerAGX::DecodeG13X(void const* data, size_t size)
 {
     // https://github.com/dougallj/applegpu
     unsigned char code[12] = {};
@@ -213,15 +213,15 @@ std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG13X(void const* d
     return { 2, "???" };
 }
 //------------------------------------------------------------------------------
-std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG15X(void const* data, size_t size)
+ShaderDisassemblerAGX::Instruction ShaderDisassemblerAGX::DecodeG15X(void const* data, size_t size)
 {
     // https://github.com/TellowKrinkle/applegpu/tree/M3
     unsigned char code[16] = {};
     memcpy(code, data, size < 16 ? size : 16);
+    bool L;
     switch (code[0] & 7)
     {
     case 0:
-    case 1:
         switch (code[2] & 7)
         {
         case 0:
@@ -235,37 +235,84 @@ std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG15X(void const* d
             }
         }
         return { 6 + 2 * (code[4] & 3), "???" };
+    case 1:
+        switch (code[2] & 0b111)
+        {
+//      case 0b000:
+//      case 0b001:
+        case 0b010: return { 4, "fmadd", "r23-22,7-4,50:1:54:3 r56,14-9,51:1:55:8 r58,30-25,52:1:57:24 r23-22,7-4,50:1:54:3" };
+        case 0b011: return { 4, "fmadd", "r23-22,7-4,50:1:54:3 r56,14-9,51:1:55:8 r23-22,7-4,50:1:54:3 r58,30-25,52:1:57:24" };
+        case 0b100:
+        case 0b101:
+        case 0b110:
+            switch (code[4] & 0b11)
+            {
+            case 0b00: return { 6, "fmadd",  "r23-22,7-4,34:1::3 r14-9,35:1::8 r30-25,36:1::24 r46-40:1::3" }; //
+            case 0b01: return { 8, "fmadd",  "r60,23-22,7-4,50:1:54:3 r56,14-9,51:1:55:8 r58,30-25,52:1:57:24 r38,46-40:1:37:49" };
+            case 0b10: return { 10, "fmadd", "r60,23-22,7-4,50:1:54:3 r56,14-9,51:1:55:8 r58,30-25,52:1:57:24 r38,46-40:1:37:49" };
+            case 0b11: return { 12, "fmadd", "r60,23-22,7-4,50:1:54:3 r56,14-9,51:1:55:8 r58,30-25,52:1:57:24 r38,46-40:1:37:49" };
+            }
+        case 0b111:
+            return { 8, "fmadd",  "r60,23-22,7-4,50:1:54:3 r56,14-9,51:1:55:8 r58,30-25,52:1:57:24 r38,46-40:1:37:49" };
+        }
+        return { 6 + 2 * (code[4] & 3), "group=1" };
     case 2:
         switch (code[2] & 1)
         {
-        case 0: return { 6, "???" };
+        case 0: return { 6, "cmpsel", "r44,23-22,7-4,3:2:38:17 r40,14-9,35:2:39:8 r42,30-25,36:2:41:24" };
         case 1:
             switch (code[4] & 3)
             {
             case 0:
-            case 1: return { 8, "???" };
-            case 2: return { 10, "???" };
+            case 1: return { 8, "cmpsel",  "r60-23-22,7-4,3:2:54:17 r56,14-9,51:2:55:8 r58,30-25,52:2:57:24 r38,46-40:2:37:17" };
+            case 2: return { 10, "cmpsel", "r60-23-22,7-4,3:2:54:17 r56,14-9,51:2:55:8 r58,30-25,52:2:57:24 r38,46-40:2:37:17 r70,78-72:2:54:17" };
+            case 3: return { 14, "cmpsel", "r60-23-22,7-4,3:2:54:17 r56,14-9,51:2:55:8 r58,30-25,52:2:57:24 r38,46-40:2:37:17 r70,78-72:2:54:17" };
             }
         }
-        return { 14, "???" };
+        return { 14, "group=2" };
     case 3:
-        switch (code[2] & 6)
+        switch (code[2] & 0b111)
         {
-        case 0:
-        case 2:
-        case 4: return { 4, "???" };
+        case 0b000: return { 4, "clr", "r25,23-22,7-4,24:1:26:3" };
+        case 0b001: return { 4, "mov", "r44,23-22,7-4,34:1:26:3 r28,14-8:1:27:3" };
+        case 0b010: return { 4, "and", "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" };
+        case 0b011: return { 4, "xor", "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" };
+        case 0b100: return { 4, "or",  "r44,23-22,7-4,34:1:38:3 r40,14-9,35:31:9:8 r42,30-25,36:1:41:24" };
+        case 0b101: return { 4, "mov", "r25,23-22,7-4,24:1:26:3 r28,14-8:1:27:3" };
+        case 0b110:
+        case 0b111:
+            switch (((code[2] & 1) << 3) | (code[4] & 3) | ((code[5] & 8) >> 1))
+            {
+            case 0b0000: return { 10, "zero",      "r44,23-22,7-4,34:1:38:3" };
+            case 0b0001: return { 10, "nandn",     "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" };
+            case 0b0010: return { 10, "andn",      "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" };
+            case 0b0011: return { 10, "not",       "r44,23-22,7-4,34:1:38:3"                 " r42,30-25,36:1:41:24" }; // nandn_or_andn
+            case 0b0100: return { 10, "nand",      "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" };
+            case 0b0101: return { 10, "not",       "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8"                      }; // nandn_or_nand
+            case 0b0110: return { 10, "xor",       "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" }; // andn_or_nand
+            case 0b0111: return { 10, "any_false", "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" }; // nandn_or_andn_or_nand
+            case 0b1000: return { 10, "and",       "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" };
+            case 0b1001: return { 10, "xnor",      "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" }; // nandn_or_and
+            case 0b1010: return { 10, "mov",       "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8"                      }; // andn_or_and
+            case 0b1011: return { 10, "any_true",  "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" }; // nandn_or_andn_or_and
+            case 0b1100: return { 10, "mov",       "r44,23-22,7-4,34:1:38:3"                 " r42,30-25,36:1:41:24" }; // nand_or_and
+            case 0b1101: return { 10, "all_false", "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" }; // nandn_or_nand_or_and ?
+            case 0b1110: return { 10, "all_true",  "r44,23-22,7-4,34:1:38:3 r40,14-9,35:1:39:8 r42,30-25,36:1:41:24" }; // andn_or_nand_or_and
+            case 0b1111: return { 10, "one",       "r44,23-22,7-4,34:1:38:3" };
+            }
+            return { 10, "???" };
         }
         return { 10, "???" };
     case 4:
+        L = (code[2] & 1) == 1;
         switch (code[1] & 0x80)
         {
-        case 0x00: return { 2, "???" };
+        case 0x00: return { 4, "mov", "r7-4 14-8" };
         default:
-            switch (code[2] & 3)
+            switch (code[2] & 2)
             {
-            case 0x0: return { 4, "???" };
-            case 0x1:
-            case 0x2: return { 8, "???" };
+            case 0: return { L ? 8 : 4, "get", "r60,23-22,7-4,18:2:16:3 s14-8" };
+            case 2: return { 10,        "mov", "r19,23-22,7-4,18:2:16:3 31-25,59-48,43-42,36-33,14-8" };
             }
             return { 10, "???" };
         }
@@ -273,9 +320,10 @@ std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG15X(void const* d
     case 5:
         return { 14, "???" };
     case 6:
-        switch (code[1] & 1)
+        switch (code[0] & 0b1110)
         {
-        case 0: return { 4, "???" };
+        case 0b0110: return { 2, "wait" };
+        case 0b1110: return { 4, "stop" };
         }
         return { 8, "???" };
     case 7:
@@ -286,14 +334,16 @@ std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG15X(void const* d
             case 0x0704: return { 6, "barrier" };
             case 0x5701: return { 6, "jmp_exec_none" };
             case 0x0f06: return { 6, "pop_exec" };
-            case 0x8702: return { 6, "???" };
+                case 0x8702: return { 6, "???" };
+                case 0x1f03: return { 6, "???" }; // flat
+                case 0x1f0b: return { 6, "???" }; // flat
             case 0x1704: return { 8, "unpack unorm/snorm" };
             case 0x2705: return { 8, "popcount" };
             case 0x2706: return { 8, "unpack rgb10a2 rg11b10f rgb9e5" };
             case 0xa707: return { 8, "convert" };
             case 0xa704: return { 8, "bitrev" };
             case 0xa705: return { 8, "ffs" };
-            case 0x5706: return { 8, "store vertex output" };
+            case 0x5706: return { 8, "vertex_store", "v44-36:1::18 r31-24:1:22:20" };
             case 0x3700: return { 8, "quad_and" };
             case 0x3701: return { 8, "quad_xor" };
             case 0x3702: return { 8, "quad_smin" };
@@ -318,15 +368,19 @@ std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG15X(void const* d
             case 0xbf06: return { 8, "simd_fmul" };
             case 0xbf05: return { 8, "simd_fmin" };
             case 0xbf07: return { 8, "simd_fmax" };
+                case 0xaf04: return { 8, "???" }; // sample_no_perspective
+                case 0xaf14: return { 8, "???" }; // centroid_no_perspective
             case 0x0f01: return { 10, "jmp_exec_none?" };
             case 0x2707: return { 10, "unknown, appears in round implementation" };
             case 0x2f00: return { 10, "floor/ceil/trunc/rint" };
             case 0x2f02: return { 10, "log2" };
             case 0x2f03: return { 10, "sin_pt_1???" };
-            case 0x9f01: return { 10, "iadd" };
+                case 0x2f05: return { 10, "???" }; // center_no_perspective
+                case 0x2f0d: return { 10, "???" }; // center_no_perspective
+            case 0x9f01: return { 10, "iadd", "r31-24:1::59 r48-41:72::61 r57-50:74::63" };
             case 0x9704: return { 10, "pack unorm/snorm" };
-            case 0x970c: return { 10, "???" };
-            case 0x1f01: return { 10, "isub" };
+                case 0x970c: return { 10, "???" };
+            case 0x1f01: return { 10, "isub", "r31-24:1::59 r48-41:72::61 r57-50:74::63" };
             case 0x2703: return { 10, "???" };
             case 0x2704: return { 10, "???" };
             case 0xa701: return { 10, "asr" };
@@ -346,8 +400,8 @@ std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG15X(void const* d
             case 0x2700: return { 12, "bfi" };
             case 0x2701: return { 12, "extr" };
             case 0x2702: return { 12, "shlhi" };
-            case 0x9f00: return { 12, "imadd" };
-            case 0x1f00: return { 12, "imsub" };
+            case 0x9f00: return { 12, "imadd", "r31-24:1::68 r48-41:81::70 r57-50:83::71 r66-59:85::72" };
+            case 0x1f00: return { 12, "imsub", "r31-24:1::68 r48-41:81::70 r57-50:83::71 r66-59:85::72" };
             case 0xa700: return { 12, "bfeil" };
             case 0xa702: return { 12, "shrhi" };
             case 0x9703: return { 12, "quad_ballot?" };
@@ -355,7 +409,7 @@ std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG15X(void const* d
             case 0x6f00: return { 12, "???" };
             case 0x1705: return { 12, "???" };
             case 0x8f04: return { 14, "while + jmp_exec_any?" };
-            case 0x6700: return { 14, "device_load" };
+            case 0x6700: return { 14, "device_load", "r31-24:1::68 92-77" };
             case 0x6702: return { 14, "threadgroup_load" };
             case 0xa706: return { 14, "pack rgb10a2 rg11b10f rgb9e5" };
             case 0xe700: return { 14, "device_store" };
@@ -366,5 +420,155 @@ std::pair<int, char const*> ShaderDisassemblerAGX::InstructionG15X(void const* d
         return { 2, "???" };
     }
     return { 2, "???" };
+}
+//------------------------------------------------------------------------------
+std::string ShaderDisassemblerAGX::Format(void const* data, Instruction instruction) __attribute__((optnone))
+{
+    unsigned char code[16] = {};
+    memcpy(code, data, instruction.length < 16 ? instruction.length : 16);
+
+    std::string output;
+    char const* name = instruction.name;
+    char const* parameter = instruction.parameter;
+
+    output = name;
+    char c = parameter && parameter[0] ? 1 : 0;
+    while (c)
+    {
+        output.push_back(' ');
+
+        bool reg = false;
+        bool colon = false;
+        bool special = false;
+        int left = -1;
+        int right = -1;
+        int index = 0;
+        int flags = 0;
+        for (;;)
+        {
+            c = *parameter++;
+//          if (c == '*' || c == '+')
+//          {
+//              if (output.back() == ' ')
+//                  output.pop_back();
+//              if (output.back() == ',')
+//                  output.pop_back();
+//              output.push_back(c);
+//              break;
+//          }
+            if (c == 0 || c == ' ' || c == ',' || c == ':')
+            {
+                if (left == -1)
+                    left = right;
+                if (right == -1)
+                {
+                    if (colon)
+                    {
+                        flags <<= 1;
+                    }
+                    else
+                    {
+                        index <<= 1;
+                    }
+                }
+                else
+                {
+                    for (int i = left; i >= right; --i)
+                    {
+                        if (colon)
+                        {
+                            flags <<= 1;
+                            flags |= (code[i / 8] >> (i % 8)) & 1;
+                        }
+                        else
+                        {
+                            index <<= 1;
+                            index |= (code[i / 8] >> (i % 8)) & 1;
+                        }
+                    }
+                }
+                if (c == 0 || c == ' ')
+                    break;
+                if (c == ':')
+                    colon = true;
+                left = -1;
+                right = -1;
+                continue;
+            }
+            if (c == '-')
+            {
+                left = right;
+                right = -1;
+                continue;
+            }
+            if (c >= '0' && c <= '9')
+            {
+                if (right == -1)
+                    right = 0;
+                right = right * 10 + (c - '0');
+                continue;
+            }
+            if (c == 'r' || c == 'v')
+            {
+                reg = true;
+            }
+            if (c == 's')
+            {
+                special = true;
+            }
+            output.push_back(c);
+        }
+//      if (c == '*' || c == '+' || right == -1)
+//      {
+//          continue;
+//      }
+        if (reg)
+        {
+            // Register / Uniform / Size
+            if (flags & 0b100)
+            {
+                if (flags & 0b10)
+                {
+                    output.pop_back();
+                    output.push_back('u');
+                }
+                if (flags & 0b01)
+                {
+                    output += std::to_string(index >> 1);
+                }
+                else
+                {
+                    if (index & 0b10000000)
+                    {
+                        output += std::to_string(index & 0b01111111);
+                        output += 'h';
+                    }
+                    else
+                    {
+                        output += std::to_string(index & 0b01111111);
+                        output += 'l';
+                    }
+                }
+            }
+            else
+            {
+                output.pop_back();
+                output += std::to_string(index);
+            }
+        }
+        else if (special)
+        {
+            output += std::to_string(index);
+        }
+        else
+        {
+            char hex[32];
+            snprintf(hex, 32, "0x%X", index);
+            output += hex;
+        }
+        output += c ? "," : "";
+    }
+
+    return output;
 }
 //==============================================================================

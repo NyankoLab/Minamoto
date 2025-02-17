@@ -9,7 +9,16 @@
 struct ShaderDisassemblerAGX
 {
     static void Disassemble(std::vector<uint32_t> const& archive, std::function<void(int, int, char const*, void const*, size_t)> callback);
-    static std::pair<int, char const*> Instruction(void const* data, size_t size);
-    static std::pair<int, char const*> InstructionG13X(void const* data, size_t size);
-    static std::pair<int, char const*> InstructionG15X(void const* data, size_t size);
+
+    struct Instruction
+    {
+        int length;
+        char const* name;
+        char const* parameter;
+    };
+
+    static Instruction Decode(void const* data, size_t size);
+    static Instruction DecodeG13X(void const* data, size_t size);
+    static Instruction DecodeG15X(void const* data, size_t size);
+    static std::string Format(void const* data, Instruction instruction);
 };
