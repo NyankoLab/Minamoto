@@ -22,15 +22,42 @@ void Log::Shutdown()
     systemLog = std::deque<char*>();
 }
 //------------------------------------------------------------------------------
+bool Log::StatusBar()
+{
+    bool update = false;
+
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
+    ImGui::BeginViewportSideBar("##MainStatusBar", ImGui::GetMainViewport(), ImGuiDir_Down, ImGui::GetFrameHeight(), window_flags);
+    if (ImGui::BeginMenuBar())
+    {
+        static size_t logCount = 0;
+        if (logCount != systemLog.size())
+        {
+            logCount = systemLog.size();
+            update = true;
+        }
+        if (systemLog.empty() == false)
+        {
+            ImGui::TextUnformatted(systemLog.back());
+        }
+        ImGui::EndMenuBar();
+    }
+    ImGui::End();
+
+    return update;
+}
+//------------------------------------------------------------------------------
 bool Log::Update(const UpdateData& updateData, bool& show)
 {
+    updateData.message({ "LOGGER_UPDATE", (char*)&systemLog });
+
     if (show == false)
-        return false;
+    {
+        return StatusBar();
+    }
 
     if (ImGui::Begin(ICON_FA_DESKTOP "Log", &show))
     {
-        updateData.message({ "LOGGER_UPDATE", (char*)&systemLog });
-
         if (systemLog.empty() == false)
         {
             ImGuiListClipper clipper;
@@ -56,6 +83,6 @@ bool Log::Update(const UpdateData& updateData, bool& show)
     }
     ImGui::End();
 
-    return false;
+    return StatusBar();
 }
 //------------------------------------------------------------------------------
