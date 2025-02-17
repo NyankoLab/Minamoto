@@ -169,16 +169,16 @@ static void Disassemble(ShaderDisassemblyData& data)
                         return (found == 1) ? data.vertexDisassembly : data.fragmentDisassembly;
                     }();
 
-                    std::function<std::pair<int, char const*>(void const*, size_t)> instruction_length = [gpu]()
+                    std::function<ShaderDisassemblerAGX::Instruction(void const*, size_t)> decode = [gpu]()
                     {
                         switch (gpu)
                         {
                         case 'G13X':
-                            return ShaderDisassemblerAGX::InstructionG13X;
+                            return ShaderDisassemblerAGX::DecodeG13X;
                         case 'G15X':
-                            return ShaderDisassemblerAGX::InstructionG15X;
+                            return ShaderDisassemblerAGX::DecodeG15X;
                         }
-                        return ShaderDisassemblerAGX::Instruction;
+                        return ShaderDisassemblerAGX::Decode;
                     }();
 
                     char line[128];
@@ -187,19 +187,19 @@ static void Disassemble(ShaderDisassemblyData& data)
                     for (size_t i = 0; i < size; i += 2)
                     {
                         unsigned char* code = (unsigned char*)binary + i;
-                        auto pair = instruction_length(code, size - i);
-                        int length = pair.first;
+                        auto instruction = decode(code, size - i);
                         snprintf(line, 128, "%4zd : ", i);
-                        for (int i = 0; i < length; i += 2)
+                        for (int i = 0; i < instruction.length; i += 2)
                         {
                             snprintf(line, 128, "%s%02X%02X", line, code[i], code[i + 1]);
                         }
-                        snprintf(line, 128, "%s%*s%s", line, 24 - length * 2 + 2, "", pair.second);
+                        snprintf(line, 128, "%s%*s", line, 28 - instruction.length * 2 + 2, "");
                         disassembly += line;
+                        disassembly += ShaderDisassemblerAGX::Format(code, instruction);
                         disassembly += "\n";
                         if (code[0] == 0x0E && code[1] == 0x00)
                             break;
-                        i += length ? length - 2 : 0;
+                        i += instruction.length ? instruction.length - 2 : 0;
                     }
                     disassembly += "\n";
                 });

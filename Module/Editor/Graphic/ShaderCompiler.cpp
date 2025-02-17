@@ -17,15 +17,85 @@
 //==============================================================================
 #if defined(xxMACOS) || defined(xxIOS)
 static std::string text =
-R"(struct Varying
+R"(using namespace metal;
+
+struct Uniform
 {
-    float4 Position [[position]];
+    float4 Position;
+
+    float4x4 World;
+    float4x4 View;
+    float4x4 Projection;
 };
 
-vertex Varying VSMain()
+struct Varying
+{
+    float4 Position [[position]];
+    float4 Color0;
+    float4 Color1;
+    float4 Color2;
+    float4 Color3;
+    float4 Color4;
+    float4 Color5;
+    float4 Color6;
+    float4 Color7;
+    float4 Color10;
+    float4 Color11;
+    float4 Color12;
+    float4 Color13;
+    float4 Color14;
+    float4 Color15;
+    float4 Color16;
+    float4 Color17;
+};
+
+vertex Varying VSMain
+(
+    constant Uniform& uni [[buffer(0)]],
+    const device float4* pos [[buffer(1)]],
+    unsigned int base_instance [[base_instance]],
+    unsigned int base_vertex [[base_vertex]],
+    unsigned int instance_id [[instance_id]],
+    unsigned int vertex_id [[vertex_id]]
+)
 {
     Varying vary;
-    vary.Position = float4(0, 0, 0, 0);
+    vary.Position = float4(0, 1, 2, 3);
+#if 1
+    vary.Color0 = float4(4, 5, 6, 7);
+    vary.Color1 = float4(8, 9, 10, 11);
+    vary.Color2 = float4(12, 13, 14, 15);
+    vary.Color3 = float4(16, 17, 18, 19);
+    vary.Color4 = float4(20, 21, 22, 23);
+    vary.Color5 = float4(24, 25, 26, 27);
+    vary.Color6 = float4(28, 29, 30, 31);
+    vary.Color7 = float4(32, 33, 34, 35);
+    vary.Color10 = float4(36, 37, 38, 39);
+    vary.Color11 = float4(40, 41, 42, 43);
+    vary.Color12 = float4(44, 45, 46, 47);
+    vary.Color13 = float4(48, 49, 50, 51);
+    vary.Color14 = float4(52, 53, 54, 55);
+    vary.Color15 = float4(56, 57, 58, 59);
+    vary.Color16 = float4(60, 61, 62, 63);
+    vary.Color17 = float4(64, 65, 66, 67);
+#else
+    vary.Color0 = pos[vertex_id + 0].x * pos[vertex_id + 0].y;
+    vary.Color1 = pos[vertex_id + 1].x * pos[vertex_id + 1].y;
+    vary.Color2 = pos[vertex_id + 2].x * pos[vertex_id + 2].y;
+    vary.Color3 = pos[vertex_id + 3].x * pos[vertex_id + 3].y;
+    vary.Color4 = pos[vertex_id + 4].x * pos[vertex_id + 4].y;
+    vary.Color5 = pos[vertex_id + 5].x * pos[vertex_id + 5].y;
+    vary.Color6 = pos[vertex_id + 6].x * pos[vertex_id + 6].y;
+    vary.Color7 = pos[vertex_id + 7].x * pos[vertex_id + 7].y;
+    vary.Color10 = pos[vertex_id + 10].x * pos[vertex_id + 10].y;
+    vary.Color11 = pos[vertex_id + 11].x * pos[vertex_id + 11].y;
+    vary.Color12 = pos[vertex_id + 12].x * pos[vertex_id + 12].y;
+    vary.Color13 = pos[vertex_id + 13].x * pos[vertex_id + 13].y;
+    vary.Color14 = pos[vertex_id + 14].x * pos[vertex_id + 14].y;
+    vary.Color15 = pos[vertex_id + 15].x * pos[vertex_id + 15].y;
+    vary.Color16 = pos[vertex_id + 16].x * pos[vertex_id + 16].y;
+    vary.Color17 = pos[vertex_id + 17].x * pos[vertex_id + 17].y;
+#endif
     return vary;
 }
 
@@ -35,10 +105,30 @@ struct Output
 //  float Depth [[depth(any)]];
 };
 
-fragment Output FSMain()
+fragment Output FSMain
+(
+    Varying vary [[stage_in]],
+    constant Uniform& uni [[buffer(1)]]
+)
 {
     Output output;
-    output.Color = float4(0, 0, 0, 0);
+    output.Color = 0;
+    output.Color += vary.Color0;
+    output.Color += vary.Color1;
+    output.Color += vary.Color2;
+    output.Color += vary.Color3;
+    output.Color += vary.Color4;
+    output.Color += vary.Color5;
+    output.Color += vary.Color6;
+    output.Color += vary.Color7;
+    output.Color += vary.Color10;
+    output.Color += vary.Color11;
+    output.Color += vary.Color12;
+    output.Color += vary.Color13;
+    output.Color += vary.Color14;
+    output.Color += vary.Color15;
+    output.Color += vary.Color16;
+    output.Color += vary.Color17;
     return output;
 })";
 #else
@@ -103,16 +193,16 @@ static void Compile(int format)
         {
             std::string& disassembly = (found == 1) ? vertexDisassembly : fragmentDisassembly;
 
-            std::function<std::pair<int, char const*>(void const*, size_t)> instruction_length = [gpu]()
+            std::function<ShaderDisassemblerAGX::Instruction(void const*, size_t)> decode = [gpu]()
             {
                 switch (gpu)
                 {
                 case 'G13X':
-                    return ShaderDisassemblerAGX::InstructionG13X;
+                    return ShaderDisassemblerAGX::DecodeG13X;
                 case 'G15X':
-                    return ShaderDisassemblerAGX::InstructionG15X;
+                    return ShaderDisassemblerAGX::DecodeG15X;
                 }
-                return ShaderDisassemblerAGX::Instruction;
+                return ShaderDisassemblerAGX::Decode;
             }();
 
             char line[128];
@@ -121,19 +211,19 @@ static void Compile(int format)
             for (size_t i = 0; i < size; i += 2)
             {
                 unsigned char* code = (unsigned char*)binary + i;
-                auto pair = instruction_length(code, size - i);
-                int length = pair.first;
+                auto instruction = decode(code, size - i);
                 snprintf(line, 128, "%4zd : ", i);
-                for (int i = 0; i < length; i += 2)
+                for (int i = 0; i < instruction.length; i += 2)
                 {
                     snprintf(line, 128, "%s%02X%02X", line, code[i], code[i + 1]);
                 }
-                snprintf(line, 128, "%s%*s%s", line, 24 - length * 2 + 2, "", pair.second);
+                snprintf(line, 128, "%s%*s", line, 28 - instruction.length * 2 + 2, "");
                 disassembly += line;
+                disassembly += ShaderDisassemblerAGX::Format(code, instruction);
                 disassembly += "\n";
                 if (code[0] == 0x0E && code[1] == 0x00)
                     break;
-                i += length ? length - 2 : 0;
+                i += instruction.length ? instruction.length - 2 : 0;
             }
             disassembly += "\n";
         });
@@ -154,6 +244,24 @@ bool ShaderCompiler::Update(const UpdateData& updateData, bool& show)
         bool compile = false;
 #if defined(xxMACOS) || defined(xxIOS)
         static int format = MTLPixelFormatRGBA8Unorm;
+        if (ImGui::RadioButton("R8", format == MTLPixelFormatR8Unorm))
+        {
+            format = MTLPixelFormatR8Unorm;
+            compile = true;
+        }
+        ImGui::SameLine();
+        if (ImGui::RadioButton("R16", format == MTLPixelFormatR16Float))
+        {
+            format = MTLPixelFormatR16Float;
+            compile = true;
+        }
+        ImGui::SameLine();
+        if (ImGui::RadioButton("R32", format == MTLPixelFormatR32Float))
+        {
+            format = MTLPixelFormatR32Float;
+            compile = true;
+        }
+        ImGui::SameLine();
         if (ImGui::RadioButton("RGBA8", format == MTLPixelFormatRGBA8Unorm))
         {
             format = MTLPixelFormatRGBA8Unorm;
