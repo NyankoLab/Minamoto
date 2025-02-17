@@ -10,5 +10,6 @@ struct Log
 {
     static void Initialize();
     static void Shutdown();
+    static bool StatusBar();
     static bool Update(const UpdateData& updateData, bool& show);
 };

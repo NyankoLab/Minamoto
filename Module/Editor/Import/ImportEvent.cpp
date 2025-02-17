@@ -99,7 +99,6 @@ float ImportEvent::Execute()
         {
             NodeTools::ConvertQuadTree(output);
             Statistic();
-
         }
         ImGui::SameLine();
         if (ImGui::Button("Reset Mesh"))

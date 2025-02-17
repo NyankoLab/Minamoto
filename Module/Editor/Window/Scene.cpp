@@ -103,6 +103,7 @@ void Scene::Shutdown(bool suspend)
 
     xxNode::Traversal(sceneRoot, invalidate);
     xxNode::Traversal(sceneGrid, invalidate);
+    xxNode::Traversal(selected, invalidate);
 
     if (suspend)
         return;
