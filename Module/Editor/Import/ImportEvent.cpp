@@ -22,40 +22,13 @@
 //==============================================================================
 //  ImportEvent
 //==============================================================================
-ImportEvent::ImportEvent(xxNodePtr const& root, std::string name)
+ImportEvent::ImportEvent(xxNodePtr const& root, std::string const& name)
 {
     static unsigned int accum = 0;
     this->title = std::format("Import {} ({})", xxFile::GetName(name.c_str()), accum++);
     this->root = root;
     this->name = name;
-    this->thread = std::thread([this]
-    {
-        std::shared_ptr<ImportEvent> thiz = this->thiz;
-        char const* name = thiz->name.c_str();
-        float begin = xxGetCurrentTime();
-        xxNodePtr output;
-        if (strcasestr(name, ".fbx"))
-            output = ImportFBX::Create(name);
-        if (strcasestr(name, ".obj"))
-        {
-            thiz->output = xxNode::Create();
-            thiz->output->Name = xxFile::GetName(name);
-            ImportWavefront::Create(name, [thiz](xxNodePtr const& node)
-            {
-                thiz->nodesMutex.lock();
-                thiz->nodes.push_back(node);
-                thiz->nodesMutex.unlock();
-            });
-            output = thiz->output;
-        }
-        if (strcasestr(name, ".ply"))
-            output = ImportPLY::Create(name);
-        if (strcasestr(name, ".xxb"))
-            output = Binary::Load(name);
-        xxLog("Hierarchy", "Import : %s (%0.fus)", xxFile::GetName(name).c_str(), (xxGetCurrentTime() - begin) * 1000000);
-        thiz->output = output;
-        thiz->thread.detach();
-    });
+    this->thread = std::thread([this] { this->ThreadedExecute(); });
 }
 //------------------------------------------------------------------------------
 float ImportEvent::Execute()
@@ -86,6 +59,13 @@ float ImportEvent::Execute()
             nodesMutex.unlock();
             root->CreateLinearMatrix();
         }
+    }
+
+    if (mipmapTextures.empty() == false)
+    {
+        auto it = mipmapTextures.begin();
+        TextureTools::MipmapTexture(*it);
+        mipmapTextures.erase(it);
     }
 
     bool show = true;
@@ -122,9 +102,19 @@ float ImportEvent::Execute()
             Statistic();
         }
         ImGui::SameLine();
-        if (ImGui::Button("Mipmap Texture"))
+        if (ImGui::Button("Mipmap Texture") && mipmapTextures.empty())
         {
-            TextureTools::MipmapTextures(output);
+            xxNode::Traversal(output, [&](xxNodePtr const& node)
+            {
+                if (node->Material)
+                {
+                    for (xxTexturePtr const& texture : node->Material->Textures)
+                    {
+                        mipmapTextures.insert(texture);
+                    }
+                }
+                return true;
+            });
             Statistic();
         }
     }
@@ -136,6 +126,39 @@ float ImportEvent::Execute()
     }
     thiz = nullptr;
     return 0.0f;
+}
+//------------------------------------------------------------------------------
+void ImportEvent::ThreadedExecute()
+{
+    std::shared_ptr<ImportEvent> thiz = this->thiz;
+
+    float begin = xxGetCurrentTime();
+
+    char const* name = thiz->name.c_str();
+    xxNodePtr output;
+    if (strcasestr(name, ".fbx"))
+        output = ImportFBX::Create(name);
+    if (strcasestr(name, ".obj"))
+    {
+        thiz->output = xxNode::Create();
+        thiz->output->Name = xxFile::GetName(name);
+        ImportWavefront::Create(name, [thiz](xxNodePtr const& node)
+        {
+            thiz->nodesMutex.lock();
+            thiz->nodes.push_back(node);
+            thiz->nodesMutex.unlock();
+        });
+        output = thiz->output;
+    }
+    if (strcasestr(name, ".ply"))
+        output = ImportPLY::Create(name);
+    if (strcasestr(name, ".xxb"))
+        output = Binary::Load(name);
+    thiz->output = output;
+
+    xxLog("Hierarchy", "Import : %s (%0.fus)", xxFile::GetName(name).c_str(), (xxGetCurrentTime() - begin) * 1000000);
+
+    thiz->thread.detach();
 }
 //------------------------------------------------------------------------------
 void ImportEvent::Statistic()

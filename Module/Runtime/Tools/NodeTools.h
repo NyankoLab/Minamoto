@@ -10,7 +10,7 @@
 
 struct RuntimeAPI NodeTools
 {
-    static constexpr size_t TEST_CHECK_FLAG = size_t(1) << (sizeof(size_t) * 8 - 1);
+    static size_t constexpr TEST_CHECK_FLAG = size_t(1) << (sizeof(size_t) * 8 - 1);
 #if HAVE_MINIGUI
     static MiniGUI::WindowPtr const& GetRoot(MiniGUI::WindowPtr const& window);
 #endif
