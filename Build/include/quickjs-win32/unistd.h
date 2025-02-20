@@ -18,7 +18,7 @@ typedef intptr_t ssize_t;
 #define S_IFBLK 0
 #define S_ISDIR(a) (a & S_IFDIR)
 
-static const char* optarg = "";
+static char const* optarg = "";
 static int optind = 1;
 static int getopt(int argc, char** argv, const char* optstring)
 {

@@ -434,7 +434,7 @@ xxNodePtr ImportFBX::Create(char const* fbx)
 
         if (EnableAxisUpYToZ)
         {
-            static const xxMatrix4 YtoZ =
+            static xxMatrix4 const YtoZ =
             {
                 1,  0, 0, 0,
                 0,  0, 1, 0,

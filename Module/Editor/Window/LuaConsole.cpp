@@ -54,7 +54,7 @@ void LuaConsole::Initialize()
     lua_pwritestring = lua_writestring;
     lua_pwritestringerror = lua_writestringerror;
 
-    static const luaL_Reg loadedlibs[] =
+    static luaL_Reg const loadedlibs[] =
     {
         { LUA_LOADLIBNAME, luaopen_package },
         { LUA_IOLIBNAME, luaopen_io },

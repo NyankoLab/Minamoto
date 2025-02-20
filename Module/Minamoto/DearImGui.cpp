@@ -94,7 +94,7 @@ void DearImGui::Create(void* view, float scale, float font)
     font_config.RasterizerMultiply  = 1.0f;
     io.Fonts->AddFontDefault(&font_config);
 
-    static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
+    static ImWchar const icons_ranges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
     font_config.MergeMode           = true;
     font_config.PixelSnapH          = true;
     font_config.GlyphOffset.y       = 2.0f * io.FontGlobalScale;

@@ -23,7 +23,7 @@
 
 #define LOADER(class) reinterpret_cast<void(xxModifier::*)(void*, xxModifierData*, float)>(&class::Update)
 
-static const struct { std::string name; xxModifier::UpdateFunction function; size_t header; size_t size; } loaders[] =
+static struct { std::string name; xxModifier::UpdateFunction function; size_t header; size_t size; } const loaders[] =
 {
     { "UNKNOWN",              [](xxModifier*, void*, xxModifierData*, float) {}, 0,                         1 },
     { "FLOAT",                [](xxModifier*, void*, xxModifierData*, float) {}, 0,                         sizeof(float) },

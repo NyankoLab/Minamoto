@@ -79,7 +79,7 @@ static void ImGui_ImplXX_SetupRenderState(ImDrawData* draw_data, uint64_t comman
             B += 0.5f;
         }
 
-        static const float identity[] =
+        static float const identity[] =
         {
             1.0f, 0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f,

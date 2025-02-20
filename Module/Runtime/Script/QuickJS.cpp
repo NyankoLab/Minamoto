@@ -30,7 +30,7 @@ void QuickJS::Initialize()
 {
     if (rt == nullptr)
     {
-        static const JSMallocFunctions funcs =
+        static JSMallocFunctions const funcs =
         {
             [](JSMallocState* s, size_t size) -> void*              { return xxAlloc(char, size); },
             [](JSMallocState* s, void* ptr)                         { xxFree(ptr); },

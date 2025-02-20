@@ -48,7 +48,7 @@ char        Renderer::g_clearStencil = 0;
 //==============================================================================
 //  List
 //==============================================================================
-static const struct { char const* const shortName; char const* const fullName; uint64_t (*createInstance)(); } g_graphicList[] =
+static struct { char const* const shortName; char const* const fullName; uint64_t (*createInstance)(); } const g_graphicList[] =
 {
 #if defined(xxWINDOWS)
 #if defined(_M_IX86)
