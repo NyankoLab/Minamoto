@@ -6,9 +6,6 @@
 //==============================================================================
 #include "Editor.h"
 #include "Event/Event.h"
-#include "Graphic/ShaderAssembler.h"
-#include "Graphic/ShaderCompiler.h"
-#include "Graphic/ShaderDisassembler.h"
 #include "Import/Import.h"
 #include "Utility/Tools.h"
 #include "Window/About.h"
@@ -32,8 +29,6 @@ extern "C" void __cxa_pure_virtual(void) {}
 moduleAPI char const* Create(const CreateData& createData)
 {
     Runtime::Initialize();
-    ShaderAssembler::Initialize();
-    ShaderDisassembler::Initialize();
 
     Document::Initialize();
     Import::Initialize();
@@ -66,8 +61,6 @@ moduleAPI void Shutdown(const ShutdownData& shutdownData)
     Game::Shutdown();
     Setup::Shutdown();
 
-    ShaderAssembler::Shutdown();
-    ShaderDisassembler::Shutdown();
     Runtime::Shutdown();
 }
 //------------------------------------------------------------------------------
@@ -79,7 +72,6 @@ moduleAPI void Message(const MessageData& messageData)
         {
         case xxHash("INIT"):
             Runtime::Initialize();
-            ShaderDisassembler::Initialize();
             Project::Initialize();
             Scene::Initialize();
             Game::Initialize();
@@ -88,7 +80,6 @@ moduleAPI void Message(const MessageData& messageData)
             Project::Shutdown(true);
             Scene::Shutdown(true);
             Game::Shutdown(true);
-            ShaderDisassembler::Shutdown();
             Runtime::Shutdown(true);
             break;
         default:
@@ -110,9 +101,6 @@ moduleAPI bool Update(const UpdateData& updateData)
     static bool showInspector = true;
     static bool showScene = true;
     static bool showGame = true;
-    static bool showShaderAssembler = false;
-    static bool showShaderCompiler = false;
-    static bool showShaderDisassembler = false;
     bool updated = false;
 
     if (ImGui::BeginMainMenuBar())
@@ -132,10 +120,6 @@ moduleAPI bool Update(const UpdateData& updateData)
             ImGui::MenuItem(ICON_FA_INFO_CIRCLE     "Inspector", nullptr, &showInspector);
             ImGui::MenuItem(ICON_FA_GLOBE           "Scene", nullptr, &showScene);
             ImGui::MenuItem(ICON_FA_GAMEPAD         "Game", nullptr, &showGame);
-            ImGui::Separator();
-            ImGui::MenuItem(ICON_FA_PENCIL          "Shader Assembler", nullptr, &showShaderAssembler);
-            ImGui::MenuItem(ICON_FA_PENCIL_SQUARE_O "Shader Compiler", nullptr, &showShaderCompiler);
-            ImGui::MenuItem(ICON_FA_FILE_TEXT       "Shader Disassembler", nullptr, &showShaderDisassembler);
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
@@ -175,9 +159,6 @@ moduleAPI bool Update(const UpdateData& updateData)
     updated |= Inspector::Update(updateData, showInspector, Scene::mainCamera);
     updated |= Scene::Update(updateData, showScene);
     updated |= Game::Update(updateData, showGame);
-    updated |= ShaderAssembler::Update(updateData, showShaderAssembler);
-    updated |= ShaderCompiler::Update(updateData, showShaderCompiler);
-    updated |= ShaderDisassembler::Update(updateData, showShaderDisassembler);
 
     static bool dockPostInitialized = false;
     if (dockPostInitialized == false)

@@ -5,6 +5,7 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 
 //---------------------------------------------------------------------------
 namespace ImGui
