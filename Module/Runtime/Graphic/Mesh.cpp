@@ -78,12 +78,7 @@ void Mesh::Setup(uint64_t device)
 //------------------------------------------------------------------------------
 void Mesh::Draw(uint64_t commandEncoder, int instanceCount, int firstIndex, int vertexOffset, int firstInstance)
 {
-    if (Count[INDEX] == 0)
-    {
-        xxSetVertexBuffers(commandEncoder, 1, &m_buffers[VERTEX][m_bufferIndex[VERTEX]], m_vertexAttribute);
-        xxDraw(commandEncoder, Count[VERTEX] - firstIndex * 3, instanceCount, vertexOffset + firstIndex * 3, firstInstance);
-    }
-    else if (Count[STORAGE0] != 0)
+    if (Count[STORAGE0] != 0)
     {
         uint64_t buffers[4];
         buffers[0] = m_buffers[VERTEX][m_bufferIndex[VERTEX]];
@@ -92,6 +87,11 @@ void Mesh::Draw(uint64_t commandEncoder, int instanceCount, int firstIndex, int 
         buffers[3] = m_buffers[STORAGE2][m_bufferIndex[STORAGE2]];
         xxSetMeshBuffers(commandEncoder, 4, buffers);
         xxDrawMeshed(commandEncoder, Count[STORAGE0], 1, 1);
+    }
+    else if (Count[INDEX] == 0)
+    {
+        xxSetVertexBuffers(commandEncoder, 1, &m_buffers[VERTEX][m_bufferIndex[VERTEX]], m_vertexAttribute);
+        xxDraw(commandEncoder, Count[VERTEX] - firstIndex * 3, instanceCount, vertexOffset + firstIndex * 3, firstInstance);
     }
     else
     {

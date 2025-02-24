@@ -72,9 +72,9 @@ float ImportEvent::Execute()
     if (ImGui::Begin(title.c_str(), &show, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking))
     {
         ImGui::InputText("File", name.data(), name.size(), ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputInt("Node", &nodeCount, 1, 100, ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputInt("Mesh", &meshCount, 1, 100, ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputInt("Texture", &textureCount, 1, 100, ImGuiInputTextFlags_ReadOnly);
+        ImGui::SliderInt("Node", &nodeCount, 1, 1000, "%d", ImGuiSliderFlags_ReadOnly);
+        ImGui::SliderInt("Mesh", &meshCount, 1, 1000, "%d", ImGuiSliderFlags_ReadOnly);
+        ImGui::SliderInt("Texture", &textureCount, 1, 1000, "%d", ImGuiSliderFlags_ReadOnly);
         if (ImGui::Button("QuadTree"))
         {
             NodeTools::ConvertQuadTree(output);
@@ -182,7 +182,15 @@ void ImportEvent::Statistic()
             {
                 if (texture == nullptr)
                     continue;
-                size_t count = texture.use_count() * node->Material.use_count();
+                size_t count = 0;
+                if (mipmapTextures.find(texture) == mipmapTextures.end())
+                {
+                    count = texture.use_count() * node->Material.use_count();
+                }
+                else
+                {
+                    count = (texture.use_count() - 1) * node->Material.use_count();
+                }
                 textureReferenceCounts[count]++;
             }
         }
