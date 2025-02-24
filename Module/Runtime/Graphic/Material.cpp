@@ -38,7 +38,7 @@ struct MaterialSelector
     }
     void Append(std::string_view string)
     {
-        if (string.size())
+        if (string.empty() == false)
         {
             tab -= (string[0] == '}' || string[0] == ')') ? 1 : 0;
             if (string[0] != '#')
@@ -221,11 +221,11 @@ void Material::Draw(xxDrawData const& data) const
     uint64_t textures[16];
     uint64_t samplers[16];
 
-    size_t count = Textures.size();
+    size_t count = std::min<size_t>(16, Textures.size());
     unsigned int slot = m_fragmentTextureSlot;
-    for (unsigned int i = 0; i < 16; ++i)
+    for (unsigned int i = 0; i < count; ++i)
     {
-        if (slot & 1 && i < count)
+        if (slot & 1)
         {
             xxTexturePtr const& texture = Textures[i];
             texture->Update(data.device);

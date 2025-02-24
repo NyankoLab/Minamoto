@@ -118,23 +118,24 @@ ShaderDisassemblerAGX::Instruction ShaderDisassemblerAGX::DecodeG13X(void const*
         switch (code[0] & 0b1111001)
         {
 //      case 0b0000001: return { 8, "???" };
-        case 0b0001001: return { 8, "st_tile" };
+        case 0b0001001: return { 8, "st_tile", "r14-9" };
         case 0b0010001:
             switch (code[0] & 0x80)
             {
-            case 0x80: return { 4, "st_var_final" };
+            case 0x00: return { 4, "st_var", "r14-9 19-16" };
+            case 0x80: return { 4, "st_var_final", "r14-9 19-16" };
             }
-            return { 4, "st_var" };
+            break;
 //      case 0b0011001: return { 8, "???" };
-        case 0b0100001: return { L ? 8 : 4, "ld_var" };
+        case 0b0100001: return { L ? 8 : 4, "ld_var", "r14-9 19-16" };
         case 0b0101001: return { L ? 8 : 6, "threadgroup_store" };
         case 0b0110001: return { L ? 12 : 8, "texture_sample" };
         case 0b0111001: return { L ? 8 : 6, "threadgroup_store" };
 //      case 0b1000001: return { 8, "???" };
-        case 0b1001001: return { 8, "ld_tile" };
+        case 0b1001001: return { 8, "ld_tile", "r14-9" };
         case 0b1010001: return { 4, "no_var" };
 //      case 0b1011001: return { 8, "???" };
-        case 0b1100001: return { L ? 8 : 4, "ld_var_perspective" };
+        case 0b1100001: return { L ? 8 : 4, "ld_var_perspective", "r14-9 19-16" };
         case 0b1101001: return { L ? 8 : 6, "threadgroup_load" };
         case 0b1110001: return { L ? 12 : 8, "texture_load" };
         case 0b1111001: return { L ? 8 : 6, "threadgroup_load" };
@@ -146,25 +147,25 @@ ShaderDisassemblerAGX::Instruction ShaderDisassemblerAGX::DecodeG13X(void const*
         case 0b0000010: return { L ? 10 : 8, "fcmpsel" };
         case 0b0001010: return { L ? 6 : 4, "floor" };      // TODO
         case 0b0010010: return { L ? 10 : 8, "icmpsel" };
-        case 0b0011010: return { 6, "fmul" };
+        case 0b0011010: return { 6, "fmul", "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
         case 0b0100010: return { 8, "fcmp_ballot" };        // TODO
-        case 0b0101010: return { 6, "fadd" };
+        case 0b0101010: return { 6, "fadd", "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
         case 0b0110010: return { 8, "icmp_ballot" };
-        case 0b0111010: return { 8, "fmadd" };
+        case 0b0111010: return { 8, "fmadd", "r61-60,14-9 r59-58,21-16 r57-56,33-28 r55-54,45-40" };
         case 0b1000010: return { 6, "if_fcmp" };            // TODO
         case 0b1001010: return { L ? 6 : 4, "floor_sat" };  // TODO
         case 0b1010010: return { 6, "pop_exec" };           // TODO
-        case 0b1011010: return { 6, "fmul_sat" };
+        case 0b1011010: return { 6, "fmul_sat", "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
         case 0b1100010:
             switch (code[1] & 1)
             {
-            case 0: return { L ? 6 : 4, "mov" };
-            case 1: return { L ? 8 : 6, "mov" };
+            case 0: return { L ? 6 : 4, "mov", "r45-44,14-9 31-16" };
+            case 1: return { L ? 8 : 6, "mov", "r61-60,14-9 47-16" };
             }
-            return { L ? 6 : 4, "mov" };
-        case 0b1101010: return { 6, "fadd_sat" };
+            break;
+        case 0b1101010: return { 6, "fadd_sat", "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
         case 0b1110010: return { 4, "get_sr" };
-        case 0b1111010: return { 8, "fmadd_sat" };
+        case 0b1111010: return { 8, "fmadd_sat", "r61-60,14-9 r59-58,21-16 r57-56,33-28 r55-54,45-40" };
         }
         return { 2, "???" };
 //  case 3: return { 2, "???" };
@@ -179,33 +180,53 @@ ShaderDisassemblerAGX::Instruction ShaderDisassemblerAGX::DecodeG13X(void const*
         L = (code[5] & 0x80) == 0x80;
         switch (code[0] & 0b11111101)
         {
-        case 0b00000101: return { L ? 8 : 6, "device_load" };   // TODO
+        case 0b00000101: return { L ? 8 : 6, "device_load",  "r41-40,15-10:0:49:0 r39-36,19-16:0:27:0 63-56,35-32,23-20" };   // TODO
         case 0b00110101: return { L ? 8 : 6, "stack_load" };    // TODO
-        case 0b01000101: return { L ? 8 : 6, "device_store" };  // TODO
-        case 0b10000101: return { L ? 8 : 6, "device_load" };   // TODO
+        case 0b01000101: return { L ? 8 : 6, "device_store", "r41-40,15-10:0:49:0 r39-36,19-16:0:27:0 63-56,35-32,23-20" };   // TODO
+        case 0b10000101: return { L ? 8 : 6, "device_load",  "r41-40,15-10:0:49:0 r39-36,19-16:0:27:0 63-56,35-32,23-20" };   // TODO
         case 0b10110101: return { L ? 8 : 6, "stack_store" };   // TODO
-        case 0b11000101: return { L ? 8 : 6, "device_store" };  // TODO
+        case 0b11000101: return { L ? 8 : 6, "device_store", "r41-40,15-10:0:49:0 r39-36,19-16:0:27:0 63-56,35-32,23-20" };   // TODO
         }
         return { L ? 8 : 6, "???" };
     case 6:             // basic 16bit operation
         switch (code[0] & 0b1111110)
         {
 //      case 0b0000110: return { 2, "???" };
-        case 0b0001110: return { 8, "iadd" };
-        case 0b0010110: return { 6, "fmul16" };
-        case 0b0011110: return { 8, "imadd" };
-        case 0b0100110: return { 6, "fadd16" };
+        case 0b0001110: return { 8, "iadd",   "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
+        case 0b0010110: return { 6, "fmul16", "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
+        case 0b0011110: return { 8, "imadd",  "r61-60,14-9 r59-58,21-16 r57-56,33-28 r55-54,45-40" };
+        case 0b0100110: return { 6, "fadd16", "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
         case 0b0101110: return { 8, "bitfield" };
-        case 0b0110110: return { L ? 8 : 6, "fmadd16" };
+        case 0b0110110: return { L ? 8 : 6, "fmadd16", "r61-60,14-9 r59-58,21-16 r57-56,33-28 r55-54,45-40" };
         case 0b0111110: return { 6, L ? "convert" : "bitwise" };
 //      case 0b1000110: return { 2, "???" };
-        case 0b1001110: return { 8, "iadd_sat" };
-        case 0b1010110: return { 6, "fmul16_sat" };
-        case 0b1011110: return { 8, "imadd_sat" };
-        case 0b1100110: return { 6, "fadd16_sat" };
+        case 0b1001110: return { 8, "iadd_sat",   "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
+        case 0b1010110: return { 6, "fmul16_sat", "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
+        case 0b1011110: return { 8, "imadd_sat",  "r61-60,14-9 r59-58,21-16 r57-56,33-28 r55-54,45-40" };
+        case 0b1100110: return { 6, "fadd16_sat", "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
 //      case 0b1101110: return { 2, "???" };
-        case 0b1110110: return { L ? 8 : 6, "fmadd16_sat" };
-        case 0b1111110: return { 6, "bitop" };
+        case 0b1110110: return { L ? 8 : 6, "fmadd16_sat", "r61-60,14-9 r59-58,21-16 r57-56,33-28 r55-54,45-40" };
+        case 0b1111110:
+            switch (((code[3] >> 2) & 0x3) | ((code[4] >> 4) & 0xC))
+            {
+            case 0b0000: return { 6, "zero",      "r45-44,14-9" };
+            case 0b0001: return { 6, "nandn",     "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
+            case 0b0010: return { 6, "andn",      "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
+            case 0b0011: return { 6, "not",       "r45-44,14-9"           " r41-40,33-28" }; // nandn_or_andn
+            case 0b0100: return { 6, "nand",      "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
+            case 0b0101: return { 6, "not",       "r45-44,14-9 r43-42,21-16"              }; // nandn_or_nand
+            case 0b0110: return { 6, "xor",       "r45-44,14-9 r43-42,21-16 r41-40,33-28" }; // andn_or_nand
+            case 0b0111: return { 6, "any_false", "r45-44,14-9 r43-42,21-16 r41-40,33-28" }; // nandn_or_andn_or_nand
+            case 0b1000: return { 6, "and",       "r45-44,14-9 r43-42,21-16 r41-40,33-28" };
+            case 0b1001: return { 6, "xnor",      "r45-44,14-9 r43-42,21-16 r41-40,33-28" }; // nandn_or_and
+            case 0b1010: return { 6, "mov",       "r45-44,14-9 r43-42,21-16"              }; // andn_or_and
+            case 0b1011: return { 6, "any_true",  "r45-44,14-9 r43-42,21-16 r41-40,33-28" }; // nandn_or_andn_or_and
+            case 0b1100: return { 6, "mov",       "r45-44,14-9"           " r41-40,33-28" }; // nand_or_and
+            case 0b1101: return { 6, "all_false", "r45-44,14-9 r43-42,21-16 r41-40,33-28" }; // nandn_or_nand_or_and ?
+            case 0b1110: return { 6, "all_true",  "r45-44,14-9 r43-42,21-16 r41-40,33-28" }; // andn_or_nand_or_and
+            case 0b1111: return { 6, "one",       "r45-44,14-9" };
+            }
+            return { 6, "???" };
         }
         return { 2, "???" };
     case 7: return { 6, "???" };
