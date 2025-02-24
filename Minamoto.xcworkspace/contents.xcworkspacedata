@@ -36,6 +36,9 @@
          location = "group:Module/Sample/Build/Sample.xcodeproj">
       </FileRef>
       <FileRef
+         location = "group:SDK/xxShaderAssembler/ui/minamoto/Build/ShaderAssembler.xcodeproj">
+      </FileRef>
+      <FileRef
          location = "group:Module/Validator/Build/Validator.xcodeproj">
       </FileRef>
    </Group>
@@ -65,9 +68,6 @@
       </FileRef>
       <FileRef
          location = "group:Build/xxGraphicPlus.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:Build/xxShaderAssembler.xcodeproj">
       </FileRef>
    </Group>
 </Workspace>
