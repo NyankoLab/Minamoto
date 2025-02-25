@@ -9,7 +9,7 @@
 struct Event
 {
     virtual ~Event() {}
-    virtual float Execute() = 0;
-    static void Dispatch(float time);
+    virtual double Execute() = 0;
+    static void Dispatch(double time);
     static void Push(std::shared_ptr<Event> const& event);
 };

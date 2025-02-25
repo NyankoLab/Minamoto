@@ -81,7 +81,7 @@ static xxTexturePtr CreateTexture(ufbx_texture* texture)
     return output;
 }
 //------------------------------------------------------------------------------
-static void CreateAnimation(ufbx_scene* scene, xxNodePtr const& root)
+static void CreateAnimation(ufbx_scene* scene, xxNodePtr const& root, Import::ImportCallback callback)
 {
     ufbx_bake_opts opts = {};
     ufbx_error error;
@@ -107,20 +107,27 @@ static void CreateAnimation(ufbx_scene* scene, xxNodePtr const& root)
             xxLog(TAG, "CreateAnimation : %s is not node", element->name.data);
             continue;
         }
-        xxNodePtr target = Import::GetNodeByName(root, element->name.data);
-        if (target == nullptr)
+        ufbx_node* target_node = nullptr;
+        xxNodePtr target;
+        if (callback)
+        {
+            target_node = ufbx_find_node_len(element->scene, element->name.data, element->name.length);
+        }
+        else
+        {
+            target = Import::GetNodeByName(root, element->name.data);
+        }
+        if (target_node == nullptr && target == nullptr)
         {
             xxLog(TAG, "CreateAnimation : %s is not found", element->name.data);
             continue;
         }
 
-        // Modifier
-        xxModifierPtr modifier;
-
         // Rotation
         size_t rotation = 0;
         if (reduction_node.rotation_keys.count)
         {
+            xxModifierPtr modifier;
             if (reduction_node.constant_rotation)
             {
                 modifier = ConstantQuaternionModifier::Create(quat(reduction_node.rotation_keys[0].value));
@@ -143,13 +150,24 @@ static void CreateAnimation(ufbx_scene* scene, xxNodePtr const& root)
                 });
                 rotation = baked_node.rotation_keys.count;
             }
-            target->Modifiers.push_back({modifier});
+            if (callback)
+            {
+                callback(nullptr, target_node, nullptr, [modifier](xxNodePtr const& target)
+                {
+                    target->Modifiers.emplace_back(modifier);
+                });
+            }
+            else
+            {
+                target->Modifiers.emplace_back(modifier);
+            }
         }
 
         // Translate
         size_t translate = 0;
         if (reduction_node.translation_keys.count)
         {
+            xxModifierPtr modifier;
             if (reduction_node.constant_translation)
             {
                 modifier = ConstantTranslateModifier::Create(vec3(reduction_node.translation_keys[0].value));
@@ -164,13 +182,24 @@ static void CreateAnimation(ufbx_scene* scene, xxNodePtr const& root)
                 });
                 translate = reduction_node.translation_keys.count;
             }
-            target->Modifiers.push_back({modifier});
+            if (callback)
+            {
+                callback(nullptr, target_node, nullptr, [modifier](xxNodePtr const& target)
+                {
+                    target->Modifiers.emplace_back(modifier);
+                });
+            }
+            else
+            {
+                target->Modifiers.emplace_back(modifier);
+            }
         }
 
         // Scale
         size_t scale = 0;
         if (reduction_node.scale_keys.count)
         {
+            xxModifierPtr modifier;
             if (reduction_node.constant_scale)
             {
                 modifier = ConstantScaleModifier::Create(reduction_node.scale_keys[0].value.x);
@@ -185,7 +214,17 @@ static void CreateAnimation(ufbx_scene* scene, xxNodePtr const& root)
                 });
                 scale = reduction_node.scale_keys.count;
             }
-            target->Modifiers.push_back({modifier});
+            if (callback)
+            {
+                callback(nullptr, target_node, nullptr, [modifier](xxNodePtr const& target)
+                {
+                    target->Modifiers.emplace_back(modifier);
+                });
+            }
+            else
+            {
+                target->Modifiers.emplace_back(modifier);
+            }
         }
 
         xxLog(TAG, "CreateAnimation : Rotation %zd, Translate %zd, Scale %zd - %s", rotation, translate, scale, element->name.data);
@@ -311,14 +350,61 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
     }
     output->CalculateBound();
 
+    return output;
+}
+//------------------------------------------------------------------------------
+static void CreateSkinning(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr const& root, Import::ImportCallback callback)
+{
+    ufbx_skin_deformer* skin_deformer = mesh->skin_deformers.count ? mesh->skin_deformers.data[0] : nullptr;
+
     if (skin_deformer)
     {
         for (size_t i = 0; i < skin_deformer->clusters.count; ++i)
         {
             ufbx_skin_cluster* cluster = skin_deformer->clusters.data[i];
 
+            // Bound
+            xxVector4 bound = xxVector4::ZERO;
+            for (size_t j = 0; j < cluster->vertices.count; ++j)
+            {
+                uint32_t index = cluster->vertices.data[j];
+                xxVector3 vertex = vec3(mesh->vertices[index]);
+                bound.BoundMerge(vertex);
+            }
+            bound = bound.BoundTransform(mat4(cluster->geometry_to_bone), 1.0f);
+
+            // SkinMatrix
+            xxMatrix4x4 skinMatrix = mat4(cluster->geometry_to_bone);
+
             // Find the bone
             ufbx_node* from = cluster->bone_node;
+
+            // Callback
+            if (callback)
+            {
+                std::string name = from ? from->name.data : "(nullptr)";
+                callback(nullptr, from, nullptr, [node, bound, skinMatrix, name](xxNodePtr const& to)
+                {
+                    if (to == nullptr)
+                    {
+                        xxLog(TAG, "Bone %s is not found", name.c_str());
+                        return;
+                    }
+                    xxNode::BoneData bone;
+                    bone.bone = to;
+                    bone.bound = bound;
+                    bone.classSkinMatrix = skinMatrix;
+                    bone.classBoneMatrix = {};
+                    node->Bones.push_back(bone);
+                    for (auto& data : node->Bones)
+                    {
+                        data.ResetPointer();
+                    }
+                });
+                continue;
+            }
+
+            // Find the bone node
             xxNodePtr to;
             if (from)
             {
@@ -336,21 +422,11 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
                 xxLog(TAG, "Bone %s is not found", from ? from->name.data : "(nullptr)");
             }
 
-            // Bound
-            xxVector4 bound = xxVector4::ZERO;
-            for (size_t j = 0; j < cluster->vertices.count; ++j)
-            {
-                uint32_t index = cluster->vertices.data[j];
-                xxVector3 vertex = vec3(mesh->vertices[index]);
-                bound.BoundMerge(vertex);
-            }
-            bound = bound.BoundTransform(mat4(cluster->geometry_to_bone), 1.0f);
-
             // Add to list
             xxNode::BoneData bone;
             bone.bone = to;
             bone.bound = bound;
-            bone.classSkinMatrix = mat4(cluster->geometry_to_bone);
+            bone.classSkinMatrix = skinMatrix;
             bone.classBoneMatrix = {};
             node->Bones.push_back(bone);
         }
@@ -359,27 +435,39 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
             data.ResetPointer();
         }
     }
-
-    return output;
 }
 //------------------------------------------------------------------------------
-static xxNodePtr CreateNode(ufbx_node* node, xxNodePtr root)
+static xxNodePtr CreateNode(ufbx_node* node, xxNodePtr root, Import::ImportCallback callback)
 {
     if (node == nullptr)
         return xxNodePtr();
     xxNodePtr output = xxNode::Create();
     if (root == nullptr)
         root = output;
-    for (size_t i = 0; i < node->children.count; ++i)
-    {
-        xxNodePtr child = CreateNode(node->children.data[i], root);
-        if (child)
-        {
-            output->AttachChild(child);
-        }
-    }
     output->Name = str(node->name);
     output->LocalMatrix = mat4(node->local_transform);
+    if (callback)
+    {
+        if (node->parent)
+        {
+            callback(node->parent, node, xxNodePtr(output), nullptr);
+        }
+        for (size_t i = 0; i < node->children.count; ++i)
+        {
+            CreateNode(node->children.data[i], root, callback);
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < node->children.count; ++i)
+        {
+            xxNodePtr child = CreateNode(node->children.data[i], root, callback);
+            if (child)
+            {
+                output->AttachChild(child);
+            }
+        }
+    }
     if (node->mesh)
     {
         xxNodePtr geometryNode = output;
@@ -396,7 +484,6 @@ static xxNodePtr CreateNode(ufbx_node* node, xxNodePtr root)
                 geometryNode = xxNode::Create();
                 geometryNode->Name = str(node->mesh->name);
                 geometryNode->LocalMatrix = mat4(node->geometry_transform);
-                output->AttachChild(geometryNode);
             }
         }
         if (node->mesh->materials.count)
@@ -409,11 +496,25 @@ static xxNodePtr CreateNode(ufbx_node* node, xxNodePtr root)
         {
             geometryNode->Mesh = MeshTools::IndexingMesh(geometryNode->Mesh);
         }
+
+        CreateSkinning(node->mesh, geometryNode, root, callback);
+
+        if (geometryNode != output)
+        {
+            if (callback)
+            {
+                callback(node, node->mesh, std::move(geometryNode), nullptr);
+            }
+            else
+            {
+                output->AttachChild(geometryNode);
+            }
+        }
     }
     return output;
 }
 //------------------------------------------------------------------------------
-xxNodePtr ImportFBX::Create(char const* fbx)
+xxNodePtr ImportFBX::Create(char const* fbx, ImportCallback callback)
 {
     ufbx_load_opts opts = {};
     ufbx_error error;
@@ -424,7 +525,7 @@ xxNodePtr ImportFBX::Create(char const* fbx)
         return nullptr;
     }
 
-    xxNodePtr root = CreateNode(scene->root_node, nullptr);
+    xxNodePtr root = CreateNode(scene->root_node, nullptr, callback);
     if (root)
     {
         if (root->Name.empty())
@@ -444,7 +545,7 @@ xxNodePtr ImportFBX::Create(char const* fbx)
             root->LocalMatrix = root->LocalMatrix * YtoZ;
         }
 
-        CreateAnimation(scene, root);
+        CreateAnimation(scene, root, callback);
     }
 
     ufbx_free_scene(scene);

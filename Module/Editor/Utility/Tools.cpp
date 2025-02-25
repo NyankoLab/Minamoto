@@ -22,17 +22,17 @@ static std::vector<DrawRect> rects;
 //------------------------------------------------------------------------------
 void Tools::Line(xxVector3 const& from, xxVector3 const& to, ImU32 col)
 {
-    lines.push_back({from, to, col});
+    lines.emplace_back(from, to, col);
 }
 //------------------------------------------------------------------------------
 void Tools::Sphere(xxVector3 const& point, float scale, ImU32 col)
 {
-    spheres.push_back({point, scale, col});
+    spheres.emplace_back(point, scale, col);
 }
 //------------------------------------------------------------------------------
 void Tools::Rect(xxVector2 const& leftTop, xxVector2 const& rightBottom, ImU32 col)
 {
-    rects.push_back({leftTop, rightBottom, col});
+    rects.emplace_back(leftTop, rightBottom, col);
 }
 //------------------------------------------------------------------------------
 void Tools::Draw(xxCameraPtr const& camera, xxVector2 const& scale, xxVector2 const& offset)

@@ -120,7 +120,7 @@ static void ShowFolders(std::string const& root, std::string& selected)
                     texture->Name = filename;
                     texture->Path = folder;
                 }
-                Files.push_back({ filename, texture });
+                Files.emplace_back(filename, texture);
             }
             xxFree(filename);
         }

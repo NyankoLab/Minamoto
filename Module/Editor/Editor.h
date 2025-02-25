@@ -15,7 +15,6 @@
 #endif
 
 #include <Interface.h>
-#include <imgui/imgui_internal.h>
 #include "ImGuiHelper.h"
 
 #ifdef _WIN32

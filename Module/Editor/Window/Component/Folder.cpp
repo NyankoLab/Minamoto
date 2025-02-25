@@ -18,7 +18,7 @@ void Folder::Finder(std::string const& folder, Node& node)
     {
         if (filename[0] != '.' && strstr(filename, "/"))
         {
-            node.push_back({std::string(ICON_FA_FOLDER) + filename, Node()});
+            node.emplace_back(std::string(ICON_FA_FOLDER) + filename, Node());
             node.back().first.pop_back();
         }
         xxFree(filename);
@@ -84,7 +84,7 @@ void Folder::Window(Node& node, std::function<void(std::string const& root, std:
 void Folder::Finder(std::string const& root)
 {
     Folders.clear();
-    Folders.push_back({"", Node()});
+    Folders.emplace_back("", Node());
     Root = root;
     Finder(root, Folders.back().second);
 }

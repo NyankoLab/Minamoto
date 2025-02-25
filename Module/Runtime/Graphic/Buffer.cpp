@@ -18,7 +18,7 @@ static void (*xxDestroyBufferSystem)(uint64_t device, uint64_t buffer);
 //------------------------------------------------------------------------------
 static void xxDestroyBufferRuntime(uint64_t device, uint64_t buffer)
 {
-    destroyBuffers.push_back({ Counter + 4, device, buffer });
+    destroyBuffers.emplace_back(Counter + 4, device, buffer);
 }
 //==============================================================================
 void Buffer::Initialize()

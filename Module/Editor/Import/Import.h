@@ -24,4 +24,6 @@ public:
     static bool EnableMergeTexture;
     static bool EnableOptimizeMesh;
     static bool EnableTextureFlipV;
+public:
+    typedef std::function<void(void*, void*, xxNodePtr&&, std::function<void(xxNodePtr const&)>)> ImportCallback;
 };

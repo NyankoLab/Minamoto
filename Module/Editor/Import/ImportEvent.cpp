@@ -31,7 +31,7 @@ ImportEvent::ImportEvent(xxNodePtr const& root, std::string const& name)
     this->thread = std::thread([this] { this->ThreadedExecute(); });
 }
 //------------------------------------------------------------------------------
-float ImportEvent::Execute()
+double ImportEvent::Execute()
 {
     if (root && output)
     {
@@ -49,10 +49,38 @@ float ImportEvent::Execute()
         }
         if (nodes.empty() == false && nodesMutex.try_lock())
         {
-            for (xxNodePtr const& child : nodes)
+            mappedNodes[nullptr] = output;
+            for (auto [parent, node, right, callback] : nodes)
             {
-                child->Name = Import::CheckDuplicateName(output, child->Name);
-                output->AttachChild(child);
+                if (right == nullptr && node)
+                {
+                    right = mappedNodes[node];
+                }
+
+                if (callback)
+                {
+                    callback(right);
+                    continue;
+                }
+
+                if (right == nullptr)
+                {
+                    continue;
+                }
+                xxNodePtr left = mappedNodes[parent];
+                if (left == nullptr)
+                {
+                    left = output;
+                }
+                if (node)
+                {
+                    mappedNodes[node] = right;
+                }
+                if (left)
+                {
+                    right->Name = Import::CheckDuplicateName(left, right->Name);
+                    left->AttachChild(right);
+                }
             }
             Statistic();
             nodes.clear();
@@ -122,10 +150,12 @@ float ImportEvent::Execute()
 
     if (show)
     {
-        return xxGetCurrentTime();
+        double time;
+        xxGetCurrentTime(&time);
+        return time;
     }
     thiz = nullptr;
-    return 0.0f;
+    return 0.0;
 }
 //------------------------------------------------------------------------------
 void ImportEvent::ThreadedExecute()
@@ -137,15 +167,29 @@ void ImportEvent::ThreadedExecute()
     char const* name = thiz->name.c_str();
     xxNodePtr output;
     if (strcasestr(name, ".fbx"))
+    {
+#if 1
+        thiz->output = xxNode::Create();
+        thiz->output->Name = xxFile::GetName(name);
+        output = ImportFBX::Create(name, [thiz](void* parent, void* node, xxNodePtr&& target, std::function<void(xxNodePtr const&)> callback)
+        {
+            thiz->nodesMutex.lock();
+            thiz->nodes.emplace_back(parent, node, std::move(target), std::move(callback));
+            thiz->nodesMutex.unlock();
+        });
+        output = thiz->output;
+#else
         output = ImportFBX::Create(name);
+#endif
+    }
     if (strcasestr(name, ".obj"))
     {
         thiz->output = xxNode::Create();
         thiz->output->Name = xxFile::GetName(name);
-        ImportWavefront::Create(name, [thiz](xxNodePtr const& node)
+        ImportWavefront::Create(name, [thiz](xxNodePtr&& target)
         {
             thiz->nodesMutex.lock();
-            thiz->nodes.push_back(node);
+            thiz->nodes.emplace_back(nullptr, nullptr, std::move(target), nullptr);
             thiz->nodesMutex.unlock();
         });
         output = thiz->output;

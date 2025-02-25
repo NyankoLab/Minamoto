@@ -34,9 +34,9 @@
 
 bool Import::EnableAxisUpYToZ = false;
 bool Import::EnableMergeNode = false;
-bool Import::EnableMergeTexture = true;
-bool Import::EnableOptimizeMesh = true;
-bool Import::EnableTextureFlipV = true;
+bool Import::EnableMergeTexture = false;
+bool Import::EnableOptimizeMesh = false;
+bool Import::EnableTextureFlipV = false;
 //==============================================================================
 void Import::Initialize()
 {
@@ -89,7 +89,7 @@ void Import::MergeNode(xxNodePtr const& target, xxNodePtr const& source, xxNodeP
         {
             if (left->Name == right->Name)
             {
-                merge.push_back({ left, right });
+                merge.emplace_back(left, right);
                 found = true;
                 break;
             }
@@ -190,7 +190,15 @@ std::string Import::CheckDuplicateName(xxNodePtr const& node, std::string const&
         }
         else
         {
-            output += std::to_string(std::stoi(child->Name.substr(sharp + 1)) + 1);
+            std::string name = child->Name.substr(sharp + 1);
+            if (name.empty() == false && name[0] >= '0' && name[0] <= '9')
+            {
+                output += std::to_string(std::stoi(name) + 1);
+            }
+            else
+            {
+                output.pop_back();
+            }
         }
         break;
     }
