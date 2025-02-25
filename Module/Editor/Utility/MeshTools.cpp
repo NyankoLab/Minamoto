@@ -330,6 +330,12 @@ xxMeshPtr MeshTools::IndexingMesh(xxMeshPtr const& mesh)
     if (data.positions.empty())
         return mesh;
 
+    data.indices.clear();
+    for (uint32_t i = 0; i < data.positions.size(); ++i)
+    {
+        data.indices.push_back(i);
+    }
+
     for (size_t i = 0; i < data.positions.size(); ++i)
     {
         auto compare = [](auto& container, size_t a, size_t b, int c)

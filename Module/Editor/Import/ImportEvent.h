@@ -20,7 +20,8 @@ class ImportEvent : public Event
     std::thread thread;
 
     std::mutex nodesMutex;
-    std::vector<xxNodePtr> nodes;
+    std::vector<std::tuple<void*, void*, xxNodePtr, std::function<void(xxNodePtr const&)>>> nodes;
+    std::map<void*, xxNodePtr> mappedNodes;
     xxNodePtr output;
 
     std::set<xxTexturePtr> mipmapTextures;
@@ -32,7 +33,7 @@ class ImportEvent : public Event
 public:
     ImportEvent(xxNodePtr const& root, std::string const& name);
 
-    float Execute() override;
+    double Execute() override;
 
     void ThreadedExecute();
 

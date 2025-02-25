@@ -208,7 +208,7 @@ std::map<std::string, ImportWavefront::Material> ImportWavefront::CreateMaterial
     return materials;
 }
 //------------------------------------------------------------------------------
-xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&)> callback)
+xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&&)> callback)
 {
     std::map<std::string, Material> materials;
     std::vector<xxVector3> vertices;
@@ -249,7 +249,7 @@ xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&
         }
         if (callback)
         {
-            callback(child);
+            callback(std::move(child));
         }
         else
         {

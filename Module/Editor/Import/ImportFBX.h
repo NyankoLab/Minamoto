@@ -11,5 +11,5 @@
 class ImportFBX : public Import
 {
 public:
-    static xxNodePtr Create(char const* fbx);
+    static xxNodePtr Create(char const* fbx, ImportCallback callback = nullptr);
 };

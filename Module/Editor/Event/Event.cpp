@@ -11,18 +11,22 @@
 //==============================================================================
 //  Event
 //==============================================================================
-static std::priority_queue<std::pair<float, std::shared_ptr<Event>>> events;
+static std::priority_queue<std::pair<double, std::shared_ptr<Event>>> events;
+static std::vector<std::pair<double, std::shared_ptr<Event>>> continues;
 //------------------------------------------------------------------------------
-void Event::Dispatch(float time)
+void Event::Dispatch(double time)
 {
-    static std::vector<std::pair<float, std::shared_ptr<Event>>> continues;
-
-    while (events.empty() == false && events.top().first < time)
+    while (events.empty() == false)
     {
-        float next = events.top().second->Execute();
-        if (next >= time)
+        auto const& pair = events.top();
+        if (pair.first > time)
+            break;
+
+        auto const& event = pair.second;
+        double next = event->Execute();
+        if (next > 0.0f)
         {
-            continues.push_back({ next, events.top().second });
+            continues.emplace_back(next, event);
         }
         events.pop();
     }
@@ -34,6 +38,8 @@ void Event::Dispatch(float time)
 //------------------------------------------------------------------------------
 void Event::Push(std::shared_ptr<Event> const& event)
 {
-    events.push({ xxGetCurrentTime(), event });
+    double time;
+    xxGetCurrentTime(&time);
+    events.push({ time, event });
 }
 //==============================================================================
