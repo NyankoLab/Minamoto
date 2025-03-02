@@ -176,6 +176,10 @@
 		F5E4C8332D219C5200111AC3 /* DrawTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C8312D219C5000111AC3 /* DrawTools.cpp */; };
 		F5E4C8342D219C5200111AC3 /* DrawTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C8312D219C5000111AC3 /* DrawTools.cpp */; };
 		F5E4C8352D219C5200111AC3 /* DrawTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C8312D219C5000111AC3 /* DrawTools.cpp */; };
+		F5E5B1AA2D72F63D008E0D21 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1A92D72F63B008E0D21 /* Camera.cpp */; };
+		F5E5B1AB2D72F63D008E0D21 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1A92D72F63B008E0D21 /* Camera.cpp */; };
+		F5E5B1AC2D72F63D008E0D21 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1A92D72F63B008E0D21 /* Camera.cpp */; };
+		F5E5B1AD2D72F63D008E0D21 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1A92D72F63B008E0D21 /* Camera.cpp */; };
 		F5FAA3742D54F80400A25CCB /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAA3732D54F80200A25CCB /* Mesh.cpp */; };
 		F5FAA3752D54F80400A25CCB /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAA3732D54F80200A25CCB /* Mesh.cpp */; };
 		F5FAA3762D54F80400A25CCB /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAA3732D54F80200A25CCB /* Mesh.cpp */; };
@@ -308,6 +312,8 @@
 		F5054E252D34FF2700D62FC6 /* Material.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
 		F5E4C8302D219C4700111AC3 /* DrawTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DrawTools.h; sourceTree = "<group>"; };
 		F5E4C8312D219C5000111AC3 /* DrawTools.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DrawTools.cpp; sourceTree = "<group>"; };
+		F5E5B1A82D72F636008E0D21 /* Camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
+		F5E5B1A92D72F63B008E0D21 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		F5FAA3722D54F7FB00A25CCB /* Mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
 		F5FAA3732D54F80200A25CCB /* Mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -439,6 +445,8 @@
 				D6F5640F2BEA3FF9006D32D9 /* Binding.h */,
 				D68CADF22D1323CE00ACE81B /* Buffer.cpp */,
 				D68CADF12D1323CE00ACE81B /* Buffer.h */,
+				F5E5B1A92D72F63B008E0D21 /* Camera.cpp */,
+				F5E5B1A82D72F636008E0D21 /* Camera.h */,
 				F5054E252D34FF2700D62FC6 /* Material.cpp */,
 				F5054E242D34FF2000D62FC6 /* Material.h */,
 				F5FAA3732D54F80200A25CCB /* Mesh.cpp */,
@@ -699,6 +707,7 @@
 				D60791032BF5F1B8008810BD /* CSV.cpp in Sources */,
 				D62FEBD42BE493A3004E9FDF /* Lua.cpp in Sources */,
 				D6F564052BEA004F006D32D9 /* NodeTools.cpp in Sources */,
+				F5E5B1AD2D72F63D008E0D21 /* Camera.cpp in Sources */,
 				D6D26F8C2BDDFAC400D57772 /* RenderPass.cpp in Sources */,
 				D62286C92BD559B000440C24 /* ConstantScaleModifier.cpp in Sources */,
 				D645C4CF2BD145C400A89E16 /* TranslateModifier.cpp in Sources */,
@@ -745,6 +754,7 @@
 				D6346EE52BFA06520075D7F1 /* QuickJS.cpp in Sources */,
 				D60791062BF5F1B8008810BD /* CSV.cpp in Sources */,
 				D62286C82BD559B000440C24 /* ConstantTranslateModifier.cpp in Sources */,
+				F5E5B1AA2D72F63D008E0D21 /* Camera.cpp in Sources */,
 				D6F5640E2BEA15C7006D32D9 /* CameraTools.cpp in Sources */,
 				D62286D22BD6C18900440C24 /* Quaternion16Modifier.cpp in Sources */,
 				D6FEF40C2C09C56E003272C2 /* Float2Modifier.cpp in Sources */,
@@ -789,6 +799,7 @@
 				D60791042BF5F1B8008810BD /* CSV.cpp in Sources */,
 				D62FEBD52BE493A3004E9FDF /* Lua.cpp in Sources */,
 				D6F564062BEA004F006D32D9 /* NodeTools.cpp in Sources */,
+				F5E5B1AB2D72F63D008E0D21 /* Camera.cpp in Sources */,
 				D6D26F8D2BDDFAC400D57772 /* RenderPass.cpp in Sources */,
 				D62286CA2BD559B000440C24 /* ConstantScaleModifier.cpp in Sources */,
 				D645C4D02BD145C400A89E16 /* TranslateModifier.cpp in Sources */,
@@ -832,6 +843,7 @@
 				D60791052BF5F1B8008810BD /* CSV.cpp in Sources */,
 				D62FEBD62BE493A3004E9FDF /* Lua.cpp in Sources */,
 				D6F564072BEA004F006D32D9 /* NodeTools.cpp in Sources */,
+				F5E5B1AC2D72F63D008E0D21 /* Camera.cpp in Sources */,
 				D6D26F8E2BDDFAC400D57772 /* RenderPass.cpp in Sources */,
 				D62286CB2BD559B000440C24 /* ConstantScaleModifier.cpp in Sources */,
 				D645C4D12BD145C400A89E16 /* TranslateModifier.cpp in Sources */,

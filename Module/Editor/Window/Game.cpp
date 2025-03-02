@@ -5,8 +5,8 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
-#include <xxGraphicPlus/xxCamera.h>
 #include <xxGraphicPlus/xxNode.h>
+#include <Runtime/Graphic/Camera.h>
 #include <Runtime/Graphic/Material.h>
 #include <Tools/CameraTools.h>
 #include <Tools/DrawTools.h>

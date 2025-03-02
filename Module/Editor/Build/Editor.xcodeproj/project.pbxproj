@@ -158,6 +158,14 @@
 		F57864942D51B3D900EF5BCC /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57864922D51B3D900EF5BCC /* ImportEvent.cpp */; };
 		F57864952D51B3D900EF5BCC /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57864922D51B3D900EF5BCC /* ImportEvent.cpp */; };
 		F57864962D51B3D900EF5BCC /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57864922D51B3D900EF5BCC /* ImportEvent.cpp */; };
+		F5E5B1B12D7354C6008E0D21 /* ExportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */; };
+		F5E5B1B22D7354C6008E0D21 /* ExportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */; };
+		F5E5B1B32D7354C6008E0D21 /* ExportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */; };
+		F5E5B1B42D7354C6008E0D21 /* ExportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */; };
+		F5E5B1B72D736D34008E0D21 /* ExportWavefront.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B62D736D32008E0D21 /* ExportWavefront.cpp */; };
+		F5E5B1B82D736D34008E0D21 /* ExportWavefront.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B62D736D32008E0D21 /* ExportWavefront.cpp */; };
+		F5E5B1B92D736D34008E0D21 /* ExportWavefront.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B62D736D32008E0D21 /* ExportWavefront.cpp */; };
+		F5E5B1BA2D736D34008E0D21 /* ExportWavefront.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B62D736D32008E0D21 /* ExportWavefront.cpp */; };
 		F5E72CAA2D5651EB005A1A54 /* except.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E72CA92D5651EB005A1A54 /* except.cpp */; };
 /* End PBXBuildFile section */
 
@@ -310,6 +318,10 @@
 		F53DE7382D3FAE590083B457 /* Event.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Event.cpp; sourceTree = "<group>"; };
 		F57864912D51B3D900EF5BCC /* ImportEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImportEvent.h; sourceTree = "<group>"; };
 		F57864922D51B3D900EF5BCC /* ImportEvent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ImportEvent.cpp; sourceTree = "<group>"; };
+		F5E5B1AF2D7354C6008E0D21 /* ExportEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExportEvent.h; sourceTree = "<group>"; };
+		F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ExportEvent.cpp; sourceTree = "<group>"; };
+		F5E5B1B52D736D24008E0D21 /* ExportWavefront.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExportWavefront.h; sourceTree = "<group>"; };
+		F5E5B1B62D736D32008E0D21 /* ExportWavefront.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ExportWavefront.cpp; sourceTree = "<group>"; };
 		F5E72CA92D5651EB005A1A54 /* except.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = except.cpp; path = "../../../SDK/ClangPlatform/windows-msvc/except.cpp"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -518,20 +530,12 @@
 			name = ImGuiFileDialog;
 			sourceTree = "<group>";
 		};
-		D6386A5A2BDAAB170008C9D1 /* Graphic */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Graphic;
-			path = ../Graphic;
-			sourceTree = "<group>";
-		};
 		D644A038231ED82900B75B77 = {
 			isa = PBXGroup;
 			children = (
 				CE999BD625D21EC800351116 /* Configs */,
 				F53DE7362D3FABED0083B457 /* Event */,
-				D6386A5A2BDAAB170008C9D1 /* Graphic */,
+				F5E5B1AE2D7354A3008E0D21 /* Export */,
 				D633706C2B3729E8001D4057 /* Import */,
 				D6012A1C2B1DE28200C3875A /* Utility */,
 				D63370732B382141001D4057 /* Window */,
@@ -621,6 +625,18 @@
 			);
 			name = Event;
 			path = ../Event;
+			sourceTree = "<group>";
+		};
+		F5E5B1AE2D7354A3008E0D21 /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */,
+				F5E5B1AF2D7354C6008E0D21 /* ExportEvent.h */,
+				F5E5B1B62D736D32008E0D21 /* ExportWavefront.cpp */,
+				F5E5B1B52D736D24008E0D21 /* ExportWavefront.h */,
+			);
+			name = Export;
+			path = ../Export;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -745,6 +761,7 @@
 				D6E6B5582C01CB70003F6D85 /* Document.cpp in Sources */,
 				D6F563FE2BE9D568006D32D9 /* Profiler.cpp in Sources */,
 				D62FEBF42BE53D41004E9FDF /* About.cpp in Sources */,
+				F5E5B1B22D7354C6008E0D21 /* ExportEvent.cpp in Sources */,
 				D68CAE182D16706800ACE81B /* ImportPLY.cpp in Sources */,
 				D666E2E92BE1EBAB00EFA1F2 /* ufbx.c in Sources */,
 				D6346EF02BFA10210075D7F1 /* QuickJSConsole.cpp in Sources */,
@@ -755,6 +772,7 @@
 				D6EFE15A2D1EF6CA00E77042 /* ImCurveEdit.cpp in Sources */,
 				D6EFE15B2D1EF6CA00E77042 /* GraphEditor.cpp in Sources */,
 				D6EFE15C2D1EF6CA00E77042 /* ImSequencer.cpp in Sources */,
+				F5E5B1BA2D736D34008E0D21 /* ExportWavefront.cpp in Sources */,
 				D6EFE15E2D1EF6CA00E77042 /* ImGradient.cpp in Sources */,
 				D60790C22BF1AF46008810BD /* Folder.cpp in Sources */,
 				D6E6B5682C0234EE003F6D85 /* quickjs-io.c in Sources */,
@@ -797,9 +815,11 @@
 				D6D26FA72BDEAF5400D57772 /* Scene.cpp in Sources */,
 				F57864952D51B3D900EF5BCC /* ImportEvent.cpp in Sources */,
 				D6EFE15F2D1EF6CA00E77042 /* ImCurveEdit.cpp in Sources */,
+				F5E5B1B12D7354C6008E0D21 /* ExportEvent.cpp in Sources */,
 				D6EFE1602D1EF6CA00E77042 /* GraphEditor.cpp in Sources */,
 				D6EFE1612D1EF6CA00E77042 /* ImSequencer.cpp in Sources */,
 				D6EFE1632D1EF6CA00E77042 /* ImGradient.cpp in Sources */,
+				F5E5B1B82D736D34008E0D21 /* ExportWavefront.cpp in Sources */,
 				D6169D1A2BB1801100E5490C /* ucrt.cpp in Sources */,
 				D6169D162BB17FE200E5490C /* new.cpp in Sources */,
 				F5E72CAA2D5651EB005A1A54 /* except.cpp in Sources */,
@@ -832,11 +852,13 @@
 				D6EFE1682D1EF6CA00E77042 /* ImGradient.cpp in Sources */,
 				D6A25B7D2B4644B600974946 /* Inspector.cpp in Sources */,
 				D6D26F9F2BDE36B400D57772 /* Tools.cpp in Sources */,
+				F5E5B1B42D7354C6008E0D21 /* ExportEvent.cpp in Sources */,
 				D62FEBF52BE53D41004E9FDF /* About.cpp in Sources */,
 				D60790FE2BF501DC008810BD /* Console.cpp in Sources */,
 				D60790F82BF33502008810BD /* TextureTools.cpp in Sources */,
 				F57864962D51B3D900EF5BCC /* ImportEvent.cpp in Sources */,
 				D63370792B382156001D4057 /* Log.cpp in Sources */,
+				F5E5B1B92D736D34008E0D21 /* ExportWavefront.cpp in Sources */,
 				D6D26FA52BDEAF5400D57772 /* Scene.cpp in Sources */,
 				D6E6B5692C0234EE003F6D85 /* quickjs-io.c in Sources */,
 				D63370702B372A04001D4057 /* ImportWavefront.cpp in Sources */,
@@ -871,11 +893,13 @@
 				D6EFE1592D1EF6CA00E77042 /* ImGradient.cpp in Sources */,
 				D6A25B7E2B4644B600974946 /* Inspector.cpp in Sources */,
 				D6D26FA02BDE36B400D57772 /* Tools.cpp in Sources */,
+				F5E5B1B32D7354C6008E0D21 /* ExportEvent.cpp in Sources */,
 				D62FEBF62BE53D41004E9FDF /* About.cpp in Sources */,
 				D60790FF2BF501DC008810BD /* Console.cpp in Sources */,
 				D60790F92BF33502008810BD /* TextureTools.cpp in Sources */,
 				F57864942D51B3D900EF5BCC /* ImportEvent.cpp in Sources */,
 				D633707A2B382156001D4057 /* Log.cpp in Sources */,
+				F5E5B1B72D736D34008E0D21 /* ExportWavefront.cpp in Sources */,
 				D6D26FA62BDEAF5400D57772 /* Scene.cpp in Sources */,
 				D6E6B56A2C0234EE003F6D85 /* quickjs-io.c in Sources */,
 				D63370712B372A04001D4057 /* ImportWavefront.cpp in Sources */,
