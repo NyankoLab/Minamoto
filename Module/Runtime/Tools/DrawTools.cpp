@@ -5,9 +5,9 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Runtime.h"
-#include <xxGraphicPlus/xxCamera.h>
 #include <xxGraphicPlus/xxMesh.h>
 #include <xxGraphicPlus/xxNode.h>
+#include "Graphic/Camera.h"
 #if HAVE_MINIGUI
 #include <MiniGUI/Window.h>
 #endif

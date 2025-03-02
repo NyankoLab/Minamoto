@@ -48,6 +48,12 @@ void Import::Shutdown()
 //------------------------------------------------------------------------------
 xxTexturePtr Import::CreateTexture(char const* img)
 {
+#if 1
+    xxTexturePtr texture = xxTexture::Create();
+    texture->Name = xxFile::GetName(img, true);
+    texture->Path = xxFile::GetPath(img);
+    xxTexture::Reader(texture);
+#else
     int width = 1;
     int height = 1;
     stbi_uc* uc = stbi_load(img, &width, &height, nullptr, 4);
@@ -74,6 +80,7 @@ xxTexturePtr Import::CreateTexture(char const* img)
     }
 
     stbi_image_free(uc);
+#endif
     return texture;
 }
 //------------------------------------------------------------------------------

@@ -156,6 +156,8 @@ void TextureTools::MipmapTexture(xxTexturePtr const& texture)
         return;
     if (texture->Format != "RGBA8888"_CC && texture->Format != "BGRA8888"_CC)
         return;
+    if ((*texture)() == nullptr)
+        return;
 
     size_t size = xxTexture::Calculate(texture->Format, texture->Width, texture->Height, texture->Depth);
     if (size == 0)

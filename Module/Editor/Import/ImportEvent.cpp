@@ -103,47 +103,74 @@ double ImportEvent::Execute()
         ImGui::SliderInt("Node", &nodeCount, 1, 1000, "%d", ImGuiSliderFlags_ReadOnly);
         ImGui::SliderInt("Mesh", &meshCount, 1, 1000, "%d", ImGuiSliderFlags_ReadOnly);
         ImGui::SliderInt("Texture", &textureCount, 1, 1000, "%d", ImGuiSliderFlags_ReadOnly);
-        if (ImGui::Button("QuadTree"))
+
+        if (ImGui::BeginTable("", 2))
         {
-            NodeTools::ConvertQuadTree(output);
-            Statistic();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Reset Mesh"))
-        {
-            xxNode::Traversal(output, [](xxNodePtr const& node)
+            ImGui::TableNextColumn();
+            ImGui::TextUnformatted("Mesh");
+            ImGui::TableNextColumn();
+            if (ImGui::Button("Reset Mesh"))
             {
-                if (node->Mesh)
+                xxNode::Traversal(output, [](xxNodePtr const& node)
                 {
-                    xxVector3 origin = node->GetTranslate();
-                    node->Mesh = MeshTools::ResetMesh(node->Mesh, origin);
-                    node->SetTranslate(origin);
-                }
-                return true;
-            });
-            Statistic();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Unify Mesh"))
-        {
-            MeshTools::UnifyMesh(output, 1.0f);
-            Statistic();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Mipmap Texture") && mipmapTextures.empty())
-        {
-            xxNode::Traversal(output, [&](xxNodePtr const& node)
-            {
-                if (node->Material)
-                {
-                    for (xxTexturePtr const& texture : node->Material->Textures)
+                    if (node->Mesh)
                     {
-                        mipmapTextures.insert(texture);
+                        xxVector3 origin = node->GetTranslate();
+                        node->Mesh = MeshTools::ResetMesh(node->Mesh, origin);
+                        node->SetTranslate(origin);
                     }
-                }
-                return true;
-            });
-            Statistic();
+                    return true;
+                });
+                Statistic();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Unify Mesh"))
+            {
+                MeshTools::UnifyMesh(output, 1.0f);
+                Statistic();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Optimize Mesh"))
+            {
+                xxNode::Traversal(output, [](xxNodePtr const& node)
+                {
+                    if (node->Mesh)
+                    {
+                        MeshTools::OptimizeMesh(node->Mesh);
+                    }
+                    return true;
+                });
+                Statistic();
+            }
+
+            ImGui::TableNextColumn();
+            ImGui::TextUnformatted("Node");
+            ImGui::TableNextColumn();
+            if (ImGui::Button("QuadTree"))
+            {
+                NodeTools::ConvertQuadTree(output);
+                Statistic();
+            }
+
+            ImGui::TableNextColumn();
+            ImGui::TextUnformatted("Texture");
+            ImGui::TableNextColumn();
+            if (ImGui::Button("Mipmap Texture") && mipmapTextures.empty())
+            {
+                xxNode::Traversal(output, [&](xxNodePtr const& node)
+                {
+                    if (node->Material)
+                    {
+                        for (xxTexturePtr const& texture : node->Material->Textures)
+                        {
+                            mipmapTextures.insert(texture);
+                        }
+                    }
+                    return true;
+                });
+                Statistic();
+            }
+            ImGui::EndTable();
         }
     }
     ImGui::End();

@@ -6,7 +6,7 @@
 //==============================================================================
 #include "Runtime.h"
 #include <algorithm>
-#include <xxGraphicPlus/xxCamera.h>
+#include "Graphic/Camera.h"
 #include "CameraTools.h"
 
 //==============================================================================

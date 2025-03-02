@@ -54,6 +54,8 @@ protected:
     uint16_t            m_fragmentTextureSlot = 0;
 
 public:
+    bool                LambertRound = false;
+
     bool                BackfaceCulling = false;
     bool                FrustumCulling = false;
 

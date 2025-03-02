@@ -89,7 +89,7 @@ std::map<std::string, ImportWavefront::Material> ImportWavefront::CreateMaterial
                     material.output->Lighting = false;
                 }
             }
-            material.output->AlphaTest = material.output->Opacity == 1.0f;
+//          material.output->AlphaTest = material.output->Opacity == 1.0f;
             material.output->Blending = material.output->Opacity != 1.0f;
             if (material.map_Kd)
             {
@@ -258,6 +258,7 @@ xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&
         faceVertices.clear();
         faceNormals.clear();
         faceTextures.clear();
+        name.clear();
         material = nullptr;
     };
 
@@ -275,7 +276,7 @@ xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&
         switch (xxHash(statement))
         {
         case xxHash("mtllib"):
-            materials = CreateMaterial(GeneratePath(obj, lasts).c_str());
+            materials.merge(CreateMaterial(GeneratePath(obj, lasts).c_str()));
             break;
         case xxHash("v"):
             finish();
@@ -296,16 +297,27 @@ xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&
             textures.back().x = 0 + ToFloat(strtok_r(nullptr, delim, &lasts));
             textures.back().y = 1 - ToFloat(strtok_r(nullptr, delim, &lasts));
             break;
+        case xxHash("o"):
+            finish();
+            vertices.clear();
+            normals.clear();
+            textures.clear();
+
+            xxLog("ImportWavefront", "Create Object : %s", lasts);
+            name = lasts;
+            break;
         case xxHash("g"):
             finish();
 
-            xxLog("ImportWavefront", "Create Node : %s", lasts);
+            xxLog("ImportWavefront", "Create Group : %s", lasts);
             name = lasts;
             break;
         case xxHash("usemtl"):
             finish();
 
             xxLog("ImportWavefront", "Use Material : %s", lasts);
+            if (name.empty())
+                name = lasts;
             material = &materials[lasts];
             break;
         case xxHash("f"):
@@ -343,7 +355,11 @@ xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&
                 unsigned int v = ToInt(strsep(&parts, "/")) - 1;
                 unsigned int t = ToInt(strsep(&parts, "/")) - 1;
                 unsigned int n = ToInt(strsep(&parts, "/")) - 1;
-                if (v < vertices.size())
+                if (v & 0x80000000u)
+                {
+                    // Negative
+                }
+                else if (v < vertices.size())
                 {
                     faceVertices.push_back(vertices[v]);
                 }
@@ -351,7 +367,11 @@ xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&
                 {
                     xxLog("ImportWavefront", "Unknown vertice : %d", v);
                 }
-                if (n < normals.size())
+                if (n & 0x80000000u)
+                {
+                    // Negative
+                }
+                else if (n < normals.size())
                 {
                     faceNormals.push_back(normals[n]);
                 }
@@ -359,7 +379,11 @@ xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&
                 {
                     xxLog("ImportWavefront", "Unknown normal : %d", n);
                 }
-                if (t < textures.size())
+                if (t & 0x80000000u)
+                {
+                    // Negative
+                }
+                else if (t < textures.size())
                 {
                     faceTextures.push_back(textures[t]);
                 }

@@ -9,6 +9,7 @@
 #include "Modifier/Modifier.h"
 #include "Graphic/Binding.h"
 #include "Graphic/Buffer.h"
+#include "Graphic/Camera.h"
 #include "Graphic/Material.h"
 #include "Graphic/Mesh.h"
 #include "Graphic/Pipeline.h"
@@ -31,6 +32,7 @@ void Runtime::Initialize()
 {
     Binding::Initialize();
     Buffer::Initialize();
+    Camera::Initialize();
     Material::Initialize();
     Mesh::Initialize();
     Modifier::Initialize();
@@ -76,6 +78,7 @@ void Runtime::Shutdown(bool suspend)
     Modifier::Shutdown();
     Mesh::Shutdown();
     Material::Shutdown();
+    Camera::Shutdown();
     Buffer::Shutdown();
     Binding::Shutdown();
 

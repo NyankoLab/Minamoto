@@ -6,9 +6,9 @@
 //==============================================================================
 #include "Editor.h"
 #include <vector>
-#include <xxGraphicPlus/xxCamera.h>
 #include <xxGraphicPlus/xxMath.h>
-#include <Tools/CameraTools.h>
+#include <Runtime/Graphic/Camera.h>
+#include <Runtime/Tools/CameraTools.h>
 #include "Tools.h"
 
 //==============================================================================

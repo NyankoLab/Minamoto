@@ -5,13 +5,14 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
-#include <xxGraphicPlus/xxCamera.h>
 #include <xxGraphicPlus/xxFile.h>
 #include <xxGraphicPlus/xxNode.h>
 #include <Graphic/Binary.h>
 #include <MiniGUI/Window.h>
+#include <Runtime/Graphic/Camera.h>
 #include <Runtime/Tools/NodeTools.h>
 #include <ImGuiFileDialog/ImGuiFileDialog.h>
+#include "Export/ExportEvent.h"
 #include "Import/Import.h"
 #include "Import/ImportEvent.h"
 #include "Import/ImportFBX.h"
@@ -521,7 +522,8 @@ bool Hierarchy::Update(const UpdateData& updateData, bool& show, xxNodePtr const
             if (ImGui::Button("Export Object"))
             {
                 update = true;
-                exportNode = selectedRight;
+                Event::Push(ExportEvent::Create(selectedRight));
+//              exportNode = selectedRight;
                 selectedRight = nullptr;
             }
             ImGui::EndPopup();

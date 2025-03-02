@@ -5,9 +5,9 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
-#include <xxGraphicPlus/xxCamera.h>
 #include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
+#include <Runtime/Graphic/Camera.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
 #include <Runtime/MiniGUI/Window.h>
@@ -104,6 +104,7 @@ void Inspector::UpdateCamera(const UpdateData& updateData, xxCameraPtr const& ca
         ImGui::SliderFloat3("Direction" Q, camera->LightDirection, -1.0f, 1.0f);
         if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
             camera->LightDirection /= camera->LightDirection.Length();
+        ImGui::SliderFloat("Lambert Round" Q, &camera->LambertRound, 0.0f, 1.0f);
     }
 }
 //------------------------------------------------------------------------------
@@ -204,6 +205,8 @@ void Inspector::UpdateMaterial(const UpdateData& updateData, xxMaterialPtr const
                 ImGui::ColorEdit3("Specular" Q, material->SpecularColor);
                 ImGui::SliderFloat("Power" Q, &material->SpecularHighlight, 0.0f, 256.0f);
             }
+            if (ImGui::Checkbox("Lambert Round" Q, &material->LambertRound))
+                invalidate = material;
         }
         if (ImGui::Checkbox("AlphaTest" Q, &material->AlphaTest))
             invalidate = material;

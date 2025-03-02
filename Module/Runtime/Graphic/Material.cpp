@@ -5,10 +5,10 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Runtime.h"
-#include <xxGraphicPlus/xxCamera.h>
 #include <xxGraphicPlus/xxMesh.h>
 #include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
+#include "Camera.h"
 #include "Material.h"
 
 //==============================================================================
@@ -610,18 +610,19 @@ void Material::ShaderVarying(xxDrawData const& data, struct MaterialSelector& s)
     int normal = mesh->NormalCount;
     int color = mesh->ColorCount;
     int texture = mesh->TextureCount;
-     
-    //                            GLSL                               HLSL                                 MSL
-    s.GHM(true,                   "",                                "struct Varying",                    "struct Varying"                );
-    s.GHM(true,                   "",                                "{",                                 "{"                             );
-    s.GHM(true,                   "",                                "float4 Position : SV_POSITION;",    "float4 Position [[position]];" );
-    s.GHM(Lighting || color,      "varying vec4 varyColor;",         "float4 Color : COLOR;",             "float4 Color;"                 );
-    s.GHM(texture > 0,            "varying vec2 varyUV0;",           "float2 UV0 : TEXCOORD0;",           "float2 UV0;"                   );
-    s.GHM(Lighting && Specular,   "varying vec3 varyWorldPosition;", "float3 WorldPosition : TEXCOORD4;", "float3 WorldPosition;"         );
-    s.GHM(Lighting && normal > 0, "varying vec3 varyWorldNormal;",   "float3 WorldNormal : TEXCOORD5;",   "float3 WorldNormal;"           );
-    s.GHM(Lighting && normal > 1, "varying vec3 varyWorldTangent;",  "float3 WorldTangent : TEXCOORD6;",  "float3 WorldTangent;"          );
-    s.GHM(Lighting && normal > 2, "varying vec3 varyWorldBinormal;", "float3 WorldBinormal : TEXCOORD7;", "float3 WorldBinormal;"         );
-    s.GHM(true,                   "",                                "};",                                "};"                            );
+    int fragNormal = (Lighting || DebugNormal) ? normal : 0;
+
+    //                          GLSL                               HLSL                                 MSL
+    s.GHM(true,                 "",                                "struct Varying",                    "struct Varying"                );
+    s.GHM(true,                 "",                                "{",                                 "{"                             );
+    s.GHM(true,                 "",                                "float4 Position : SV_POSITION;",    "float4 Position [[position]];" );
+    s.GHM(Lighting || color,    "varying vec4 varyColor;",         "float4 Color : COLOR;",             "float4 Color;"                 );
+    s.GHM(texture > 0,          "varying vec2 varyUV0;",           "float2 UV0 : TEXCOORD0;",           "float2 UV0;"                   );
+    s.GHM(Lighting && Specular, "varying vec3 varyWorldPosition;", "float3 WorldPosition : TEXCOORD4;", "float3 WorldPosition;"         );
+    s.GHM(fragNormal > 0,       "varying vec3 varyWorldNormal;",   "float3 WorldNormal : TEXCOORD5;",   "float3 WorldNormal;"           );
+    s.GHM(fragNormal > 1,       "varying vec3 varyWorldTangent;",  "float3 WorldTangent : TEXCOORD6;",  "float3 WorldTangent;"          );
+    s.GHM(fragNormal > 2,       "varying vec3 varyWorldBinormal;", "float3 WorldBinormal : TEXCOORD7;", "float3 WorldBinormal;"         );
+    s.GHM(true,                 "",                                "};",                                "};"                            );
 }
 //------------------------------------------------------------------------------
 void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) const
@@ -631,6 +632,7 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
     int normal = mesh->NormalCount;
     int color = mesh->ColorCount;
     int texture = mesh->TextureCount;
+    int fragNormal = (Lighting || DebugNormal) ? normal : 0;
 
     //             HLSL                                MSL                                                        MSL Arugment
     s.HMM(true,    "[outputtopology(\"triangle\")]",   "[[mesh]]",                                                "[[mesh]]"                                                );
@@ -692,17 +694,17 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
     UpdateBlendingConstant(data, size, nullptr, &s);
     UpdateLightingConstant(data, size, nullptr, &s);
 
-    //                           HLSL                                             MSL
-    s.HM(true,                   "",                                              "Varying vary;"                           );
-    s.HM(true,                   "vary[gtid].Position = screenPosition;",         "vary.Position = screenPosition;"         );
-    s.HM(Lighting || color,      "vary[gtid].Color = color;",                     "vary.Color = color;"                     );
-    s.HM(texture > 0,            "vary[gtid].UV0 = attrUV0;",                     "vary.UV0 = attrUV0;"                     );
-    s.HM(Lighting && Specular,   "vary[gtid].WorldPosition = worldPosition.xyz;", "vary.WorldPosition = worldPosition.xyz;" );
-    s.HM(Lighting && normal > 0, "vary[gtid].WorldNormal = worldNormal;",         "vary.WorldNormal = worldNormal;"         );
-    s.HM(Lighting && normal > 1, "vary[gtid].WorldTangent = worldTangent;",       "vary.WorldTangent = worldTangent;"       );
-    s.HM(Lighting && normal > 2, "vary[gtid].WorldBinormal = worldBinormal;",     "vary.WorldBinormal = worldBinormal;"     );
-    s.HM(true,                   "",                                              "output.set_vertex(gtid, vary);"          );
-    s.HM(true,                   "}",                                             "}"                                       );
+    //                         HLSL                                             MSL
+    s.HM(true,                 "",                                              "Varying vary;"                           );
+    s.HM(true,                 "vary[gtid].Position = screenPosition;",         "vary.Position = screenPosition;"         );
+    s.HM(Lighting || color,    "vary[gtid].Color = color;",                     "vary.Color = color;"                     );
+    s.HM(texture > 0,          "vary[gtid].UV0 = attrUV0;",                     "vary.UV0 = attrUV0;"                     );
+    s.HM(Lighting && Specular, "vary[gtid].WorldPosition = worldPosition.xyz;", "vary.WorldPosition = worldPosition.xyz;" );
+    s.HM(fragNormal > 0,       "vary[gtid].WorldNormal = worldNormal;",         "vary.WorldNormal = worldNormal;"         );
+    s.HM(fragNormal > 1,       "vary[gtid].WorldTangent = worldTangent;",       "vary.WorldTangent = worldTangent;"       );
+    s.HM(fragNormal > 2,       "vary[gtid].WorldBinormal = worldBinormal;",     "vary.WorldBinormal = worldBinormal;"     );
+    s.HM(true,                 "",                                              "output.set_vertex(gtid, vary);"          );
+    s.HM(true,                 "}",                                             "}"                                       );
 }
 //------------------------------------------------------------------------------
 void Material::ShaderVertex(xxDrawData const& data, struct MaterialSelector& s) const
@@ -712,6 +714,7 @@ void Material::ShaderVertex(xxDrawData const& data, struct MaterialSelector& s) 
     int normal = mesh->NormalCount;
     int color = mesh->ColorCount;
     int texture = mesh->TextureCount;
+    int fragNormal = (Lighting || DebugNormal) ? normal : 0;
 
     //          GLSL           HLSL              MSL
     s.GHM(true, "",            "",               "vertex"                              );
@@ -748,17 +751,17 @@ void Material::ShaderVertex(xxDrawData const& data, struct MaterialSelector& s) 
     UpdateBlendingConstant(data, size, nullptr, &s);
     UpdateLightingConstant(data, size, nullptr, &s);
 
-    //                           GLSL                                      HLSL / MSL
-    s.GH(true,                   "",                                       "Varying vary;"                           );
-    s.GH(true,                   "gl_Position = screenPosition;",          "vary.Position = screenPosition;"         );
-    s.GH(Lighting || color,      "varyColor = color;",                     "vary.Color = color;"                     );
-    s.GH(texture > 0,            "varyUV0 = attrUV0;",                     "vary.UV0 = attrUV0;"                     );
-    s.GH(Lighting && Specular,   "varyWorldPosition = worldPosition.xyz;", "vary.WorldPosition = worldPosition.xyz;" );
-    s.GH(Lighting && normal > 0, "varyWorldNormal = worldNormal;",         "vary.WorldNormal = worldNormal;"         );
-    s.GH(Lighting && normal > 1, "varyWorldTangent = worldTangent;",       "vary.WorldTangent = worldTangent;"       );
-    s.GH(Lighting && normal > 2, "varyWorldBinormal = worldBinormal;",     "vary.WorldBinormal = worldBinormal;"     );
-    s.GH(true,                   "",                                       "return vary;"                            );
-    s.GH(true,                   "}",                                      "}"                                       );
+    //                         GLSL                                      HLSL / MSL
+    s.GH(true,                 "",                                       "Varying vary;"                           );
+    s.GH(true,                 "gl_Position = screenPosition;",          "vary.Position = screenPosition;"         );
+    s.GH(Lighting || color,    "varyColor = color;",                     "vary.Color = color;"                     );
+    s.GH(texture > 0,          "varyUV0 = attrUV0;",                     "vary.UV0 = attrUV0;"                     );
+    s.GH(Lighting && Specular, "varyWorldPosition = worldPosition.xyz;", "vary.WorldPosition = worldPosition.xyz;" );
+    s.GH(fragNormal > 0,       "varyWorldNormal = worldNormal;",         "vary.WorldNormal = worldNormal;"         );
+    s.GH(fragNormal > 1,       "varyWorldTangent = worldTangent;",       "vary.WorldTangent = worldTangent;"       );
+    s.GH(fragNormal > 2,       "varyWorldBinormal = worldBinormal;",     "vary.WorldBinormal = worldBinormal;"     );
+    s.GH(true,                 "",                                       "return vary;"                            );
+    s.GH(true,                 "}",                                      "}"                                       );
 }
 //------------------------------------------------------------------------------
 void Material::ShaderFragment(xxDrawData const& data, struct MaterialSelector& s) const
@@ -767,6 +770,7 @@ void Material::ShaderFragment(xxDrawData const& data, struct MaterialSelector& s
     int normal = mesh->NormalCount;
     int color = mesh->ColorCount;
     int texture = mesh->TextureCount;
+    int fragNormal = (Lighting || DebugNormal) ? normal : 0;
 
     bool base = texture && GetTexture(BASE) != nullptr;
     bool bump = texture && GetTexture(BUMP) != nullptr;
@@ -784,17 +788,17 @@ void Material::ShaderFragment(xxDrawData const& data, struct MaterialSelector& s
     s.GHM(true, "",            "",             "auto uniBuffer = uni.Buffer;"         );
     s.GHM(true, "",            "",             "#endif"                               );
 
-    //                           GLSL                       HLSL / MSL
-    s.GH(true,                   "int uniIndex = 0;",       "int uniIndex = 0;"                              );
-    s.GH(true,                   "vec4 color = vec4(1.0);", "float4 color = 1.0;"                            );
-    s.GH(bump,                   "vec4 bump = vec4(0.0);",  "float4 bump = 0.0;"                             );
-    s.GH(Lighting || color,      "",                        "float4 varyColor = vary.Color;"                 );
-    s.GH(texture > 0,            "",                        "float2 varyUV0 = vary.UV0;"                     );
-    s.GH(Lighting && Specular,   "",                        "float3 varyWorldPosition = vary.WorldPosition;" );
-    s.GH(Lighting && normal > 0, "",                        "float3 varyWorldNormal = vary.WorldNormal;"     );
-    s.GH(Lighting && normal > 1, "",                        "float3 varyWorldTangent = vary.WorldTangent;"   );
-    s.GH(Lighting && normal > 2, "",                        "float3 varyWorldBinormal = vary.WorldBinormal;" );
-    s.GH(Lighting || color,      "color = varyColor;",      "color = varyColor;"                             );
+    //                         GLSL                       HLSL / MSL
+    s.GH(true,                 "int uniIndex = 0;",       "int uniIndex = 0;"                              );
+    s.GH(true,                 "vec4 color = vec4(1.0);", "float4 color = 1.0;"                            );
+    s.GH(bump,                 "vec4 bump = vec4(0.0);",  "float4 bump = 0.0;"                             );
+    s.GH(Lighting || color,    "",                        "float4 varyColor = vary.Color;"                 );
+    s.GH(texture > 0,          "",                        "float2 varyUV0 = vary.UV0;"                     );
+    s.GH(Lighting && Specular, "",                        "float3 varyWorldPosition = vary.WorldPosition;" );
+    s.GH(fragNormal > 0,       "",                        "float3 varyWorldNormal = vary.WorldNormal;"     );
+    s.GH(fragNormal > 1,       "",                        "float3 varyWorldTangent = vary.WorldTangent;"   );
+    s.GH(fragNormal > 2,       "",                        "float3 varyWorldBinormal = vary.WorldBinormal;" );
+    s.GH(Lighting || color,    "color = varyColor;",      "color = varyColor;"                             );
 
     //          GLSL / HLSL MSL                                    MSL Argument
     s.HMM(base, "",         "auto Base = sam.Base;",               "auto Base = uni.Base;"               );
@@ -929,7 +933,7 @@ void Material::UpdateCullingConstant(xxDrawData const& data, int& size, xxVector
 //------------------------------------------------------------------------------
 void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVector4** pointer, struct MaterialSelector* s) const
 {
-    if (Lighting == false)
+    if (Lighting == false && DebugNormal == false)
         return;
     if (pointer == nullptr)
     {
@@ -941,16 +945,18 @@ void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVecto
         size -= 7 * sizeof(xxVector4);
         (*pointer) += 7;
 
-        xxCamera* camera = data.camera;
+        Camera* camera = (Camera*)data.camera;
         if (camera)
         {
             vector[0].xyz = camera->Location;
+            vector[1].w = camera->LambertRound;
             vector[1].xyz = camera->LightDirection;
             vector[2].xyz = camera->LightColor;
         }
         else
         {
             vector[0].xyz = xxVector3::ZERO;
+            vector[1].w = 0.5f;
             vector[1].xyz = xxVector3::Y;
             vector[2].xyz = xxVector3::WHITE;
         }
@@ -969,35 +975,47 @@ void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVecto
         bool frag = s->type == 'frag';
 
         bool bump = GetTexture(BUMP) != nullptr;
+        bool lighting = (frag == bump);
+        if (DebugNormal || LambertRound)
+        {
+            lighting = frag;
+        }
 
         (*s)((mesh || vert) && normal > 0, "float3 worldNormal = normalize(mul(float4(normal, 0.0), world).xyz);"     );
         (*s)((mesh || vert) && normal > 1, "float3 worldTangent = normalize(mul(float4(tangent, 0.0), world).xyz);"   );
         (*s)((mesh || vert) && normal > 2, "float3 worldBinormal = normalize(mul(float4(binormal, 0.0), world).xyz);" );
 
-        (*s)(true, "float3 cameraPosition = uniBuffer[uniIndex++].xyz;" );
-        (*s)(true, "float3 lightDirection = uniBuffer[uniIndex++].xyz;" );
-        (*s)(true, "float3 lightColor = uniBuffer[uniIndex++].xyz;"     );
-        (*s)(true, "float3 ambientColor = uniBuffer[uniIndex++].xyz;"   );
-        (*s)(true, "float3 diffuseColor = uniBuffer[uniIndex++].xyz;"   );
-        (*s)(true, "float3 emissiveColor = uniBuffer[uniIndex++].xyz;"  );
-        (*s)(true, "float3 specularColor = uniBuffer[uniIndex].xyz;"    );
-        (*s)(true, "float specularHighlight = uniBuffer[uniIndex++].w;" );
+        (*s)(true,         "float3 cameraPosition = uniBuffer[uniIndex++].xyz;" );
+        (*s)(LambertRound, "float lambertRound = uniBuffer[uniIndex].w;"        );
+        (*s)(true,         "float3 lightDirection = uniBuffer[uniIndex++].xyz;" );
+        (*s)(true,         "float3 lightColor = uniBuffer[uniIndex++].xyz;"     );
+        (*s)(true,         "float3 ambientColor = uniBuffer[uniIndex++].xyz;"   );
+        (*s)(true,         "float3 diffuseColor = uniBuffer[uniIndex++].xyz;"   );
+        (*s)(true,         "float3 emissiveColor = uniBuffer[uniIndex++].xyz;"  );
+        (*s)(true,         "float3 specularColor = uniBuffer[uniIndex].xyz;"    );
+        (*s)(true,         "float specularHighlight = uniBuffer[uniIndex++].w;" );
 
-        (*s)(true,                       "float3 L = lightDirection;"                                    );
-        (*s)(mesh || vert,               "float3 N = worldNormal;"                                       );
-        (*s)(frag,                       "float3 N = varyWorldNormal;"                                   );
-        (*s)(frag && Specular,           "float3 V = normalize(cameraPosition - varyWorldPosition);"     );
-        (*s)(frag && Specular,           "float3 H = normalize(V + L);"                                  );
-        (*s)(frag && bump && normal > 0, "N.z = dot(varyWorldNormal, bump.xyz);"                         );
-        (*s)(frag && bump && normal > 1, "N.x = dot(varyWorldTangent, bump.xyz);"                        );
-        (*s)(frag && bump && normal > 2, "N.y = dot(varyWorldBinormal, bump.xyz);"                       );
-        (*s)(frag == bump,               "float lambert = max(dot(N, L), 0.0);"                          );
-        (*s)(frag && Specular,           "float phong = pow(max(dot(N, H), 0.0001), specularHighlight);" );
-        (*s)(frag == bump,               "color.rgb *= (ambientColor + diffuseColor * lambert);"         );
-        (*s)(frag && Specular,           "color.rgb += specularColor * phong;"                           );
-        (*s)(frag == bump,               "color.rgb *= lightColor;"                                      );
-        (*s)(frag == bump,               "color.rgb += emissiveColor;"                                   );
-        (*s)(frag && DebugNormal,        "color.rgb = N;"                                                );
+        (*s)(true,                         "float3 L = lightDirection;"                                    );
+        (*s)(true,                         "float3 N = float3(1.0, 1.0, 1.0) / sqrt(3.0);"                 );
+        (*s)((mesh || vert) && normal > 0, "N = worldNormal;"                                              );
+        (*s)(frag && normal > 0,           "N = varyWorldNormal;"                                          );
+        (*s)(frag && bump && normal > 0,   "N.z = dot(varyWorldNormal, bump.xyz);"                         );
+        (*s)(frag && bump && normal > 1,   "N.x = dot(varyWorldTangent, bump.xyz);"                        );
+        (*s)(frag && bump && normal > 2,   "N.y = dot(varyWorldBinormal, bump.xyz);"                       );
+
+        (*s)(lighting,                     "float lambert = max(dot(N, L), 0.0);"                          );
+        (*s)(lighting && LambertRound,     "lambert = (lambert >= lambertRound) ? 1.0 : 0.0;"              );
+
+        (*s)(frag && Specular,             "float3 V = normalize(cameraPosition - varyWorldPosition);"     );
+        (*s)(frag && Specular,             "float3 H = normalize(V + L);"                                  );
+        (*s)(frag && Specular,             "float phong = pow(max(dot(N, H), 0.0001), specularHighlight);" );
+
+        (*s)(lighting,                     "color.rgb *= (ambientColor + diffuseColor * lambert);"         );
+        (*s)(frag && Specular,             "color.rgb += specularColor * phong;"                           );
+        (*s)(lighting,                     "color.rgb *= lightColor;"                                      );
+        (*s)(lighting,                     "color.rgb += emissiveColor;"                                   );
+
+        (*s)(frag && DebugNormal,          "color.rgb = N;"                                                );
     }
 }
 //------------------------------------------------------------------------------

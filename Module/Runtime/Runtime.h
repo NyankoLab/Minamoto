@@ -8,9 +8,10 @@
 
 #include <memory>
 #define xxUtilitySmartPointer
+class xxCamera;
 class xxMaterial;
 class xxMesh;
-typedef std::shared_ptr<class xxCamera> xxCameraPtr;
+typedef std::shared_ptr<class Camera> xxCameraPtr;
 typedef std::shared_ptr<class Material> xxMaterialPtr;
 typedef std::shared_ptr<class Mesh> xxMeshPtr;
 typedef std::shared_ptr<class xxModifier> xxModifierPtr;

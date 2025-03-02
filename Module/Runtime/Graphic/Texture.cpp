@@ -13,6 +13,7 @@
 
 #include <Tools/WindowsHeader.h>
 #include <dxsdk/ddraw.h>
+#include <dxsdk/dxgiformat.h>
 
 //#define STBI_NO_JPEG
 //#define STBI_NO_PNG
@@ -30,6 +31,8 @@
 #   pragma clang diagnostic ignored "-Wunused-function"
 #endif
 #include <stb/stb_image.h>
+
+#define TAG "Texture"
 
 //==============================================================================
 static std::map<std::string, xxTexturePtr> textures;
@@ -155,6 +158,16 @@ struct DDS_HEADER
 };
 static_assert(sizeof(DDS_HEADER) == 128);
 //------------------------------------------------------------------------------
+struct DDS_HEADER_DXT10
+{
+    DXGI_FORMAT     dxgiFormat;
+    uint32_t        resourceDimension;
+    uint32_t        miscFlag;
+    uint32_t        arraySize;
+    uint32_t        miscFlags2;
+};
+static_assert(sizeof(DDS_HEADER_DXT10) == 20);
+//------------------------------------------------------------------------------
 void Texture::DDSReader(xxTexturePtr const& texture, std::string const& filename)
 {
     if (texture == nullptr || (*texture)() != nullptr)
@@ -212,6 +225,39 @@ void Texture::DDSReader(xxTexturePtr const& texture, std::string const& filename
                 {
                     (*component++) = '0' + xxPopulationCount(*channel >> 32);
                 }
+            }
+            if (header.ddspf.dwFourCC == "DX10"_cc)
+            {
+                DDS_HEADER_DXT10 headerDXT10;
+                if (file->Read(&headerDXT10, sizeof(DDS_HEADER_DXT10)) != sizeof(DDS_HEADER_DXT10))
+                    break;
+                switch (headerDXT10.dxgiFormat)
+                {
+                case DXGI_FORMAT_B5G6R5_UNORM:      format = "BGR565"_CC;   break;
+                case DXGI_FORMAT_B5G5R5A1_UNORM:    format = "BGRA5551"_CC; break;
+                case DXGI_FORMAT_B4G4R4A4_UNORM:    format = "BGRA4444"_CC; break;
+                case DXGI_FORMAT_B8G8R8A8_UNORM:    format = "BGRA8888"_CC; break;
+                default:
+                case DXGI_FORMAT_R8G8B8A8_UNORM:    format = "RGBA8888"_CC; break;
+                case DXGI_FORMAT_BC1_UNORM:         format = "BC1"_cc;      break;
+                case DXGI_FORMAT_BC2_UNORM:         format = "BC2"_cc;      break;
+                case DXGI_FORMAT_BC3_UNORM:         format = "BC3"_cc;      break;
+                case DXGI_FORMAT_BC4_SNORM:         format = "BC4S"_cc;     break;
+                case DXGI_FORMAT_BC4_UNORM:         format = "BC4U"_cc;     break;
+                case DXGI_FORMAT_BC5_SNORM:         format = "BC5S"_cc;     break;
+                case DXGI_FORMAT_BC5_UNORM:         format = "BC5U"_cc;     break;
+                case DXGI_FORMAT_BC6H_SF16:         format = "BC6H"_cc;     break;
+                case DXGI_FORMAT_BC7_UNORM:         format = "BC7"_cc;      break;
+                }
+            }
+        }
+        if (mipmap > 1)
+        {
+            int max = std::max(std::max(width, height), depth);
+            if (mipmap != (int)log2(max) + 1)
+            {
+                xxLog(TAG, "Mipmap is not enough (%d < %d) %s", mipmap, (int)log2(max) + 1, xxFile::GetName(filename.c_str(), true).c_str());
+                mipmap = 1;
             }
         }
         texture->Initialize(format, width, height, depth, mipmap, 1);

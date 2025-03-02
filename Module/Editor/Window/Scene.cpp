@@ -5,10 +5,10 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
-#include <xxGraphicPlus/xxCamera.h>
 #include <xxGraphicPlus/xxModifier.h>
 #include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
+#include <Runtime/Graphic/Camera.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
 #include <ImGuizmo/ImGuizmo.cpp>
@@ -740,8 +740,6 @@ void Scene::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
         sceneCamera->GetFrustumPlanes(frustum[0], frustum[1], frustum[2], frustum[3], frustum[4], frustum[5]);
     }
 
-    DrawTools::Draw(drawData, sceneGrid);
-
     Profiler::Begin(xxHash("Scene Render"));
     drawData.camera = drawData.camera3D.get();
     for (xxNode* node : drawScenes)
@@ -749,6 +747,8 @@ void Scene::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
         node->Draw(drawData);
     }
     Profiler::End(xxHash("Scene Render"));
+
+    DrawTools::Draw(drawData, sceneGrid);
 
 #if HAVE_MINIGUI
     Profiler::Begin(xxHash("MiniGUI Render"));
