@@ -1,5 +1,5 @@
 //==============================================================================
-// Minamoto : ImportPLY Header
+// Minamoto : ImportInterQuake Header
 //
 // Copyright (c) 2023-2025 TAiGA
 // https://github.com/metarutaiga/minamoto
@@ -9,8 +9,8 @@
 #include <map>
 #include "Import.h"
 
-struct ImportPLY : public Import
+struct ImportInterQuake : public Import
 {
 public:
-    static xxNodePtr Create(char const* ply);
+    static xxNodePtr Create(char const* iqe, std::function<void(xxNodePtr&&)> callback = nullptr);
 };

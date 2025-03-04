@@ -9,7 +9,7 @@
 #include <map>
 #include "Import.h"
 
-class ImportWavefront : public Import
+struct ImportWavefront : public Import
 {
     struct Material
     {

@@ -175,56 +175,48 @@ xxMeshPtr MeshTools::CreateMeshFromMeshData(MeshData const& data)
     return output;
 }
 //------------------------------------------------------------------------------
-xxMeshPtr MeshTools::CreateMesh(std::vector<xxVector3> const& vertices, std::vector<xxVector3> const& normals, std::vector<xxVector4> const& colors, std::vector<xxVector2> const& textures)
+xxMeshPtr MeshTools::CreateMesh(std::vector<xxVector3> const& vertices,
+                                std::vector<xxVector3> const& boneWeights,
+                                std::vector<uint32_t> const& boneIndices,
+                                std::vector<xxVector3> const& normals,
+                                std::vector<xxVector4> const& colors,
+                                std::vector<xxVector2> const& textures,
+                                std::vector<uint32_t> const& indices)
 {
     if (vertices.empty())
         return nullptr;
 
-    int normal = int(normals.size() / vertices.size());
-    int color = int(colors.size() / vertices.size());
-    int texture = int(textures.size() / vertices.size());
-    xxMeshPtr mesh = xxMesh::Create(false, normal, color, texture);
-    if (mesh == nullptr)
-        return nullptr;
+    MeshTools::MeshData data;
+    data.skinning = boneWeights.size() && boneIndices.size();
+    data.normalCount = int(normals.size() / vertices.size());
+    data.colorCount = int(colors.size() / vertices.size());
+    data.textureCount = int(textures.size() / vertices.size());
 
-    mesh->SetVertexCount(static_cast<int>(vertices.size()));
-
-    auto source = vertices.begin();
-    for (auto& position : mesh->GetPosition())
+    data.positions = vertices;
+    data.boneWeights = boneWeights;
+    data.boneIndices = boneIndices;
+//  data.normals = normals;
+    data.normals.reserve(normals.size());
+    for (xxVector3 const& normal : normals)
     {
-        position = (*source++);
+        data.normals.push_back(Mesh::NormalEncode(normal));
     }
-
-    if (normals.size() == vertices.size())
+//  data.colors = colors;
+    data.colors.reserve(colors.size());
+    for (xxVector4 const& color : colors)
     {
-        auto source = normals.begin();
-        for (auto& normal : mesh->GetNormal(0))
-        {
-            normal = Mesh::NormalEncode(*source++);
-        }
+        data.colors.push_back(color.ToInteger());
     }
+    data.textures = textures;
+    data.indices = indices;
 
-    if (colors.size() == vertices.size())
-    {
-        auto source = colors.begin();
-        for (auto& color : mesh->GetColor(0))
-        {
-            color = (*source++).ToInteger();
-        }
-    }
+    data.boneWeights.resize(vertices.size());
+    data.boneIndices.resize(vertices.size());
+    data.normals.resize(vertices.size());
+    data.colors.resize(vertices.size());
+    data.textures.resize(vertices.size());
 
-    if (textures.size() == vertices.size())
-    {
-        auto source = textures.begin();
-        for (auto& texture : mesh->GetTexture(0))
-        {
-            texture = (*source++);
-        }
-    }
-
-    mesh->CalculateBound();
-
-    return mesh;
+    return CreateMeshFromMeshData(data);
 }
 //------------------------------------------------------------------------------
 xxMeshPtr MeshTools::CreateMeshlet(xxMeshPtr const& mesh)

@@ -166,6 +166,10 @@
 		F5E5B1B82D736D34008E0D21 /* ExportWavefront.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B62D736D32008E0D21 /* ExportWavefront.cpp */; };
 		F5E5B1B92D736D34008E0D21 /* ExportWavefront.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B62D736D32008E0D21 /* ExportWavefront.cpp */; };
 		F5E5B1BA2D736D34008E0D21 /* ExportWavefront.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B62D736D32008E0D21 /* ExportWavefront.cpp */; };
+		F5E5B1BD2D75CA7D008E0D21 /* ImportInterQuake.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1BC2D75CA7B008E0D21 /* ImportInterQuake.cpp */; };
+		F5E5B1BE2D75CA7D008E0D21 /* ImportInterQuake.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1BC2D75CA7B008E0D21 /* ImportInterQuake.cpp */; };
+		F5E5B1BF2D75CA7D008E0D21 /* ImportInterQuake.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1BC2D75CA7B008E0D21 /* ImportInterQuake.cpp */; };
+		F5E5B1C02D75CA7D008E0D21 /* ImportInterQuake.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1BC2D75CA7B008E0D21 /* ImportInterQuake.cpp */; };
 		F5E72CAA2D5651EB005A1A54 /* except.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E72CA92D5651EB005A1A54 /* except.cpp */; };
 /* End PBXBuildFile section */
 
@@ -322,6 +326,8 @@
 		F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ExportEvent.cpp; sourceTree = "<group>"; };
 		F5E5B1B52D736D24008E0D21 /* ExportWavefront.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExportWavefront.h; sourceTree = "<group>"; };
 		F5E5B1B62D736D32008E0D21 /* ExportWavefront.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ExportWavefront.cpp; sourceTree = "<group>"; };
+		F5E5B1BB2D75CA6B008E0D21 /* ImportInterQuake.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImportInterQuake.h; sourceTree = "<group>"; };
+		F5E5B1BC2D75CA7B008E0D21 /* ImportInterQuake.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ImportInterQuake.cpp; sourceTree = "<group>"; };
 		F5E72CA92D5651EB005A1A54 /* except.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = except.cpp; path = "../../../SDK/ClangPlatform/windows-msvc/except.cpp"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -476,6 +482,8 @@
 				F57864912D51B3D900EF5BCC /* ImportEvent.h */,
 				D6530A002BB70A270006AD64 /* ImportFBX.cpp */,
 				D6530A012BB70A270006AD64 /* ImportFBX.h */,
+				F5E5B1BC2D75CA7B008E0D21 /* ImportInterQuake.cpp */,
+				F5E5B1BB2D75CA6B008E0D21 /* ImportInterQuake.h */,
 				D68CAE162D16706800ACE81B /* ImportPLY.cpp */,
 				D68CAE152D16706800ACE81B /* ImportPLY.h */,
 				D633706D2B372A04001D4057 /* ImportWavefront.cpp */,
@@ -785,6 +793,7 @@
 				D60790BB2BEE6C5F008810BD /* Project.cpp in Sources */,
 				D63370822B3958F3001D4057 /* Import.cpp in Sources */,
 				D60791092BF61829008810BD /* Setup.cpp in Sources */,
+				F5E5B1BD2D75CA7D008E0D21 /* ImportInterQuake.cpp in Sources */,
 				D666E3CF2BE3BCEC00EFA1F2 /* LuaConsole.cpp in Sources */,
 				D633707C2B382156001D4057 /* Hierarchy.cpp in Sources */,
 				F57864932D51B3D900EF5BCC /* ImportEvent.cpp in Sources */,
@@ -812,6 +821,7 @@
 				D63370722B372A04001D4057 /* ImportWavefront.cpp in Sources */,
 				D6E6B56B2C0234EE003F6D85 /* quickjs-io.c in Sources */,
 				D607910C2BF61829008810BD /* Setup.cpp in Sources */,
+				F5E5B1C02D75CA7D008E0D21 /* ImportInterQuake.cpp in Sources */,
 				D6D26FA72BDEAF5400D57772 /* Scene.cpp in Sources */,
 				F57864952D51B3D900EF5BCC /* ImportEvent.cpp in Sources */,
 				D6EFE15F2D1EF6CA00E77042 /* ImCurveEdit.cpp in Sources */,
@@ -849,6 +859,7 @@
 				D6EFE1642D1EF6CA00E77042 /* ImCurveEdit.cpp in Sources */,
 				D6EFE1652D1EF6CA00E77042 /* GraphEditor.cpp in Sources */,
 				D6EFE1662D1EF6CA00E77042 /* ImSequencer.cpp in Sources */,
+				F5E5B1BF2D75CA7D008E0D21 /* ImportInterQuake.cpp in Sources */,
 				D6EFE1682D1EF6CA00E77042 /* ImGradient.cpp in Sources */,
 				D6A25B7D2B4644B600974946 /* Inspector.cpp in Sources */,
 				D6D26F9F2BDE36B400D57772 /* Tools.cpp in Sources */,
@@ -890,6 +901,7 @@
 				D6EFE1552D1EF6CA00E77042 /* ImCurveEdit.cpp in Sources */,
 				D6EFE1562D1EF6CA00E77042 /* GraphEditor.cpp in Sources */,
 				D6EFE1572D1EF6CA00E77042 /* ImSequencer.cpp in Sources */,
+				F5E5B1BE2D75CA7D008E0D21 /* ImportInterQuake.cpp in Sources */,
 				D6EFE1592D1EF6CA00E77042 /* ImGradient.cpp in Sources */,
 				D6A25B7E2B4644B600974946 /* Inspector.cpp in Sources */,
 				D6D26FA02BDE36B400D57772 /* Tools.cpp in Sources */,

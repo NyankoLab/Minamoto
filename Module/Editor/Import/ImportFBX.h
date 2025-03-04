@@ -8,7 +8,7 @@
 
 #include "Import.h"
 
-class ImportFBX : public Import
+struct ImportFBX : public Import
 {
 public:
     static xxNodePtr Create(char const* fbx, ImportCallback callback = nullptr);

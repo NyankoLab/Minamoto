@@ -234,7 +234,7 @@ xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&
             return;
         xxNodePtr child = xxNode::Create();
         child->Name = CheckDuplicateName(root, name);
-        child->Mesh = MeshTools::CreateMesh(faceVertices, faceNormals, {}, faceTextures);
+        child->Mesh = MeshTools::CreateMesh(faceVertices, {}, {}, faceNormals, {}, faceTextures, {});
         if (child->Mesh)
         {
             child->Mesh->Name = child->Name;
@@ -258,7 +258,6 @@ xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&
         faceVertices.clear();
         faceNormals.clear();
         faceTextures.clear();
-        name.clear();
         material = nullptr;
     };
 
@@ -316,8 +315,6 @@ xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&
             finish();
 
             xxLog("ImportWavefront", "Use Material : %s", lasts);
-            if (name.empty())
-                name = lasts;
             material = &materials[lasts];
             break;
         case xxHash("f"):
