@@ -49,9 +49,11 @@ bool ExportWavefront::Save(char const* path, xxNodePtr const& node)
             faceTextures.clear();
             if (true)
             {
+                auto position = mesh->GetPosition();
                 for (unsigned int i = 0; i < count; ++i)
                 {
-                    xxVector3 v = *(mesh->GetPosition() + i);
+                    unsigned int index = mesh->GetIndex(i);
+                    xxVector3 v = *(position + index);
                     auto it = std::find(vertices.begin(), vertices.end(), v);
                     if (it == vertices.end())
                     {
@@ -67,9 +69,11 @@ bool ExportWavefront::Save(char const* path, xxNodePtr const& node)
             }
             if (mesh->NormalCount)
             {
+                auto normal = mesh->GetNormal();
                 for (unsigned int i = 0; i < count; ++i)
                 {
-                    xxVector3 n = Mesh::NormalDecode(*(mesh->GetNormal() + i));
+                    unsigned int index = mesh->GetIndex(i);
+                    xxVector3 n = Mesh::NormalDecode(*(normal + index));
                     auto it = std::find(normals.begin(), normals.end(), n);
                     if (it == normals.end())
                     {
@@ -85,9 +89,11 @@ bool ExportWavefront::Save(char const* path, xxNodePtr const& node)
             }
             if (mesh->TextureCount)
             {
+                auto texture = mesh->GetTexture();
                 for (unsigned int i = 0; i < count; ++i)
                 {
-                    xxVector2 t = *(mesh->GetTexture() + i);
+                    unsigned int index = mesh->GetIndex(i);
+                    xxVector2 t = *(texture + index);
                     auto it = std::find(textures.begin(), textures.end(), t);
                     if (it == textures.end())
                     {
@@ -106,18 +112,13 @@ bool ExportWavefront::Save(char const* path, xxNodePtr const& node)
             {
                 if (i % 3 == 0)
                 {
-                    snprintf(line, 256, "f ");
-                }
-                else
-                {
-                    snprintf(line, 256, "%s ", line);
+                    snprintf(line, 256, "f");
                 }
 
-                snprintf(line, 256, "%s%zd", line, faceVertices[i] + 1);
+                snprintf(line, 256, "%s %zd", line, faceVertices[i] + 1);
                 if (faceTextures.size() > i)
                 {
-                    snprintf(line, 256, "%s/", line);
-                    snprintf(line, 256, "%s%zd", line, faceTextures[i] + 1);
+                    snprintf(line, 256, "%s/%zd", line, faceTextures[i] + 1);
                 }
                 else
                 {
@@ -125,8 +126,7 @@ bool ExportWavefront::Save(char const* path, xxNodePtr const& node)
                 }
                 if (faceNormals.size() > i)
                 {
-                    snprintf(line, 256, "%s/", line);
-                    snprintf(line, 256, "%s%zd", line, faceNormals[i] + 1);
+                    snprintf(line, 256, "%s/%zd", line, faceNormals[i] + 1);
                 }
 
                 if (i % 3 == 2)

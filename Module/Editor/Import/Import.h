@@ -8,7 +8,7 @@
 
 #include <xxGraphicPlus/xxUtility.h>
 
-class Import
+struct Import
 {
 public:
     static void Initialize();

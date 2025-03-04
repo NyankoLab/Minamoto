@@ -30,7 +30,13 @@ struct MeshTools
     static void SetIndexToMesh(xxMeshPtr const& mesh, std::vector<uint32_t> const& indices);
     static MeshData CreateMeshDataFromMesh(xxMeshPtr const& mesh);
     static xxMeshPtr CreateMeshFromMeshData(MeshData const& data);
-    static xxMeshPtr CreateMesh(std::vector<xxVector3> const& vertices, std::vector<xxVector3> const& normals, std::vector<xxVector4> const& colors, std::vector<xxVector2> const& textures);
+    static xxMeshPtr CreateMesh(std::vector<xxVector3> const& vertices,
+                                std::vector<xxVector3> const& boneWeights,
+                                std::vector<uint32_t> const& boneIndices,
+                                std::vector<xxVector3> const& normals,
+                                std::vector<xxVector4> const& colors,
+                                std::vector<xxVector2> const& textures,
+                                std::vector<uint32_t> const& indices);
     static xxMeshPtr CreateMeshlet(xxMeshPtr const& mesh);
     static xxMeshPtr IndexingMesh(xxMeshPtr const& mesh);
     static xxMeshPtr NormalizeMesh(xxMeshPtr const& mesh, bool tangent);

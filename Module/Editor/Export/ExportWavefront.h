@@ -8,7 +8,7 @@
 
 #include <map>
 
-class ExportWavefront
+struct ExportWavefront
 {
 public:
     static bool Save(char const* path, xxNodePtr const& node);

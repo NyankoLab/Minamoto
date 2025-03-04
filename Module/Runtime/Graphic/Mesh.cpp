@@ -147,6 +147,22 @@ xxStrideIterator<xxVector2> Mesh::GetTexture(int index) const
     return xxStrideIterator<xxVector2>(vertex, Stride[VERTEX], TextureCount ? Count[VERTEX] : 0);
 }
 //------------------------------------------------------------------------------
+unsigned int Mesh::GetIndex(int index) const
+{
+    if (Count[INDEX])
+    {
+        if (Count[VERTEX] < 65536)
+        {
+            return ((unsigned short*)Index)[index];
+        }
+        else
+        {
+            return ((unsigned int*)Index)[index];
+        }
+    }
+    return index;
+}
+//------------------------------------------------------------------------------
 void Mesh::BinaryRead(xxBinary& binary)
 {
     xxMesh::BinaryRead(binary);

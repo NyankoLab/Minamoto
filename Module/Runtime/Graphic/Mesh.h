@@ -22,6 +22,8 @@ public:
     xxStrideIterator<uint32_t>  GetColor(int index = 0) const;
     xxStrideIterator<xxVector2> GetTexture(int index = 0) const;
 
+    unsigned int                GetIndex(int index) const;
+
     void                        BinaryRead(xxBinary& binary) override;
 
 protected:

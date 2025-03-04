@@ -13,6 +13,7 @@
 #include <Runtime/Graphic/Mesh.h>
 #include <Tools/NodeTools.h>
 #include "Import/ImportFBX.h"
+#include "Import/ImportInterQuake.h"
 #include "Import/ImportPLY.h"
 #include "Import/ImportWavefront.h"
 #include "Utility/MeshTools.h"
@@ -207,6 +208,22 @@ void ImportEvent::ThreadedExecute()
         output = thiz->output;
 #else
         output = ImportFBX::Create(name);
+#endif
+    }
+    if (strcasestr(name, ".iqe"))
+    {
+#if 1
+        output = ImportInterQuake::Create(name);
+#else
+        thiz->output = xxNode::Create();
+        thiz->output->Name = xxFile::GetName(name);
+        ImportInterQuake::Create(name, [thiz](xxNodePtr&& target)
+        {
+            thiz->nodesMutex.lock();
+            thiz->nodes.emplace_back(nullptr, nullptr, std::move(target), nullptr);
+            thiz->nodesMutex.unlock();
+        });
+        output = thiz->output;
 #endif
     }
     if (strcasestr(name, ".obj"))

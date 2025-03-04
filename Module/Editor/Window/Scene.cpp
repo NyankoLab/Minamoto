@@ -249,32 +249,46 @@ static void SelectMouse()
 {
     manipulateHovered = false;
 
-    if (Scene::selected)
+    xxNodePtr const& selected = Scene::selected;
+    if (selected)
     {
         ImGuizmo::gContext.mbOverGizmoHotspot = false;
         ImGuizmo::SetRect(viewPos.x, viewPos.y, viewSize.x, viewSize.y);
-        if (Scene::selected->Camera)
+        if (selected->Camera)
         {
             static ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE | ImGuizmo::ROTATE_X | ImGuizmo::ROTATE_Z;
             static ImGuizmo::MODE mode = ImGuizmo::WORLD;
             xxMatrix4 camera;
-            camera[0].xyz = Scene::selected->Camera->Up;
-            camera[1].xyz = Scene::selected->Camera->Right;
-            camera[2].xyz = Scene::selected->Camera->Direction;
-            camera[3].xyz = Scene::selected->Camera->Location;
+            camera[0].xyz = selected->Camera->Up;
+            camera[1].xyz = selected->Camera->Right;
+            camera[2].xyz = selected->Camera->Direction;
+            camera[3].xyz = selected->Camera->Location;
             camera[3].w = 1.0f;
             ImGuizmo::Manipulate(Scene::mainCamera->ViewMatrix, Scene::mainCamera->ProjectionMatrix, operation, mode, camera);
-            Scene::selected->Camera->Up = camera[0].xyz;
-            Scene::selected->Camera->Right = camera[1].xyz;
-            Scene::selected->Camera->Direction = camera[2].xyz;
-            Scene::selected->Camera->Location = camera[3].xyz;
-            Scene::selected->Camera->Update();
+            selected->Camera->Up = camera[0].xyz;
+            selected->Camera->Right = camera[1].xyz;
+            selected->Camera->Direction = camera[2].xyz;
+            selected->Camera->Location = camera[3].xyz;
+            selected->Camera->Update();
         }
         else
         {
             static ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE | ImGuizmo::ROTATE;
-            static ImGuizmo::MODE mode = ImGuizmo::LOCAL;
-            ImGuizmo::Manipulate(Scene::mainCamera->ViewMatrix, Scene::mainCamera->ProjectionMatrix, operation, mode, Scene::selected->LocalMatrix);
+            static ImGuizmo::MODE mode = ImGuizmo::WORLD;
+            xxMatrix4 world = selected->WorldMatrix;
+            if (ImGuizmo::Manipulate(Scene::mainCamera->ViewMatrix, Scene::mainCamera->ProjectionMatrix, operation, mode, world))
+            {
+                xxNodePtr const& parent = selected->GetParent();
+                if (parent)
+                {
+                    selected->LocalMatrix = parent->WorldMatrix.Inverse() * world;
+                }
+                else
+                {
+                    selected->LocalMatrix = world;
+                }
+                selected->UpdateMatrix();
+            }
         }
 
         manipulateHovered = ImGuizmo::IsOver();
