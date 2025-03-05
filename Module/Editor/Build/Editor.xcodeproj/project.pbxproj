@@ -88,6 +88,10 @@
 		D666E3D02BE3BCEC00EFA1F2 /* LuaConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D666E3CD2BE3BCEC00EFA1F2 /* LuaConsole.cpp */; };
 		D666E3D12BE3BCEC00EFA1F2 /* LuaConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D666E3CD2BE3BCEC00EFA1F2 /* LuaConsole.cpp */; };
 		D666E3D22BE3BCEC00EFA1F2 /* LuaConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D666E3CD2BE3BCEC00EFA1F2 /* LuaConsole.cpp */; };
+		D66FA90D2D78217F00AC46DC /* ExportFilmbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D66FA90C2D78217E00AC46DC /* ExportFilmbox.cpp */; };
+		D66FA90E2D78217F00AC46DC /* ExportFilmbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D66FA90C2D78217E00AC46DC /* ExportFilmbox.cpp */; };
+		D66FA90F2D78217F00AC46DC /* ExportFilmbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D66FA90C2D78217E00AC46DC /* ExportFilmbox.cpp */; };
+		D66FA9102D78217F00AC46DC /* ExportFilmbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D66FA90C2D78217E00AC46DC /* ExportFilmbox.cpp */; };
 		D68CAE172D16706800ACE81B /* ImportPLY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE162D16706800ACE81B /* ImportPLY.cpp */; };
 		D68CAE182D16706800ACE81B /* ImportPLY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE162D16706800ACE81B /* ImportPLY.cpp */; };
 		D68CAE192D16706800ACE81B /* ImportPLY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE162D16706800ACE81B /* ImportPLY.cpp */; };
@@ -268,6 +272,8 @@
 		D666E2E82BE1EBAB00EFA1F2 /* ufbx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ufbx.h; path = ../../../SDK/ufbx/ufbx.h; sourceTree = "<group>"; };
 		D666E3CD2BE3BCEC00EFA1F2 /* LuaConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LuaConsole.cpp; path = ../Window/LuaConsole.cpp; sourceTree = "<group>"; };
 		D666E3CE2BE3BCEC00EFA1F2 /* LuaConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LuaConsole.h; path = ../Window/LuaConsole.h; sourceTree = "<group>"; };
+		D66FA90B2D78216E00AC46DC /* ExportFilmbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExportFilmbox.h; sourceTree = "<group>"; };
+		D66FA90C2D78217E00AC46DC /* ExportFilmbox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ExportFilmbox.cpp; sourceTree = "<group>"; };
 		D67F2EF82BCC279600B4AA86 /* ImGuiHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImGuiHelper.h; path = ../ImGuiHelper.h; sourceTree = "<group>"; };
 		D68CAE152D16706800ACE81B /* ImportPLY.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImportPLY.h; path = ../Import/ImportPLY.h; sourceTree = SOURCE_ROOT; };
 		D68CAE162D16706800ACE81B /* ImportPLY.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ImportPLY.cpp; path = ../Import/ImportPLY.cpp; sourceTree = SOURCE_ROOT; };
@@ -640,6 +646,8 @@
 			children = (
 				F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */,
 				F5E5B1AF2D7354C6008E0D21 /* ExportEvent.h */,
+				D66FA90C2D78217E00AC46DC /* ExportFilmbox.cpp */,
+				D66FA90B2D78216E00AC46DC /* ExportFilmbox.h */,
 				F5E5B1B62D736D32008E0D21 /* ExportWavefront.cpp */,
 				F5E5B1B52D736D24008E0D21 /* ExportWavefront.h */,
 			);
@@ -776,6 +784,7 @@
 				D6012A1F2B1DE28F00C3875A /* Grid.cpp in Sources */,
 				D6A25B7C2B4644B600974946 /* Inspector.cpp in Sources */,
 				D63370782B382156001D4057 /* Log.cpp in Sources */,
+				D66FA90D2D78217F00AC46DC /* ExportFilmbox.cpp in Sources */,
 				F53DE7392D3FAF0C0083B457 /* Event.cpp in Sources */,
 				D6EFE15A2D1EF6CA00E77042 /* ImCurveEdit.cpp in Sources */,
 				D6EFE15B2D1EF6CA00E77042 /* GraphEditor.cpp in Sources */,
@@ -827,6 +836,7 @@
 				D6EFE15F2D1EF6CA00E77042 /* ImCurveEdit.cpp in Sources */,
 				F5E5B1B12D7354C6008E0D21 /* ExportEvent.cpp in Sources */,
 				D6EFE1602D1EF6CA00E77042 /* GraphEditor.cpp in Sources */,
+				D66FA90E2D78217F00AC46DC /* ExportFilmbox.cpp in Sources */,
 				D6EFE1612D1EF6CA00E77042 /* ImSequencer.cpp in Sources */,
 				D6EFE1632D1EF6CA00E77042 /* ImGradient.cpp in Sources */,
 				F5E5B1B82D736D34008E0D21 /* ExportWavefront.cpp in Sources */,
@@ -877,6 +887,7 @@
 				D60790BC2BEE6C5F008810BD /* Project.cpp in Sources */,
 				D68CAE8B2D19621200ACE81B /* Game.cpp in Sources */,
 				D666E3D02BE3BCEC00EFA1F2 /* LuaConsole.cpp in Sources */,
+				D66FA9102D78217F00AC46DC /* ExportFilmbox.cpp in Sources */,
 				D6E6B5592C01CB70003F6D85 /* Document.cpp in Sources */,
 				D607910A2BF61829008810BD /* Setup.cpp in Sources */,
 				D6530A032BB70A270006AD64 /* ImportFBX.cpp in Sources */,
@@ -919,6 +930,7 @@
 				D60790BD2BEE6C5F008810BD /* Project.cpp in Sources */,
 				D68CAE882D19621200ACE81B /* Game.cpp in Sources */,
 				D666E3D12BE3BCEC00EFA1F2 /* LuaConsole.cpp in Sources */,
+				D66FA90F2D78217F00AC46DC /* ExportFilmbox.cpp in Sources */,
 				D6E6B55A2C01CB70003F6D85 /* Document.cpp in Sources */,
 				D607910B2BF61829008810BD /* Setup.cpp in Sources */,
 				D6530A042BB70A270006AD64 /* ImportFBX.cpp in Sources */,
