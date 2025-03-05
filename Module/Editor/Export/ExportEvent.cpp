@@ -11,6 +11,7 @@
 #include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxFile.h>
 #include <ImGuiFileDialog/ImGuiFileDialog.h>
+#include "ExportFilmbox.h"
 #include "ExportWavefront.h"
 #include "ExportEvent.h"
 
@@ -74,6 +75,12 @@ double ExportEvent::Execute()
         }
         ImGui::InputTextEx("Name", nullptr, name);
         ImGui::BeginTabBar("Export");
+        if (ImGui::BeginTabItem("Filmbox"))
+        {
+            if (ImGui::Button("Export"))
+                Filmbox();
+            ImGui::EndTabItem();
+        }
         if (ImGui::BeginTabItem("Minamoto"))
         {
             if (ImGui::Button("Export"))
@@ -108,6 +115,17 @@ double ExportEvent::Execute()
         return time;
     }
     return 0.0;
+}
+//------------------------------------------------------------------------------
+void ExportEvent::Filmbox()
+{
+    std::string filename = path + '/' + name + ".fbx";
+
+    float begin = xxGetCurrentTime();
+    if (ExportFilmbox::Save(filename.c_str(), root))
+    {
+        xxLog(TAG, "Export : %s (%0.fus)", xxFile::GetName(filename.c_str(), true).c_str(), (xxGetCurrentTime() - begin) * 1000000);
+    }
 }
 //------------------------------------------------------------------------------
 void ExportEvent::Minamoto()

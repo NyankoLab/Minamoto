@@ -26,6 +26,7 @@ public:
 
     double Execute() override;
 
+    void Filmbox();
     void Minamoto();
     void Wavefront();
 
