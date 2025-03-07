@@ -5,11 +5,11 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Runtime.h"
-#include <xxGraphicPlus/xxMesh.h>
-#include <xxGraphicPlus/xxNode.h>
 #include "Graphic/Camera.h"
+#include "Graphic/Mesh.h"
+#include "Graphic/Node.h"
 #if HAVE_MINIGUI
-#include <MiniGUI/Window.h>
+#include "MiniGUI/Window.h"
 #endif
 #include "DrawTools.h"
 

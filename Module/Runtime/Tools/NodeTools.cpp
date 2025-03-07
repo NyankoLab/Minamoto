@@ -5,7 +5,7 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Runtime.h"
-#include <xxGraphicPlus/xxNode.h>
+#include "Graphic/Node.h"
 #if HAVE_MINIGUI
 #include "MiniGUI/Window.h"
 #endif
@@ -51,7 +51,7 @@ xxNodePtr const& NodeTools::GetRoot(xxNodePtr const& node)
 xxNodePtr const& NodeTools::GetObject(xxNodePtr const& node, std::string const& name)
 {
     xxNodePtr const* output = nullptr;
-    xxNode::Traversal(node, [&](xxNodePtr const& node)
+    Node::Traversal(node, [&](xxNodePtr const& node)
     {
         if (node->Name == name)
             output = &node;
@@ -69,7 +69,7 @@ xxNodePtr const& NodeTools::Intersect(xxNodePtr const& node, xxVector3 const& po
 {
     float nearDistance = FLT_MAX;
     xxNodePtr const* output = nullptr;
-    xxNode::Traversal(node, [&](xxNodePtr const& node)
+    Node::Traversal(node, [&](xxNodePtr const& node)
     {
         if (node->Mesh)
         {
@@ -212,7 +212,7 @@ void NodeTools::RemoveEmptyNode(xxNodePtr const& node)
 //------------------------------------------------------------------------------
 void NodeTools::UpdateNodeFlags(xxNodePtr const& node)
 {
-    xxNode::Traversal(node, [](xxNodePtr const& node)
+    Node::Traversal(node, [](xxNodePtr const& node)
     {
         node->Flags |= xxNode::UPDATE_SKIP;
         for (auto const& data : node->Bones)
@@ -236,7 +236,7 @@ void NodeTools::UpdateNodeFlags(xxNodePtr const& node)
         return true;
     });
 
-    xxNode::Traversal(node, [](xxNodePtr const& node)
+    Node::Traversal(node, [](xxNodePtr const& node)
     {
         if (node->Flags & xxNode::UPDATE_NEED)
         {

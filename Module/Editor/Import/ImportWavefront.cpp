@@ -6,10 +6,10 @@
 //==============================================================================
 #include "Editor.h"
 #include <xxGraphicPlus/xxFile.h>
-#include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
+#include <Runtime/Graphic/Node.h>
 #include "MeshTools.h"
 #include "ImportWavefront.h"
 

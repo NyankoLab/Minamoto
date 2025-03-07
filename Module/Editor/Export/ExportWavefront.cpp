@@ -6,9 +6,9 @@
 //==============================================================================
 #include "Editor.h"
 #include <xxGraphicPlus/xxFile.h>
-#include <xxGraphicPlus/xxNode.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
+#include <Runtime/Graphic/Node.h>
 #include "ExportWavefront.h"
 
 //==============================================================================

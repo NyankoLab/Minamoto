@@ -5,8 +5,8 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
-#include <xxGraphicPlus/xxNode.h>
 #include <Runtime/Graphic/Mesh.h>
+#include <Runtime/Graphic/Node.h>
 #include <meshoptimizer/src/meshoptimizer.h>
 #include "MeshTools.h"
 
@@ -559,7 +559,7 @@ xxMeshPtr MeshTools::ResetMesh(xxMeshPtr const& mesh, xxVector3& origin)
 void MeshTools::UnifyMesh(xxNodePtr const& node, float threshold)
 {
     std::vector<xxMeshPtr> meshes;
-    xxNode::Traversal(node, [&](xxNodePtr const& node)
+    Node::Traversal(node, [&](xxNodePtr const& node)
     {
         if (node->Mesh == nullptr)
             return true;

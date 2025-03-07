@@ -5,11 +5,11 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
-#include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
 #include <Runtime/Graphic/Camera.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
+#include <Runtime/Graphic/Node.h>
 #include <Runtime/MiniGUI/Window.h>
 #include <Runtime/Modifier/Modifier.h>
 #include <Runtime/Tools/NodeTools.h>
@@ -316,7 +316,7 @@ void Inspector::UpdateMaterial(const UpdateData& updateData, xxMaterialPtr const
         invalidate->Invalidate();
 
         xxNodePtr const& root = NodeTools::GetRoot(selected);
-        xxNode::Traversal(root, [invalidate](xxNodePtr const& node)
+        Node::Traversal(root, [invalidate](xxNodePtr const& node)
         {
             if (node->Material == invalidate)
                 node->Invalidate();

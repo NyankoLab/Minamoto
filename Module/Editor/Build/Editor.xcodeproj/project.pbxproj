@@ -76,10 +76,10 @@
 		D6346EF22BFA10210075D7F1 /* QuickJSConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6346EEF2BFA10210075D7F1 /* QuickJSConsole.cpp */; };
 		D6346EF32BFA10210075D7F1 /* QuickJSConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6346EEF2BFA10210075D7F1 /* QuickJSConsole.cpp */; settings = {COMPILER_FLAGS = "-I../../../Build/include/quickjs-win32"; }; };
 		D6386A622BDAAE500008C9D1 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6386A612BDAAE500008C9D1 /* Metal.framework */; };
-		D6530A022BB70A270006AD64 /* ImportFBX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6530A002BB70A270006AD64 /* ImportFBX.cpp */; };
-		D6530A032BB70A270006AD64 /* ImportFBX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6530A002BB70A270006AD64 /* ImportFBX.cpp */; };
-		D6530A042BB70A270006AD64 /* ImportFBX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6530A002BB70A270006AD64 /* ImportFBX.cpp */; };
-		D6530A052BB70A270006AD64 /* ImportFBX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6530A002BB70A270006AD64 /* ImportFBX.cpp */; };
+		D6530A022BB70A270006AD64 /* ImportFilmbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6530A002BB70A270006AD64 /* ImportFilmbox.cpp */; };
+		D6530A032BB70A270006AD64 /* ImportFilmbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6530A002BB70A270006AD64 /* ImportFilmbox.cpp */; };
+		D6530A042BB70A270006AD64 /* ImportFilmbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6530A002BB70A270006AD64 /* ImportFilmbox.cpp */; };
+		D6530A052BB70A270006AD64 /* ImportFilmbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6530A002BB70A270006AD64 /* ImportFilmbox.cpp */; };
 		D666E2E92BE1EBAB00EFA1F2 /* ufbx.c in Sources */ = {isa = PBXBuildFile; fileRef = D666E2E72BE1EBAB00EFA1F2 /* ufbx.c */; };
 		D666E2EA2BE1EBAB00EFA1F2 /* ufbx.c in Sources */ = {isa = PBXBuildFile; fileRef = D666E2E72BE1EBAB00EFA1F2 /* ufbx.c */; };
 		D666E2EB2BE1EBAB00EFA1F2 /* ufbx.c in Sources */ = {isa = PBXBuildFile; fileRef = D666E2E72BE1EBAB00EFA1F2 /* ufbx.c */; };
@@ -92,10 +92,10 @@
 		D66FA90E2D78217F00AC46DC /* ExportFilmbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D66FA90C2D78217E00AC46DC /* ExportFilmbox.cpp */; };
 		D66FA90F2D78217F00AC46DC /* ExportFilmbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D66FA90C2D78217E00AC46DC /* ExportFilmbox.cpp */; };
 		D66FA9102D78217F00AC46DC /* ExportFilmbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D66FA90C2D78217E00AC46DC /* ExportFilmbox.cpp */; };
-		D68CAE172D16706800ACE81B /* ImportPLY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE162D16706800ACE81B /* ImportPLY.cpp */; };
-		D68CAE182D16706800ACE81B /* ImportPLY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE162D16706800ACE81B /* ImportPLY.cpp */; };
-		D68CAE192D16706800ACE81B /* ImportPLY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE162D16706800ACE81B /* ImportPLY.cpp */; };
-		D68CAE1A2D16706800ACE81B /* ImportPLY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE162D16706800ACE81B /* ImportPLY.cpp */; };
+		D68CAE172D16706800ACE81B /* ImportPolygon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE162D16706800ACE81B /* ImportPolygon.cpp */; };
+		D68CAE182D16706800ACE81B /* ImportPolygon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE162D16706800ACE81B /* ImportPolygon.cpp */; };
+		D68CAE192D16706800ACE81B /* ImportPolygon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE162D16706800ACE81B /* ImportPolygon.cpp */; };
+		D68CAE1A2D16706800ACE81B /* ImportPolygon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE162D16706800ACE81B /* ImportPolygon.cpp */; };
 		D68CAE6D2D17F88500ACE81B /* meshoptimizer.Windows.lib in Frameworks */ = {isa = PBXBuildFile; fileRef = D68CAE6C2D17F88500ACE81B /* meshoptimizer.Windows.lib */; };
 		D68CAE6F2D17F89200ACE81B /* libmeshoptimizer.macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D68CAE6E2D17F89200ACE81B /* libmeshoptimizer.macOS.a */; };
 		D68CAE712D17F89C00ACE81B /* libmeshoptimizer.iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D68CAE702D17F89C00ACE81B /* libmeshoptimizer.iOS.a */; };
@@ -266,8 +266,8 @@
 		D6346EEF2BFA10210075D7F1 /* QuickJSConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuickJSConsole.cpp; path = ../Window/QuickJSConsole.cpp; sourceTree = "<group>"; };
 		D6386A612BDAAE500008C9D1 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		D644A041231ED82900B75B77 /* Editor.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = Editor.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		D6530A002BB70A270006AD64 /* ImportFBX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ImportFBX.cpp; path = ../Import/ImportFBX.cpp; sourceTree = "<group>"; };
-		D6530A012BB70A270006AD64 /* ImportFBX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImportFBX.h; path = ../Import/ImportFBX.h; sourceTree = "<group>"; };
+		D6530A002BB70A270006AD64 /* ImportFilmbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImportFilmbox.cpp; sourceTree = "<group>"; };
+		D6530A012BB70A270006AD64 /* ImportFilmbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImportFilmbox.h; sourceTree = "<group>"; };
 		D666E2E72BE1EBAB00EFA1F2 /* ufbx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ufbx.c; path = ../../../SDK/ufbx/ufbx.c; sourceTree = "<group>"; };
 		D666E2E82BE1EBAB00EFA1F2 /* ufbx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ufbx.h; path = ../../../SDK/ufbx/ufbx.h; sourceTree = "<group>"; };
 		D666E3CD2BE3BCEC00EFA1F2 /* LuaConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LuaConsole.cpp; path = ../Window/LuaConsole.cpp; sourceTree = "<group>"; };
@@ -275,8 +275,8 @@
 		D66FA90B2D78216E00AC46DC /* ExportFilmbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExportFilmbox.h; sourceTree = "<group>"; };
 		D66FA90C2D78217E00AC46DC /* ExportFilmbox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ExportFilmbox.cpp; sourceTree = "<group>"; };
 		D67F2EF82BCC279600B4AA86 /* ImGuiHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImGuiHelper.h; path = ../ImGuiHelper.h; sourceTree = "<group>"; };
-		D68CAE152D16706800ACE81B /* ImportPLY.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImportPLY.h; path = ../Import/ImportPLY.h; sourceTree = SOURCE_ROOT; };
-		D68CAE162D16706800ACE81B /* ImportPLY.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ImportPLY.cpp; path = ../Import/ImportPLY.cpp; sourceTree = SOURCE_ROOT; };
+		D68CAE152D16706800ACE81B /* ImportPolygon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImportPolygon.h; path = ../Import/ImportPolygon.h; sourceTree = SOURCE_ROOT; };
+		D68CAE162D16706800ACE81B /* ImportPolygon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ImportPolygon.cpp; path = ../Import/ImportPolygon.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE6C2D17F88500ACE81B /* meshoptimizer.Windows.lib */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = meshoptimizer.Windows.lib; sourceTree = BUILT_PRODUCTS_DIR; };
 		D68CAE6E2D17F89200ACE81B /* libmeshoptimizer.macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libmeshoptimizer.macOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D68CAE702D17F89C00ACE81B /* libmeshoptimizer.iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libmeshoptimizer.iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -486,12 +486,12 @@
 				D63370802B3958F3001D4057 /* Import.h */,
 				F57864922D51B3D900EF5BCC /* ImportEvent.cpp */,
 				F57864912D51B3D900EF5BCC /* ImportEvent.h */,
-				D6530A002BB70A270006AD64 /* ImportFBX.cpp */,
-				D6530A012BB70A270006AD64 /* ImportFBX.h */,
+				D6530A002BB70A270006AD64 /* ImportFilmbox.cpp */,
+				D6530A012BB70A270006AD64 /* ImportFilmbox.h */,
 				F5E5B1BC2D75CA7B008E0D21 /* ImportInterQuake.cpp */,
 				F5E5B1BB2D75CA6B008E0D21 /* ImportInterQuake.h */,
-				D68CAE162D16706800ACE81B /* ImportPLY.cpp */,
-				D68CAE152D16706800ACE81B /* ImportPLY.h */,
+				D68CAE162D16706800ACE81B /* ImportPolygon.cpp */,
+				D68CAE152D16706800ACE81B /* ImportPolygon.h */,
 				D633706D2B372A04001D4057 /* ImportWavefront.cpp */,
 				D633706E2B372A04001D4057 /* ImportWavefront.h */,
 			);
@@ -778,7 +778,7 @@
 				D6F563FE2BE9D568006D32D9 /* Profiler.cpp in Sources */,
 				D62FEBF42BE53D41004E9FDF /* About.cpp in Sources */,
 				F5E5B1B22D7354C6008E0D21 /* ExportEvent.cpp in Sources */,
-				D68CAE182D16706800ACE81B /* ImportPLY.cpp in Sources */,
+				D68CAE182D16706800ACE81B /* ImportPolygon.cpp in Sources */,
 				D666E2E92BE1EBAB00EFA1F2 /* ufbx.c in Sources */,
 				D6346EF02BFA10210075D7F1 /* QuickJSConsole.cpp in Sources */,
 				D6012A1F2B1DE28F00C3875A /* Grid.cpp in Sources */,
@@ -796,7 +796,7 @@
 				D68CAE832D1961FD00ACE81B /* MeshTools.cpp in Sources */,
 				D60790FD2BF501DC008810BD /* Console.cpp in Sources */,
 				D633706F2B372A04001D4057 /* ImportWavefront.cpp in Sources */,
-				D6530A022BB70A270006AD64 /* ImportFBX.cpp in Sources */,
+				D6530A022BB70A270006AD64 /* ImportFilmbox.cpp in Sources */,
 				D6D26F9E2BDE36B400D57772 /* Tools.cpp in Sources */,
 				30A9A7C325ADC7C0000FA104 /* Editor.cpp in Sources */,
 				D60790BB2BEE6C5F008810BD /* Project.cpp in Sources */,
@@ -820,12 +820,12 @@
 				D60791002BF501DC008810BD /* Console.cpp in Sources */,
 				D62FEBF72BE53D41004E9FDF /* About.cpp in Sources */,
 				D60790FA2BF33502008810BD /* TextureTools.cpp in Sources */,
-				D68CAE172D16706800ACE81B /* ImportPLY.cpp in Sources */,
+				D68CAE172D16706800ACE81B /* ImportPolygon.cpp in Sources */,
 				D6F564012BE9D568006D32D9 /* Profiler.cpp in Sources */,
 				D6346EF32BFA10210075D7F1 /* QuickJSConsole.cpp in Sources */,
 				D60790C52BF1AF46008810BD /* Folder.cpp in Sources */,
 				F53DE73C2D3FAF0C0083B457 /* Event.cpp in Sources */,
-				D6530A052BB70A270006AD64 /* ImportFBX.cpp in Sources */,
+				D6530A052BB70A270006AD64 /* ImportFilmbox.cpp in Sources */,
 				D6A25B7F2B4644B600974946 /* Inspector.cpp in Sources */,
 				D63370722B372A04001D4057 /* ImportWavefront.cpp in Sources */,
 				D6E6B56B2C0234EE003F6D85 /* quickjs-io.c in Sources */,
@@ -890,12 +890,12 @@
 				D66FA9102D78217F00AC46DC /* ExportFilmbox.cpp in Sources */,
 				D6E6B5592C01CB70003F6D85 /* Document.cpp in Sources */,
 				D607910A2BF61829008810BD /* Setup.cpp in Sources */,
-				D6530A032BB70A270006AD64 /* ImportFBX.cpp in Sources */,
+				D6530A032BB70A270006AD64 /* ImportFilmbox.cpp in Sources */,
 				3039F9D92447499200E671A7 /* Editor.cpp in Sources */,
 				D63370832B3958F3001D4057 /* Import.cpp in Sources */,
 				D633707D2B382156001D4057 /* Hierarchy.cpp in Sources */,
 				D6F563FF2BE9D568006D32D9 /* Profiler.cpp in Sources */,
-				D68CAE192D16706800ACE81B /* ImportPLY.cpp in Sources */,
+				D68CAE192D16706800ACE81B /* ImportPolygon.cpp in Sources */,
 				F53DE73A2D3FAF0C0083B457 /* Event.cpp in Sources */,
 				D633709A2B399792001D4057 /* ImGuiFileDialog.cpp in Sources */,
 			);
@@ -933,12 +933,12 @@
 				D66FA90F2D78217F00AC46DC /* ExportFilmbox.cpp in Sources */,
 				D6E6B55A2C01CB70003F6D85 /* Document.cpp in Sources */,
 				D607910B2BF61829008810BD /* Setup.cpp in Sources */,
-				D6530A042BB70A270006AD64 /* ImportFBX.cpp in Sources */,
+				D6530A042BB70A270006AD64 /* ImportFilmbox.cpp in Sources */,
 				300264C5242690D0004559E0 /* Editor.cpp in Sources */,
 				D63370842B3958F3001D4057 /* Import.cpp in Sources */,
 				D633707E2B382156001D4057 /* Hierarchy.cpp in Sources */,
 				D6F564002BE9D568006D32D9 /* Profiler.cpp in Sources */,
-				D68CAE1A2D16706800ACE81B /* ImportPLY.cpp in Sources */,
+				D68CAE1A2D16706800ACE81B /* ImportPolygon.cpp in Sources */,
 				F53DE73B2D3FAF0C0083B457 /* Event.cpp in Sources */,
 				D633709B2B399792001D4057 /* ImGuiFileDialog.cpp in Sources */,
 			);

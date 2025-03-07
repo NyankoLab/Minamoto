@@ -5,9 +5,9 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
-#include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
 #include <Runtime/Graphic/Material.h>
+#include <Runtime/Graphic/Node.h>
 #include <Runtime/Graphic/Texture.h>
 #include "TextureTools.h"
 
@@ -246,7 +246,7 @@ void TextureTools::MipmapTexture(xxTexturePtr const& texture)
 //------------------------------------------------------------------------------
 void TextureTools::MipmapTextures(xxNodePtr const& node)
 {
-    xxNode::Traversal(node, [](xxNodePtr const& node)
+    Node::Traversal(node, [](xxNodePtr const& node)
     {
         if (node->Material)
         {

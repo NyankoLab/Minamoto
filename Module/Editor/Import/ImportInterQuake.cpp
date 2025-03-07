@@ -7,8 +7,8 @@
 #include "Editor.h"
 #include <map>
 #include <xxGraphicPlus/xxFile.h>
-#include <xxGraphicPlus/xxNode.h>
 #include <Runtime/Graphic/Mesh.h>
+#include <Runtime/Graphic/Node.h>
 #include "Utility/MeshTools.h"
 #include "ImportWavefront.h"
 #include "ImportInterQuake.h"
@@ -274,7 +274,6 @@ xxNodePtr ImportInterQuake::Create(char const* iqe, std::function<void(xxNodePtr
                 jointNode->LocalMatrix = parent->WorldMatrix.Inverse() * jointNode->LocalMatrix;
                 jointNode->UpdateMatrix();
             }
-
             break;
         }
         default:

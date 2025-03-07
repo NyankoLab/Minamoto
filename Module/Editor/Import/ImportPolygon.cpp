@@ -6,11 +6,11 @@
 //==============================================================================
 #include "Editor.h"
 #include <xxGraphicPlus/xxFile.h>
-#include <xxGraphicPlus/xxNode.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
+#include <Runtime/Graphic/Node.h>
 #include "MeshTools.h"
-#include "ImportPLY.h"
+#include "ImportPolygon.h"
 
 //==============================================================================
 static void RemoveBreakline(char* text)
@@ -31,7 +31,7 @@ static float ToFloat(char const* text)
     return text ? float(atof(text)) : 0.0f;
 }
 //------------------------------------------------------------------------------
-xxNodePtr ImportPLY::Create(char const* ply)
+xxNodePtr ImportPolygon::Create(char const* ply)
 {
     std::vector<char> attributes;
     std::vector<xxVector3> vertices;

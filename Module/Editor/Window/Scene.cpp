@@ -6,11 +6,11 @@
 //==============================================================================
 #include "Editor.h"
 #include <xxGraphicPlus/xxModifier.h>
-#include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
 #include <Runtime/Graphic/Camera.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
+#include <Runtime/Graphic/Node.h>
 #include <ImGuizmo/ImGuizmo.cpp>
 #include <Tools/CameraTools.h>
 #include <Tools/DrawTools.h>
@@ -101,9 +101,9 @@ void Scene::Shutdown(bool suspend)
         return true;
     };
 
-    xxNode::Traversal(sceneRoot, invalidate);
-    xxNode::Traversal(sceneGrid, invalidate);
-    xxNode::Traversal(selected, invalidate);
+    Node::Traversal(sceneRoot, invalidate);
+    Node::Traversal(sceneGrid, invalidate);
+    Node::Traversal(selected, invalidate);
 
     if (suspend)
         return;
@@ -127,7 +127,7 @@ void Scene::DrawBoneLine(xxNodePtr const& root)
 {
     if (drawBoneLine)
     {
-        xxNode::Traversal(root, [](xxNodePtr const& node)
+        Node::Traversal(root, [](xxNodePtr const& node)
         {
             for (auto const& data : node->Bones)
             {
@@ -186,7 +186,7 @@ void Scene::DrawNodeLine(xxNodePtr const& root)
 {
     if (drawNodeLine)
     {
-        xxNode::Traversal(root, [](xxNodePtr const& node)
+        Node::Traversal(root, [](xxNodePtr const& node)
         {
             xxNodePtr const& parent = node->GetParent();
             if (parent)
@@ -202,7 +202,7 @@ void Scene::DrawNodeBound(xxNodePtr const& root)
 {
     if (drawNodeBound)
     {
-        xxNode::Traversal(root, [](xxNodePtr const& node)
+        Node::Traversal(root, [](xxNodePtr const& node)
         {
             xxVector4 const& bound = node->WorldBound;
             if (bound.radius != 0.0f)
@@ -567,7 +567,7 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
             if (MiniGUI::Window::Cast(node))
                 continue;
 #endif
-            xxNode::Traversal(node, callback);
+            Node::Traversal(node, callback);
         }
         Profiler::Count(xxHash("Bone Count"), Count.bone);
         Profiler::Count(xxHash("Node Total Count"), Count.nodeTotal);
@@ -729,8 +729,8 @@ void Scene::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
 
     viewport_x = std::max(viewport_x, 0.0f) * dpiScale;
     viewport_y = std::max(viewport_y, 0.0f) * dpiScale;
-    viewport_width = std::min(viewport_width, width - viewport_x) * dpiScale;
-    viewport_height = std::min(viewport_height, height - viewport_y) * dpiScale;
+    viewport_width = std::min(viewport_width, width) * dpiScale;
+    viewport_height = std::min(viewport_height, height) * dpiScale;
 
     xxSetViewport(commandEncoder, int(viewport_x), int(viewport_y), int(viewport_width), int(viewport_height), 0.0f, 1.0f);
     xxSetScissor(commandEncoder, int(viewport_x), int(viewport_y), int(viewport_width), int(viewport_height));

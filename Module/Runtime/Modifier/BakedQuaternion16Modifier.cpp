@@ -5,7 +5,7 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Runtime.h"
-#include <xxGraphicPlus/xxNode.h>
+#include "Graphic/Node.h"
 #include "BakedQuaternion16Modifier.h"
 #include "Modifier.inl"
 
