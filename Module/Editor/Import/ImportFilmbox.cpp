@@ -1,15 +1,15 @@
 //==============================================================================
-// Minamoto : ImportFBX Source
+// Minamoto : ImportFilmbox Source
 //
 // Copyright (c) 2023-2025 TAiGA
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
 #include <xxGraphicPlus/xxFile.h>
-#include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
+#include <Runtime/Graphic/Node.h>
 #include <Runtime/Modifier/ConstantQuaternionModifier.h>
 #include <Runtime/Modifier/ConstantScaleModifier.h>
 #include <Runtime/Modifier/ConstantTranslateModifier.h>
@@ -20,11 +20,11 @@
 #include <Runtime/Modifier/Quaternion16Modifier.h>
 #include <Runtime/Modifier/BakedQuaternion16Modifier.h>
 #include "MeshTools.h"
-#include "ImportFBX.h"
+#include "ImportFilmbox.h"
 
 #include "ufbx/ufbx.h"
 
-#define TAG "ImportFBX"
+#define TAG "ImportFilmbox"
 
 //==============================================================================
 static std::string str(const ufbx_string& string)
@@ -239,7 +239,7 @@ static xxMaterialPtr CreateMaterial(ufbx_material* material)
     if (material == nullptr)
         return xxMaterialPtr();
     xxMaterialPtr output = xxMaterial::Create();
-    output->Name = str(material->shading_model_name);
+    output->Name = str(material->name);
     output->AmbientColor = vec3(material->fbx.ambient_color.value_vec3);
     output->DiffuseColor = vec3(material->fbx.diffuse_color.value_vec3);
     output->EmissiveColor = vec3(material->fbx.emission_color.value_vec3);
@@ -292,7 +292,28 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
     textureCount = std::min((int)mesh->uv_sets.count, 8);
     xxMeshPtr output = xxMesh::Create(skin_deformer != nullptr, normalCount, colorCount, textureCount);
     output->Name = str(mesh->name);
-    output->SetVertexCount(static_cast<int>(mesh->num_indices));
+
+    bool indices_equal = true;
+    if (normalCount >= 1)
+        indices_equal &= (mesh->vertex_normal.values.count == mesh->vertex_position.values.count);
+    if (normalCount >= 2)
+        indices_equal &= (mesh->vertex_tangent.values.count == mesh->vertex_position.values.count);
+    if (normalCount >= 3)
+        indices_equal &= (mesh->vertex_bitangent.values.count == mesh->vertex_position.values.count);
+    for (int j = 0; j < colorCount; ++j)
+        indices_equal &= (mesh->color_sets[j].vertex_color.values.count == mesh->vertex_position.values.count);
+    for (int j = 0; j < textureCount; ++j)
+        indices_equal &= (mesh->uv_sets[j].vertex_uv.values.count == mesh->vertex_position.values.count);
+
+    if (indices_equal)
+    {
+        output->SetVertexCount(static_cast<int>(mesh->vertex_position.values.count));
+        output->SetIndexCount(static_cast<int>(mesh->num_indices));
+    }
+    else
+    {
+        output->SetVertexCount(static_cast<int>(mesh->num_indices));
+    }
 
     xxStrideIterator<xxVector3> positions = output->GetPosition();
     xxStrideIterator<xxVector3> boneWeight = output->GetBoneWeight();
@@ -311,41 +332,84 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
         output->GetTexture(4), output->GetTexture(5), output->GetTexture(6), output->GetTexture(7),
     };
 
-    for (size_t i = 0; i < mesh->num_indices; ++i)
+    if (indices_equal)
     {
-        (*positions++) = vec3(ufbx_get_vertex_vec3(&mesh->vertex_position, i));
-        if (skin_deformer)
+        for (size_t i = 0; i < mesh->vertex_position.values.count; ++i)
         {
-            uint32_t index = mesh->vertex_position.indices.data[i];
-            uint32_t weightBegin = skin_deformer->vertices.data[index].weight_begin;
-            uint32_t numWeights = skin_deformer->vertices.data[index].num_weights;
-            xxVector4 weight = xxVector4::ZERO;
-            uint32_t indices = 0;
-            for (uint32_t i = 0; i < numWeights && i < 4; ++i)
+            (*positions++) = vec3(mesh->vertex_position.values[i]);
+            if (skin_deformer)
             {
-                weight[i] = skin_deformer->weights.data[weightBegin + i].weight;
-                indices |= skin_deformer->weights.data[weightBegin + i].cluster_index << (i * 8);
+                uint32_t weightBegin = skin_deformer->vertices.data[i].weight_begin;
+                uint32_t numWeights = skin_deformer->vertices.data[i].num_weights;
+                xxVector4 weight = xxVector4::ZERO;
+                uint32_t indices = 0;
+                for (uint32_t i = 0; i < numWeights && i < 4; ++i)
+                {
+                    weight[i] = skin_deformer->weights.data[weightBegin + i].weight;
+                    indices |= skin_deformer->weights.data[weightBegin + i].cluster_index << (i * 8);
+                }
+                (*boneWeight++) = weight.xyz;
+                (*boneIndices++) = indices;
             }
-            (*boneWeight++) = weight.xyz;
-            (*boneIndices++) = indices;
+            if (normalCount >= 1)
+                (*normals++) = Mesh::NormalEncode(vec3(mesh->vertex_normal.values[i]));
+            if (normalCount >= 2)
+                (*tangents++) = Mesh::NormalEncode(vec3(mesh->vertex_tangent.values[i]));
+            if (normalCount >= 3)
+                (*bitangents++) = Mesh::NormalEncode(vec3(mesh->vertex_bitangent.values[i]));
+            for (int j = 0; j < colorCount; ++j)
+                (*colors[j]++) = vec4(mesh->color_sets[j].vertex_color.values[i]).ToInteger();
+            for (int j = 0; j < textureCount; ++j)
+                (*textures[j]++) = vec2(mesh->uv_sets[j].vertex_uv.values[i]);
         }
-        if (normalCount >= 1)
-            (*normals++) = Mesh::NormalEncode(vec3(ufbx_get_vertex_vec3(&mesh->vertex_normal, i)));
-        if (normalCount >= 2)
-            (*tangents++) = Mesh::NormalEncode(vec3(ufbx_get_vertex_vec3(&mesh->vertex_tangent, i)));
-        if (normalCount >= 3)
-            (*bitangents++) = Mesh::NormalEncode(vec3(ufbx_get_vertex_vec3(&mesh->vertex_bitangent, i)));
-        for (int j = 0; j < colorCount; ++j)
-            (*colors[j]++) = vec4(ufbx_get_vertex_vec4(&mesh->color_sets[j].vertex_color, i)).ToInteger();
-        for (int j = 0; j < textureCount; ++j)
-        {
-            xxVector2 uv = vec2(ufbx_get_vertex_vec2(&mesh->uv_sets[j].vertex_uv, i));
 
-            if (Import::EnableTextureFlipV)
+        if (mesh->vertex_position.values.count < 65536)
+        {
+            uint16_t* indices = reinterpret_cast<uint16_t*>(output->Index);
+            for (size_t i = 0; i < mesh->num_indices; ++i)
             {
-                uv.y = 1.0f - uv.y;
+                (*indices++) = mesh->vertex_position.indices.data[i];
             }
-            (*textures[j]++) = uv;
+        }
+        else
+        {
+            uint32_t* indices = reinterpret_cast<uint32_t*>(output->Index);
+            for (size_t i = 0; i < mesh->num_indices; ++i)
+            {
+                (*indices++) = mesh->vertex_position.indices.data[i];
+            }
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < mesh->num_indices; ++i)
+        {
+            (*positions++) = vec3(ufbx_get_vertex_vec3(&mesh->vertex_position, i));
+            if (skin_deformer)
+            {
+                uint32_t index = mesh->vertex_position.indices.data[i];
+                uint32_t weightBegin = skin_deformer->vertices.data[index].weight_begin;
+                uint32_t numWeights = skin_deformer->vertices.data[index].num_weights;
+                xxVector4 weight = xxVector4::ZERO;
+                uint32_t indices = 0;
+                for (uint32_t i = 0; i < numWeights && i < 4; ++i)
+                {
+                    weight[i] = skin_deformer->weights.data[weightBegin + i].weight;
+                    indices |= skin_deformer->weights.data[weightBegin + i].cluster_index << (i * 8);
+                }
+                (*boneWeight++) = weight.xyz;
+                (*boneIndices++) = indices;
+            }
+            if (normalCount >= 1)
+                (*normals++) = Mesh::NormalEncode(vec3(ufbx_get_vertex_vec3(&mesh->vertex_normal, i)));
+            if (normalCount >= 2)
+                (*tangents++) = Mesh::NormalEncode(vec3(ufbx_get_vertex_vec3(&mesh->vertex_tangent, i)));
+            if (normalCount >= 3)
+                (*bitangents++) = Mesh::NormalEncode(vec3(ufbx_get_vertex_vec3(&mesh->vertex_bitangent, i)));
+            for (int j = 0; j < colorCount; ++j)
+                (*colors[j]++) = vec4(ufbx_get_vertex_vec4(&mesh->color_sets[j].vertex_color, i)).ToInteger();
+            for (int j = 0; j < textureCount; ++j)
+                (*textures[j]++) = vec2(ufbx_get_vertex_vec2(&mesh->uv_sets[j].vertex_uv, i));
         }
     }
     output->CalculateBound();
@@ -353,7 +417,7 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
     return output;
 }
 //------------------------------------------------------------------------------
-static void CreateSkinning(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr const& root, Import::ImportCallback callback)
+static void CreateSkinning(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr const& root, Import::ImportCallback callback) __attribute__((optnone))
 {
     ufbx_skin_deformer* skin_deformer = mesh->skin_deformers.count ? mesh->skin_deformers.data[0] : nullptr;
 
@@ -409,7 +473,7 @@ static void CreateSkinning(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr con
             if (from)
             {
                 char const* name = from->name.data;
-                xxNode::Traversal(root, [&](xxNodePtr const& node)
+                Node::Traversal(root, [&](xxNodePtr const& node)
                 {
                     if (node->Name == name)
                         to = node;
@@ -420,6 +484,11 @@ static void CreateSkinning(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr con
             {
                 to = root;
                 xxLog(TAG, "Bone %s is not found", from ? from->name.data : "(nullptr)");
+            }
+
+            if (isnan(bound.radius))
+            {
+                xxLog(TAG, "NaN");
             }
 
             // Add to list
@@ -465,6 +534,7 @@ static xxNodePtr CreateNode(ufbx_node* node, xxNodePtr root, Import::ImportCallb
             if (child)
             {
                 output->AttachChild(child);
+                child->UpdateMatrix();
             }
         }
     }
@@ -508,13 +578,14 @@ static xxNodePtr CreateNode(ufbx_node* node, xxNodePtr root, Import::ImportCallb
             else
             {
                 output->AttachChild(geometryNode);
+                geometryNode->UpdateMatrix();
             }
         }
     }
     return output;
 }
 //------------------------------------------------------------------------------
-xxNodePtr ImportFBX::Create(char const* fbx, ImportCallback callback)
+xxNodePtr ImportFilmbox::Create(char const* fbx, ImportCallback callback)
 {
     ufbx_load_opts opts = {};
     ufbx_error error;

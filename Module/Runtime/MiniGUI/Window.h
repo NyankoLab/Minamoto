@@ -9,11 +9,11 @@
 #if HAVE_MINIGUI
 
 #include "Runtime.h"
-#include <xxGraphicPlus/xxNode.h>
+#include "Graphic/Node.h"
 
 namespace MiniGUI
 {
-class RuntimeAPI Window : public xxNode
+class RuntimeAPI Window : public Node
 {
 public:
     enum Type

@@ -5,9 +5,9 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
-#include <xxGraphicPlus/xxNode.h>
 #include <Runtime/Graphic/Camera.h>
 #include <Runtime/Graphic/Material.h>
+#include <Runtime/Graphic/Node.h>
 #include <Tools/CameraTools.h>
 #include <Tools/DrawTools.h>
 #if HAVE_MINIGUI
@@ -186,8 +186,8 @@ void Game::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
 
     viewport_x = std::max(viewport_x, 0.0f) * dpiScale;
     viewport_y = std::max(viewport_y, 0.0f) * dpiScale;
-    viewport_width = std::min(viewport_width, width - viewport_x) * dpiScale;
-    viewport_height = std::min(viewport_height, height - viewport_y) * dpiScale;
+    viewport_width = std::min(viewport_width, width) * dpiScale;
+    viewport_height = std::min(viewport_height, height) * dpiScale;
 
     xxSetViewport(commandEncoder, int(viewport_x), int(viewport_y), int(viewport_width), int(viewport_height), 0.0f, 1.0f);
     xxSetScissor(commandEncoder, int(viewport_x), int(viewport_y), int(viewport_width), int(viewport_height));

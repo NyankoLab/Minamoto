@@ -5,6 +5,8 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
+#include <Runtime/Graphic/Camera.h>
+#include <Runtime/Graphic/Node.h>
 #include "Event/Event.h"
 #include "Import/Import.h"
 #include "Utility/Tools.h"

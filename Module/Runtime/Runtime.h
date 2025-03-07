@@ -11,14 +11,15 @@
 class xxCamera;
 class xxMaterial;
 class xxMesh;
+class xxNode;
 typedef std::shared_ptr<class Camera> xxCameraPtr;
 typedef std::shared_ptr<class Material> xxMaterialPtr;
 typedef std::shared_ptr<class Mesh> xxMeshPtr;
 typedef std::shared_ptr<class xxModifier> xxModifierPtr;
-typedef std::shared_ptr<class xxNode> xxNodePtr;
+typedef std::shared_ptr<class Node> xxNodePtr;
 typedef std::shared_ptr<class xxTexture> xxTexturePtr;
 typedef std::shared_ptr<void> xxUnknownPtr;
-typedef std::weak_ptr<class xxNode> xxNodeWeakPtr;
+typedef std::weak_ptr<class Node> xxNodeWeakPtr;
 typedef std::weak_ptr<class xxTexture> xxTextureWeakPtr;
 
 #define HAVE_MINIGUI 1
@@ -72,11 +73,5 @@ constexpr uint64_t operator ""_CC(char const* text, size_t length)
 };
 
 #if defined(xxWINDOWS)
-#pragma comment(linker, "/alternatename:__imp_?Create@xxMaterial@@SA?AV?$shared_ptr@UMaterial@@@__1@std@@XZ=__imp_?Create@xxMaterial@@SA?AV?$shared_ptr@VxxMaterial@@@__1@std@@XZ")
-#pragma comment(linker, "/alternatename:__imp_?Create@xxMesh@@SA?AV?$shared_ptr@UMesh@@@__1@std@@_NDDD@Z=__imp_?Create@xxMesh@@SA?AV?$shared_ptr@VxxMesh@@@__1@std@@_NDDD@Z")
-#pragma comment(linker, "/alternatename:?BinaryCreate@xxMaterial@@2P6A?AV?$shared_ptr@UMaterial@@@__1@std@@XZEA=?BinaryCreate@xxMaterial@@2P6A?AV?$shared_ptr@VxxMaterial@@@__1@std@@XZEA")
-#pragma comment(linker, "/alternatename:?BinaryCreate@xxMesh@@2P6A?AV?$shared_ptr@UMesh@@@__1@std@@XZEA=?BinaryCreate@xxMesh@@2P6A?AV?$shared_ptr@VxxMesh@@@__1@std@@XZEA")
-#pragma comment(linker, "/alternatename:?Create@xxMaterial@@SA?AV?$shared_ptr@UMaterial@@@__1@std@@XZ=?Create@xxMaterial@@SA?AV?$shared_ptr@VxxMaterial@@@__1@std@@XZ")
-#pragma comment(linker, "/alternatename:?Create@xxMesh@@SA?AV?$shared_ptr@UMesh@@@__1@std@@_NDDD@Z=?Create@xxMesh@@SA?AV?$shared_ptr@VxxMesh@@@__1@std@@_NDDD@Z")
 #define strtok_r strtok_s
 #endif

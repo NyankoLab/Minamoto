@@ -6,10 +6,10 @@
 //==============================================================================
 #include "Editor.h"
 #include <format>
-#include <Runtime/Graphic/Binary.h>
-#include <Runtime/Tools/NodeTools.h>
-#include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxFile.h>
+#include <Runtime/Graphic/Binary.h>
+#include <Runtime/Graphic/Node.h>
+#include <Runtime/Tools/NodeTools.h>
 #include <ImGuiFileDialog/ImGuiFileDialog.h>
 #include "ExportFilmbox.h"
 #include "ExportWavefront.h"
@@ -39,12 +39,16 @@ ExportEvent::ExportEvent(xxNodePtr const& root)
     this->path = std::string(xxGetDocumentPath()) + '/';
 #endif
     this->name = root->Name;
+#if HAVE_FILEDIALOG
     this->fileDialog = new ImGuiFileDialog;
+#endif
 }
 //------------------------------------------------------------------------------
 ExportEvent::~ExportEvent()
 {
+#if HAVE_FILEDIALOG
     delete fileDialog;
+#endif
 }
 //------------------------------------------------------------------------------
 double ExportEvent::Execute()
@@ -132,7 +136,7 @@ void ExportEvent::Minamoto()
 {
     std::string filename = path + '/' + name + ".xxb";
 
-    xxNode::Traversal(root, [&](xxNodePtr const& node)
+    Node::Traversal(root, [&](xxNodePtr const& node)
     {
         node->Flags &= ~NodeTools::TEST_CHECK_FLAG;
         return true;

@@ -37,3 +37,9 @@ public:
     static xxVector3            NormalDecode(uint32_t value);
     static uint32_t             NormalEncode(xxVector3 const& value);
 };
+
+#if defined(xxWINDOWS)
+#pragma comment(linker, "/alternatename:__imp_?Create@xxMesh@@SA?AV?$shared_ptr@UMesh@@@__1@std@@_NDDD@Z=__imp_?Create@xxMesh@@SA?AV?$shared_ptr@VxxMesh@@@__1@std@@_NDDD@Z")
+#pragma comment(linker, "/alternatename:?BinaryCreate@xxMesh@@2P6A?AV?$shared_ptr@UMesh@@@__1@std@@XZEA=?BinaryCreate@xxMesh@@2P6A?AV?$shared_ptr@VxxMesh@@@__1@std@@XZEA")
+#pragma comment(linker, "/alternatename:?Create@xxMesh@@SA?AV?$shared_ptr@UMesh@@@__1@std@@_NDDD@Z=?Create@xxMesh@@SA?AV?$shared_ptr@VxxMesh@@@__1@std@@_NDDD@Z")
+#endif

@@ -223,7 +223,7 @@ std::vector<WindowPtr>& Window::GetChildren() const
 //------------------------------------------------------------------------------
 bool Window::Traversal(WindowPtr const& window, std::function<bool(WindowPtr const&)> callback)
 {
-    return xxNode::Traversal(window, (std::function<bool(xxNodePtr const&)>&)callback);
+    return Node::Traversal(window, (std::function<bool(xxNodePtr const&)>&)callback);
 }
 //------------------------------------------------------------------------------
 WindowPtr Window::Create()

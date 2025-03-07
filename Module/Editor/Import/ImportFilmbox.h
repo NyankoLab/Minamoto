@@ -1,5 +1,5 @@
 //==============================================================================
-// Minamoto : ImportFBX Header
+// Minamoto : ImportFilmbox Header
 //
 // Copyright (c) 2023-2025 TAiGA
 // https://github.com/metarutaiga/minamoto
@@ -8,7 +8,7 @@
 
 #include "Import.h"
 
-struct ImportFBX : public Import
+struct ImportFilmbox : public Import
 {
 public:
     static xxNodePtr Create(char const* fbx, ImportCallback callback = nullptr);

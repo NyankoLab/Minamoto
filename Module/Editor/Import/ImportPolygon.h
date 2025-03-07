@@ -1,5 +1,5 @@
 //==============================================================================
-// Minamoto : ImportPLY Header
+// Minamoto : ImportPolygon Header
 //
 // Copyright (c) 2023-2025 TAiGA
 // https://github.com/metarutaiga/minamoto
@@ -9,7 +9,7 @@
 #include <map>
 #include "Import.h"
 
-struct ImportPLY : public Import
+struct ImportPolygon : public Import
 {
 public:
     static xxNodePtr Create(char const* ply);

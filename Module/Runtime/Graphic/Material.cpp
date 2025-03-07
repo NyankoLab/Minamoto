@@ -5,10 +5,10 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Runtime.h"
-#include <xxGraphicPlus/xxMesh.h>
-#include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
 #include "Camera.h"
+#include "Mesh.h"
+#include "Node.h"
 #include "Material.h"
 
 //==============================================================================

@@ -172,6 +172,10 @@
 		F5054E272D34FF2900D62FC6 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5054E252D34FF2700D62FC6 /* Material.cpp */; };
 		F5054E282D34FF2900D62FC6 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5054E252D34FF2700D62FC6 /* Material.cpp */; };
 		F5054E292D34FF2900D62FC6 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5054E252D34FF2700D62FC6 /* Material.cpp */; };
+		F5B5D38B2D7ADB140019E2B1 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5D38A2D7ADB140019E2B1 /* Node.cpp */; };
+		F5B5D38C2D7ADB140019E2B1 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5D38A2D7ADB140019E2B1 /* Node.cpp */; };
+		F5B5D38D2D7ADB140019E2B1 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5D38A2D7ADB140019E2B1 /* Node.cpp */; };
+		F5B5D38E2D7ADB140019E2B1 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5D38A2D7ADB140019E2B1 /* Node.cpp */; };
 		F5E4C8322D219C5200111AC3 /* DrawTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C8312D219C5000111AC3 /* DrawTools.cpp */; };
 		F5E4C8332D219C5200111AC3 /* DrawTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C8312D219C5000111AC3 /* DrawTools.cpp */; };
 		F5E4C8342D219C5200111AC3 /* DrawTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C8312D219C5000111AC3 /* DrawTools.cpp */; };
@@ -310,6 +314,8 @@
 		D6FEF4232C0D9315003272C2 /* ArrayModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ArrayModifier.cpp; path = ../Modifier/ArrayModifier.cpp; sourceTree = "<group>"; };
 		F5054E242D34FF2000D62FC6 /* Material.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Material.h; sourceTree = "<group>"; };
 		F5054E252D34FF2700D62FC6 /* Material.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
+		F5B5D3892D7ADB140019E2B1 /* Node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Node.h; sourceTree = "<group>"; };
+		F5B5D38A2D7ADB140019E2B1 /* Node.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Node.cpp; sourceTree = "<group>"; };
 		F5E4C8302D219C4700111AC3 /* DrawTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DrawTools.h; sourceTree = "<group>"; };
 		F5E4C8312D219C5000111AC3 /* DrawTools.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DrawTools.cpp; sourceTree = "<group>"; };
 		F5E5B1A82D72F636008E0D21 /* Camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
@@ -451,6 +457,8 @@
 				F5054E242D34FF2000D62FC6 /* Material.h */,
 				F5FAA3732D54F80200A25CCB /* Mesh.cpp */,
 				F5FAA3722D54F7FB00A25CCB /* Mesh.h */,
+				F5B5D38A2D7ADB140019E2B1 /* Node.cpp */,
+				F5B5D3892D7ADB140019E2B1 /* Node.h */,
 				D6D26F972BDE11D900D57772 /* Pipeline.cpp */,
 				D6D26F962BDE11D900D57772 /* Pipeline.h */,
 				D6D26F8B2BDDFAC400D57772 /* RenderPass.cpp */,
@@ -693,6 +701,7 @@
 				F5054E262D34FF2900D62FC6 /* Material.cpp in Sources */,
 				D645C4C92BD145AF00A89E16 /* ScaleModifier.cpp in Sources */,
 				D62286B72BD2AFC500440C24 /* Modifier.cpp in Sources */,
+				F5B5D38C2D7ADB140019E2B1 /* Node.cpp in Sources */,
 				D6386A742BDC09EA0008C9D1 /* Binary.cpp in Sources */,
 				D62286DB2BD7A2C200440C24 /* BakedQuaternion16Modifier.cpp in Sources */,
 				D62286CF2BD6C18900440C24 /* Quaternion16Modifier.cpp in Sources */,
@@ -741,6 +750,7 @@
 				D6F066842BC6EEF600C4DFE6 /* Runtime.cpp in Sources */,
 				D645C4D82BD145E700A89E16 /* QuaternionModifier.cpp in Sources */,
 				F5FAA3772D54F80400A25CCB /* Mesh.cpp in Sources */,
+				F5B5D38D2D7ADB140019E2B1 /* Node.cpp in Sources */,
 				F5054E282D34FF2900D62FC6 /* Material.cpp in Sources */,
 				D6D26F9B2BDE11D900D57772 /* Pipeline.cpp in Sources */,
 				D62286C42BD559B000440C24 /* ConstantQuaternionModifier.cpp in Sources */,
@@ -785,6 +795,7 @@
 				F5054E272D34FF2900D62FC6 /* Material.cpp in Sources */,
 				D645C4CA2BD145AF00A89E16 /* ScaleModifier.cpp in Sources */,
 				D62286B82BD2AFC500440C24 /* Modifier.cpp in Sources */,
+				F5B5D38E2D7ADB140019E2B1 /* Node.cpp in Sources */,
 				D6386A752BDC09EA0008C9D1 /* Binary.cpp in Sources */,
 				D62286DC2BD7A2C200440C24 /* BakedQuaternion16Modifier.cpp in Sources */,
 				D62286D02BD6C18900440C24 /* Quaternion16Modifier.cpp in Sources */,
@@ -829,6 +840,7 @@
 				F5054E292D34FF2900D62FC6 /* Material.cpp in Sources */,
 				D645C4CB2BD145AF00A89E16 /* ScaleModifier.cpp in Sources */,
 				D62286B92BD2AFC500440C24 /* Modifier.cpp in Sources */,
+				F5B5D38B2D7ADB140019E2B1 /* Node.cpp in Sources */,
 				D6386A762BDC09EA0008C9D1 /* Binary.cpp in Sources */,
 				D62286DD2BD7A2C200440C24 /* BakedQuaternion16Modifier.cpp in Sources */,
 				D62286D12BD6C18900440C24 /* Quaternion16Modifier.cpp in Sources */,

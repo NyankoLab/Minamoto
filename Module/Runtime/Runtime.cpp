@@ -12,6 +12,7 @@
 #include "Graphic/Camera.h"
 #include "Graphic/Material.h"
 #include "Graphic/Mesh.h"
+#include "Graphic/Node.h"
 #include "Graphic/Pipeline.h"
 #include "Graphic/RenderPass.h"
 #include "Graphic/Sampler.h"
@@ -36,6 +37,7 @@ void Runtime::Initialize()
     Material::Initialize();
     Mesh::Initialize();
     Modifier::Initialize();
+    Node::Initialize();
     Pipeline::Initialize();
     RenderPass::Initialize();
     Shader::Initialize();
@@ -75,6 +77,7 @@ void Runtime::Shutdown(bool suspend)
     Shader::Shutdown();
     RenderPass::Shutdown();
     Pipeline::Shutdown();
+    Node::Shutdown();
     Modifier::Shutdown();
     Mesh::Shutdown();
     Material::Shutdown();

@@ -6,15 +6,15 @@
 //==============================================================================
 #include "Editor.h"
 #include <xxGraphicPlus/xxFile.h>
-#include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
-#include <Graphic/Binary.h>
+#include <Runtime/Graphic/Binary.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
+#include <Runtime/Graphic/Node.h>
 #include <Tools/NodeTools.h>
-#include "Import/ImportFBX.h"
+#include "Import/ImportFilmbox.h"
 #include "Import/ImportInterQuake.h"
-#include "Import/ImportPLY.h"
+#include "Import/ImportPolygon.h"
 #include "Import/ImportWavefront.h"
 #include "Utility/MeshTools.h"
 #include "Utility/TextureTools.h"
@@ -81,6 +81,7 @@ double ImportEvent::Execute()
                 {
                     right->Name = Import::CheckDuplicateName(left, right->Name);
                     left->AttachChild(right);
+                    right->UpdateMatrix();
                 }
             }
             Statistic();
@@ -112,7 +113,7 @@ double ImportEvent::Execute()
             ImGui::TableNextColumn();
             if (ImGui::Button("Reset Mesh"))
             {
-                xxNode::Traversal(output, [](xxNodePtr const& node)
+                Node::Traversal(output, [](xxNodePtr const& node)
                 {
                     if (node->Mesh)
                     {
@@ -133,7 +134,7 @@ double ImportEvent::Execute()
             ImGui::SameLine();
             if (ImGui::Button("Optimize Mesh"))
             {
-                xxNode::Traversal(output, [](xxNodePtr const& node)
+                Node::Traversal(output, [](xxNodePtr const& node)
                 {
                     if (node->Mesh)
                     {
@@ -158,7 +159,7 @@ double ImportEvent::Execute()
             ImGui::TableNextColumn();
             if (ImGui::Button("Mipmap Texture") && mipmapTextures.empty())
             {
-                xxNode::Traversal(output, [&](xxNodePtr const& node)
+                Node::Traversal(output, [&](xxNodePtr const& node)
                 {
                     if (node->Material)
                     {
@@ -199,7 +200,7 @@ void ImportEvent::ThreadedExecute()
 #if 1
         thiz->output = xxNode::Create();
         thiz->output->Name = xxFile::GetName(name);
-        output = ImportFBX::Create(name, [thiz](void* parent, void* node, xxNodePtr&& target, std::function<void(xxNodePtr const&)> callback)
+        output = ImportFilmbox::Create(name, [thiz](void* parent, void* node, xxNodePtr&& target, std::function<void(xxNodePtr const&)> callback)
         {
             thiz->nodesMutex.lock();
             thiz->nodes.emplace_back(parent, node, std::move(target), std::move(callback));
@@ -207,7 +208,7 @@ void ImportEvent::ThreadedExecute()
         });
         output = thiz->output;
 #else
-        output = ImportFBX::Create(name);
+        output = ImportFilmbox::Create(name);
 #endif
     }
     if (strcasestr(name, ".iqe"))
@@ -239,7 +240,7 @@ void ImportEvent::ThreadedExecute()
         output = thiz->output;
     }
     if (strcasestr(name, ".ply"))
-        output = ImportPLY::Create(name);
+        output = ImportPolygon::Create(name);
     if (strcasestr(name, ".xxb"))
         output = Binary::Load(name);
     thiz->output = output;
@@ -257,7 +258,7 @@ void ImportEvent::Statistic()
 
     std::map<size_t, size_t> meshReferenceCounts;
     std::map<size_t, size_t> textureReferenceCounts;
-    xxNode::Traversal(output, [&](xxNodePtr const& node)
+    Node::Traversal(output, [&](xxNodePtr const& node)
     {
         if (node->Mesh)
         {

@@ -7,10 +7,10 @@
 #include "Editor.h"
 #include <map>
 #include <xxGraphicPlus/xxFile.h>
-#include <xxGraphicPlus/xxNode.h>
 #include <xxGraphicPlus/xxTexture.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
+#include <Runtime/Graphic/Node.h>
 #include "Import.h"
 
 //#define STBI_NO_JPEG
@@ -119,7 +119,7 @@ void Import::MergeNode(xxNodePtr const& target, xxNodePtr const& source, xxNodeP
         target->AttachChild(node);
     }
 
-    xxNode::Traversal(target, [&](xxNodePtr const& node)
+    Node::Traversal(target, [&](xxNodePtr const& node)
     {
         for (auto& data : node->Bones)
         {
@@ -144,7 +144,7 @@ void Import::MergeTexture(xxNodePtr const& node)
 {
     std::map<std::string, xxTexturePtr> textures;
 
-    xxNode::Traversal(node, [&](xxNodePtr const& node)
+    Node::Traversal(node, [&](xxNodePtr const& node)
     {
         if (node->Material)
         {
@@ -169,7 +169,7 @@ xxNodePtr Import::GetNodeByName(xxNodePtr const& root, std::string const& name)
 {
     xxNodePtr output;
 
-    xxNode::Traversal(root, [&](xxNodePtr const& node)
+    Node::Traversal(root, [&](xxNodePtr const& node)
     {
         if (node->Name == name)
             output = node;
