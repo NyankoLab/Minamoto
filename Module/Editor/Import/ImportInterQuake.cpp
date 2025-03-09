@@ -261,8 +261,7 @@ xxNodePtr ImportInterQuake::Create(char const* iqe, std::function<void(xxNodePtr
             rotate[2] = { ToFloat(matrix[9]), ToFloat(matrix[10]), ToFloat(matrix[11]) };
 
             static xxMatrix3 swapYZ = { xxVector3::X, -xxVector3::Z, xxVector3::Y };
-            translate = rotate.Inverse() * translate;
-            translate = swapYZ * translate;
+            translate = translate * rotate.Inverse() * swapYZ;
             translate.x = -translate.x;
 
             jointNode->SetRotate(rotate);

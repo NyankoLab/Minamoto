@@ -109,6 +109,15 @@ double ImportEvent::Execute()
         if (ImGui::BeginTable("", 2))
         {
             ImGui::TableNextColumn();
+            ImGui::TextUnformatted("Bone");
+            ImGui::TableNextColumn();
+            if (ImGui::Button("ResetBone"))
+            {
+                NodeTools::ResetBoneMatrix(output);
+                Statistic();
+            }
+
+            ImGui::TableNextColumn();
             ImGui::TextUnformatted("Mesh");
             ImGui::TableNextColumn();
             if (ImGui::Button("Reset Mesh"))

@@ -139,6 +139,8 @@ void Scene::DrawBoneLine(xxNodePtr const& root)
                     {
                         Tools::Line(parent->GetWorldTranslate(), bone->GetWorldTranslate());
                     }
+                    xxVector3 direction = (xxVector4{ 0, 1, 0, 1 } * bone->WorldMatrix).xyz;
+                    Tools::Line(bone->GetWorldTranslate(), direction);
                 }
             }
             return true;
