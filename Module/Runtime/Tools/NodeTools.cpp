@@ -210,6 +210,73 @@ void NodeTools::RemoveEmptyNode(xxNodePtr const& node)
     }
 }
 //------------------------------------------------------------------------------
+void NodeTools::ResetBoneMatrix(xxNodePtr const& node)
+{
+    auto rotationMatrix = [](xxVector3 normal) -> xxMatrix3
+    {
+        normal = -normal.Normalize();
+        xxVector3 tangent0 = normal.Cross(xxVector3::X);
+        if (tangent0.Dot(tangent0) < FLT_EPSILON)
+            tangent0 = normal.Cross(xxVector3::Z);
+        tangent0 = tangent0.Normalize();
+        xxVector3 tangent1 = normal.Cross(tangent0).Normalize();
+        return { tangent0, -normal, tangent1 };
+    };
+
+    Node::Traversal(node, [&](xxNodePtr const& node)
+    {
+        xxNodePtr const& parent = node->GetParent();
+        if (parent == nullptr)
+            return true;
+
+        xxVector3 totalWorldTranslate = xxVector3::ZERO;
+        for (int i = 0; i < node->GetChildCount(); ++i)
+        {
+            xxNodePtr const& child = node->GetChild(i);
+            totalWorldTranslate += child->GetWorldTranslate();
+        }
+        if (node->GetChildCount())
+        {
+            totalWorldTranslate /= float(node->GetChildCount());
+        }
+
+        if (totalWorldTranslate != xxVector3::ZERO)
+        {
+            xxMatrix3 rotate = rotationMatrix(totalWorldTranslate - node->GetWorldTranslate());
+            node->WorldMatrix.v[0].xyz = rotate.v[0];
+            node->WorldMatrix.v[1].xyz = rotate.v[1];
+            node->WorldMatrix.v[2].xyz = rotate.v[2];
+        }
+        else
+        {
+            xxMatrix4 rotate = parent->WorldMatrix;
+            node->WorldMatrix.v[0] = rotate.v[0];
+            node->WorldMatrix.v[1] = rotate.v[1];
+            node->WorldMatrix.v[2] = rotate.v[2];
+        }
+        node->LocalMatrix = parent->WorldMatrix.Inverse() * node->WorldMatrix;
+        node->UpdateMatrix();
+
+        return true;
+    });
+
+    Node::Traversal(node, [&](xxNodePtr const& node)
+    {
+        xxMeshPtr const& mesh = node->Mesh;
+        if (mesh == nullptr)
+            return true;
+
+        for (auto& bone : node->Bones)
+        {
+            xxNodePtr const& to = bone.bone.lock();
+            xxMatrix4 invWorldMatrix = to->WorldMatrix.Inverse();
+            bone.classSkinMatrix = invWorldMatrix;
+        }
+
+        return true;
+    });
+}
+//------------------------------------------------------------------------------
 void NodeTools::UpdateNodeFlags(xxNodePtr const& node)
 {
     Node::Traversal(node, [](xxNodePtr const& node)
