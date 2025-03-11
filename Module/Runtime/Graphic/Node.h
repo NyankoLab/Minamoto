@@ -15,6 +15,9 @@ public:
     bool        AttachChild(xxNodePtr const& child);
     bool        DetachChild(xxNodePtr const& child);
 
+    void        Invalidate();
+    void        Draw(xxDrawData const& data);
+
     static bool Traversal(xxNodePtr const& node, std::function<bool(xxNodePtr const&)> callback);
 
     static void Initialize();

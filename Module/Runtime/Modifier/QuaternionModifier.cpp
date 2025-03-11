@@ -20,7 +20,7 @@ void QuaternionModifier::Update(void* target, xxModifierData* data, float time)
     if (UpdateKeyFactor(data, time, A, B, F) == false)
         return;
 
-    auto node = (xxNode*)target;
+    auto node = (Node*)target;
     node->SetRotate(xxMatrix3::Quaternion(Lerp((xxVector4&)A->quaternion, (xxVector4&)B->quaternion, F)));
 }
 //------------------------------------------------------------------------------

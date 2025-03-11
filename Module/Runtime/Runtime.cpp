@@ -71,6 +71,8 @@ void Runtime::Update()
 //------------------------------------------------------------------------------
 void Runtime::Shutdown(bool suspend)
 {
+    Material::Shutdown();
+
     VertexAttribute::Shutdown();
     Texture::Shutdown();
     Sampler::Shutdown();

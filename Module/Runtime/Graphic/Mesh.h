@@ -12,9 +12,9 @@
 struct RuntimeAPI Mesh : public xxMesh
 {
 public:
-    void                        Invalidate() override;
-    void                        Setup(uint64_t device) override;
-    void                        Draw(uint64_t commandEncoder, int instanceCount = 1, int firstIndex = 0, int vertexOffset = 0, int firstInstance = 0) override;
+    void                        Invalidate();
+    void                        Setup(uint64_t device);
+    void                        Draw(uint64_t commandEncoder, int instanceCount = 1, int firstIndex = 0, int vertexOffset = 0, int firstInstance = 0);
 
     void                        SetVertexCount(int count);
 

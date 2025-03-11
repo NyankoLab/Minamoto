@@ -485,32 +485,43 @@ xxMeshPtr MeshTools::OptimizeMesh(xxMeshPtr const& mesh)
 
     if (mesh->Count[xxMesh::INDEX] == 0)
     {
-        size_t index_count = mesh->Count[xxMesh::VERTEX];
-        std::vector<unsigned int> remap(index_count);
-        size_t vertex_count = meshopt_generateVertexRemap(remap.data(), nullptr, index_count,
+        std::vector<unsigned int> remap(mesh->Count[xxMesh::VERTEX]);
+        size_t vertex_count = meshopt_generateVertexRemap(remap.data(), nullptr, remap.size(),
                                                           mesh->Vertex, mesh->Count[xxMesh::VERTEX], mesh->VertexStride);
 
-        std::vector<unsigned int> indices(index_count);
+        std::vector<unsigned int> indices(mesh->Count[xxMesh::VERTEX]);
         std::vector<char> vertices(vertex_count * mesh->VertexStride);
-        meshopt_remapIndexBuffer(indices.data(), nullptr, index_count, remap.data());
+        meshopt_remapIndexBuffer(indices.data(), nullptr, indices.size(), remap.data());
         meshopt_remapVertexBuffer(vertices.data(), mesh->Vertex, mesh->Count[xxMesh::VERTEX], mesh->VertexStride, remap.data());
 
-        mesh->SetIndexCount(static_cast<int>(index_count));
         mesh->SetVertexCount(static_cast<int>(vertex_count));
 
         SetIndexToMesh(mesh, indices);
-        memcpy(mesh->Vertex, vertices.data(), vertices.size());
+        memcpy(mesh->Vertex, vertices.data(), vertex_count * mesh->VertexStride);
     }
 
     std::vector<unsigned int> indices = GetIndexFromMesh(mesh);
+    std::vector<char> vertices(mesh->Count[xxMesh::VERTEX] * mesh->VertexStride);
     meshopt_optimizeVertexCache(indices.data(), indices.data(), indices.size(), mesh->Count[xxMesh::VERTEX]);
     meshopt_optimizeOverdraw(indices.data(), indices.data(), indices.size(),
                              (float*)mesh->Vertex, mesh->Count[xxMesh::VERTEX], mesh->VertexStride, 1.05f);
-    meshopt_optimizeVertexFetch(mesh->Vertex, indices.data(), indices.size(),
-                                mesh->Vertex, mesh->Count[xxMesh::VERTEX], mesh->VertexStride);
+    size_t vertex_count = meshopt_optimizeVertexFetch(vertices.data(), indices.data(), indices.size(),
+                                                      mesh->Vertex, mesh->Count[xxMesh::VERTEX], mesh->VertexStride);
+
+    mesh->SetVertexCount(static_cast<int>(vertex_count));
+
     SetIndexToMesh(mesh, indices);
+    memcpy(mesh->Vertex, vertices.data(), vertex_count * mesh->VertexStride);
 
     xxLog(TAG, "OptimizeMesh : %s (%.0fus)", mesh->Name.c_str(), (xxGetCurrentTime() - begin) * 1000000);
+
+    if (mesh->Count[xxMesh::STORAGE0])
+    {
+        mesh->SetStorageCount(xxMesh::STORAGE0, 0, 0);
+        mesh->SetStorageCount(xxMesh::STORAGE1, 0, 0);
+        mesh->SetStorageCount(xxMesh::STORAGE2, 0, 0);
+        return CreateMeshlet(mesh);
+    }
 
     return mesh;
 }

@@ -20,7 +20,7 @@ void ScaleModifier::Update(void* target, xxModifierData* data, float time)
     if (UpdateKeyFactor(data, time, A, B, F) == false)
         return;
 
-    auto node = (xxNode*)target;
+    auto node = (Node*)target;
     node->SetScale(Lerp(A->scale, B->scale, F));
     node->UpdateRotateTranslateScale();
 }
