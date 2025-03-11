@@ -20,7 +20,7 @@ void TranslateModifier::Update(void* target, xxModifierData* data, float time)
     if (UpdateKeyFactor(data, time, A, B, F) == false)
         return;
 
-    auto node = (xxNode*)target;
+    auto node = (Node*)target;
     node->SetTranslate(Lerp(A->translate, B->translate, F));
 }
 //------------------------------------------------------------------------------

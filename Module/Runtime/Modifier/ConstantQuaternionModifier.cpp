@@ -17,7 +17,7 @@ void ConstantQuaternionModifier::Update(void* target, xxModifierData* data, floa
         return;
     data->time = time;
 
-    auto node = (xxNode*)target;
+    auto node = (Node*)target;
     auto* constant = (Constant*)Data.data();
     node->SetRotate(xxMatrix3::Quaternion(constant->quaternion));
 }

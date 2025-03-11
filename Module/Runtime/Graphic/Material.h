@@ -19,7 +19,7 @@ public:
     };
 
 public:
-    void                    Invalidate() override;
+    void                    Setup(xxDrawData const& data) override;
     void                    Draw(xxDrawData const& data) const override;
 
     void                    CreatePipeline(xxDrawData const& data) override;
@@ -48,7 +48,6 @@ protected:
     void                    UpdateTransformConstant(xxDrawData const& data, int& size, xxVector4** pointer = nullptr, struct MaterialSelector* s = nullptr) const;
     void                    UpdateWorldViewProjectionConstant(xxDrawData const& data, int& size, xxVector4** pointer = nullptr, struct MaterialSelector* s = nullptr) const;
 
-    uint64_t                m_meshShader = 0;
     uint16_t                m_meshTextureSlot = 0;
     uint16_t                m_vertexTextureSlot = 0;
     uint16_t                m_fragmentTextureSlot = 0;
@@ -60,6 +59,8 @@ public:
     bool                    FrustumCulling = false;
 
     bool                    DebugNormal = false;
+
+    static xxMaterialPtr    DefaultMaterial;
 
     static void             Initialize();
     static void             Shutdown();

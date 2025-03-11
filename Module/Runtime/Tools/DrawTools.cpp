@@ -14,7 +14,7 @@
 #include "DrawTools.h"
 
 //==============================================================================
-void DrawTools::Cull(xxNodePtr const& node, xxCameraPtr const& camera, std::vector<xxNode*>& scene, std::vector<xxNode*>* gui, bool append)
+void DrawTools::Cull(xxNodePtr const& node, xxCameraPtr const& camera, std::vector<Node*>& scene, std::vector<Node*>* gui, bool append)
 {
     if (append == false)
     {
@@ -81,7 +81,7 @@ void DrawTools::Draw(DrawData& drawData, xxNodePtr const& node)
     }
 }
 //------------------------------------------------------------------------------
-void DrawTools::CullTraversal(xxNodePtr const& node, xxMatrix4x2 const frustum[6], std::vector<xxNode*>& array, char planes)
+void DrawTools::CullTraversal(xxNodePtr const& node, xxMatrix4x2 const frustum[6], std::vector<Node*>& array, char planes)
 {
     if (planes)
     {

@@ -17,7 +17,7 @@ void ConstantScaleModifier::Update(void* target, xxModifierData* data, float tim
         return;
     data->time = time;
 
-    auto node = (xxNode*)target;
+    auto node = (Node*)target;
     auto* constant = (Constant*)Data.data();
     node->SetScale(constant->scale);
     node->UpdateRotateTranslateScale();

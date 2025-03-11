@@ -38,8 +38,8 @@ static xxNodePtr sceneGrid;
 static xxVector2 viewPos;
 static xxVector2 viewSize;
 static ImGuiViewport* viewViewport;
-static std::vector<xxNode*> drawScenes;
-static std::vector<xxNode*> drawGUIs;
+static std::vector<Node*> drawScenes;
+static std::vector<Node*> drawGUIs;
 static bool cullEnabled = false;
 static bool drawBoneLine = false;
 static bool drawNodeLine = false;
@@ -114,8 +114,8 @@ void Scene::Shutdown(bool suspend)
     sceneGrid = nullptr;
     selected = nullptr;
     viewViewport = nullptr;
-    drawScenes = std::vector<xxNode*>();
-    drawGUIs = std::vector<xxNode*>();
+    drawScenes = std::vector<Node*>();
+    drawGUIs = std::vector<Node*>();
 }
 //------------------------------------------------------------------------------
 void Scene::Select(xxNodePtr const& node)
@@ -758,7 +758,7 @@ void Scene::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
 
     Profiler::Begin(xxHash("Scene Render"));
     drawData.camera = drawData.camera3D.get();
-    for (xxNode* node : drawScenes)
+    for (Node* node : drawScenes)
     {
         node->Draw(drawData);
     }
@@ -769,7 +769,7 @@ void Scene::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
 #if HAVE_MINIGUI
     Profiler::Begin(xxHash("MiniGUI Render"));
     drawData.camera = drawData.camera2D.get();
-    for (xxNode* node : drawGUIs)
+    for (Node* node : drawGUIs)
     {
         node->Draw(drawData);
     }

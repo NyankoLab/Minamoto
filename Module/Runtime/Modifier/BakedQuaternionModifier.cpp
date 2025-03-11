@@ -20,7 +20,7 @@ void BakedQuaternionModifier::Update(void* target, xxModifierData* data, float t
     if (UpdateBakedFactor(data, time, (Baked*)Data.data(), A, B, F) == false)
         return;
 
-    auto node = (xxNode*)target;
+    auto node = (Node*)target;
     node->SetRotate(xxMatrix3::Quaternion(Lerp(*A, *B, F)));
 }
 //------------------------------------------------------------------------------

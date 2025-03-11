@@ -192,11 +192,25 @@ struct MaterialSelector
 //==============================================================================
 //  Material
 //==============================================================================
-void Material::Invalidate()
+xxMaterialPtr Material::DefaultMaterial;
+//------------------------------------------------------------------------------
+void Material::Setup(xxDrawData const& data)
 {
-    xxDestroyShader(m_device, m_meshShader);
-    m_meshShader = 0;
-    return xxMaterial::Invalidate();
+    auto* node = data.node;
+    if (node->ConstantDatas.size() <= data.materialIndex)
+        node->ConstantDatas.resize(data.materialIndex + 1);
+    auto* constantData = data.constantData = &node->ConstantDatas[data.materialIndex];
+
+    if (constantData->ready == 0)
+    {
+        m_device = data.device;
+        if (constantData->pipeline == 0)
+            CreatePipeline(data);
+        CreateConstant(data);
+        constantData->ready = (constantData->pipeline != 0) ? 1 : -1;
+    }
+
+    UpdateConstant(data);
 }
 //------------------------------------------------------------------------------
 void Material::Draw(xxDrawData const& data) const
@@ -249,12 +263,15 @@ void Material::Draw(xxDrawData const& data) const
 //------------------------------------------------------------------------------
 void Material::CreatePipeline(xxDrawData const& data)
 {
-    xxMesh* mesh = data.mesh;
+    auto* mesh = data.mesh;
     uint64_t vertexAttribute = mesh->GetVertexAttribute();
     if (vertexAttribute == 0)
         return;
 
-    if (m_pipeline == 0)
+    auto* node = data.node;
+    auto* constantData = data.constantData;
+
+    if (constantData->pipeline == 0)
     {
         if (m_blendState == 0)
         {
@@ -280,26 +297,26 @@ void Material::CreatePipeline(xxDrawData const& data)
         {
             m_rasterizerState = xxCreateRasterizerState(m_device, Cull, Scissor);
         }
-        if (m_meshShader == 0 && m_vertexShader == 0 && m_fragmentShader == 0)
+        if (constantData->meshShader == 0 && constantData->vertexShader == 0 && constantData->fragmentShader == 0)
         {
-            if (m_meshShader == 0 && mesh->Count[xxMesh::STORAGE0] && mesh->Count[xxMesh::STORAGE1] && mesh->Count[xxMesh::STORAGE2])
+            if (constantData->meshShader == 0 && mesh->Count[xxMesh::STORAGE0] && mesh->Count[xxMesh::STORAGE1] && mesh->Count[xxMesh::STORAGE2])
             {
-                m_meshShader = xxCreateMeshShader(m_device, GetShader(data, 'mesh').c_str());
+                constantData->meshShader = xxCreateMeshShader(m_device, GetShader(data, 'mesh').c_str());
             }
-            if (m_meshShader == 0 && m_vertexShader == 0)
+            if (constantData->meshShader == 0 && constantData->vertexShader == 0)
             {
-                m_vertexShader = xxCreateVertexShader(m_device, GetShader(data, 'vert').c_str(), vertexAttribute);
+                constantData->vertexShader = xxCreateVertexShader(m_device, GetShader(data, 'vert').c_str(), vertexAttribute);
             }
-            if (m_fragmentShader == 0)
+            if (constantData->fragmentShader == 0)
             {
-                m_fragmentShader = xxCreateFragmentShader(m_device, GetShader(data, 'frag').c_str());
+                constantData->fragmentShader = xxCreateFragmentShader(m_device, GetShader(data, 'frag').c_str());
             }
         }
         if (m_renderPass == 0)
         {
             m_renderPass = xxCreateRenderPass(m_device, true, true, true, true, true, true);
         }
-        m_pipeline = xxCreatePipeline(m_device, m_renderPass, m_blendState, m_depthStencilState, m_rasterizerState, vertexAttribute, m_meshShader, m_vertexShader, m_fragmentShader);
+        constantData->pipeline = xxCreatePipeline(m_device, m_renderPass, m_blendState, m_depthStencilState, m_rasterizerState, vertexAttribute, constantData->meshShader, constantData->vertexShader, constantData->fragmentShader);
     }
 }
 //------------------------------------------------------------------------------
@@ -307,11 +324,10 @@ void Material::CreateConstant(xxDrawData const& data) const
 {
     auto* constantData = data.constantData;
 
-    if (constantData->meshConstant == 0 &&constantData->vertexConstant == 0 && constantData->fragmentConstant == 0)
+    if (constantData->meshConstant == 0 && constantData->vertexConstant == 0 && constantData->fragmentConstant == 0)
     {
         constantData->device = data.device;
-        constantData->pipeline = m_pipeline;
-        if (m_meshShader && constantData->meshConstant == 0)
+        if (constantData->meshShader && constantData->meshConstant == 0)
         {
             constantData->meshConstantSize = GetMeshConstantSize(data);
             if (constantData->meshConstantSize > 0)
@@ -319,7 +335,7 @@ void Material::CreateConstant(xxDrawData const& data) const
                 constantData->meshConstant = xxCreateConstantBuffer(m_device, constantData->meshConstantSize);
             }
         }
-        if (m_vertexShader && constantData->vertexConstant == 0)
+        if (constantData->vertexShader && constantData->vertexConstant == 0)
         {
             constantData->vertexConstantSize = GetVertexConstantSize(data);
             if (constantData->vertexConstantSize > 0)
@@ -327,7 +343,7 @@ void Material::CreateConstant(xxDrawData const& data) const
                 constantData->vertexConstant = xxCreateConstantBuffer(m_device, constantData->vertexConstantSize);
             }
         }
-        if (m_fragmentShader && constantData->fragmentConstant == 0)
+        if (constantData->fragmentShader && constantData->fragmentConstant == 0)
         {
             constantData->fragmentConstantSize = GetFragmentConstantSize(data);
             if (constantData->fragmentConstantSize > 0)
@@ -381,7 +397,7 @@ void Material::UpdateConstant(xxDrawData const& data) const
 //------------------------------------------------------------------------------
 std::string Material::GetShader(xxDrawData const& data, int type) const
 {
-    xxMesh* mesh = data.mesh;
+    auto* mesh = data.mesh;
 
     char const* deviceString = xxGetInstanceName();
     MaterialSelector::Language language = MaterialSelector::GLSL;
@@ -511,7 +527,7 @@ void Material::ShaderDefault(xxDrawData const& data, struct MaterialSelector& s)
 //------------------------------------------------------------------------------
 void Material::ShaderAttribute(xxDrawData const& data, struct MaterialSelector& s) const
 {
-    xxMesh* mesh = data.mesh;
+    auto* mesh = data.mesh;
     bool skinning = mesh->Skinning;
     int normal = mesh->NormalCount;
     int color = mesh->ColorCount;
@@ -606,7 +622,7 @@ void Material::ShaderConstant(xxDrawData const& data, struct MaterialSelector& s
 //------------------------------------------------------------------------------
 void Material::ShaderVarying(xxDrawData const& data, struct MaterialSelector& s) const
 {
-    xxMesh* mesh = data.mesh;
+    auto* mesh = data.mesh;
     int normal = mesh->NormalCount;
     int color = mesh->ColorCount;
     int texture = mesh->TextureCount;
@@ -627,7 +643,7 @@ void Material::ShaderVarying(xxDrawData const& data, struct MaterialSelector& s)
 //------------------------------------------------------------------------------
 void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) const
 {
-    xxMesh* mesh = data.mesh;
+    auto* mesh = data.mesh;
     bool skinning = mesh->Skinning;
     int normal = mesh->NormalCount;
     int color = mesh->ColorCount;
@@ -709,7 +725,7 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
 //------------------------------------------------------------------------------
 void Material::ShaderVertex(xxDrawData const& data, struct MaterialSelector& s) const
 {
-    xxMesh* mesh = data.mesh;
+    auto* mesh = data.mesh;
     bool skinning = mesh->Skinning;
     int normal = mesh->NormalCount;
     int color = mesh->ColorCount;
@@ -766,7 +782,7 @@ void Material::ShaderVertex(xxDrawData const& data, struct MaterialSelector& s) 
 //------------------------------------------------------------------------------
 void Material::ShaderFragment(xxDrawData const& data, struct MaterialSelector& s) const
 {
-    xxMesh* mesh = data.mesh;
+    auto* mesh = data.mesh;
     int normal = mesh->NormalCount;
     int color = mesh->ColorCount;
     int texture = mesh->TextureCount;
@@ -1117,6 +1133,8 @@ void Material::Initialize()
 
         return material;
     };
+
+    DefaultMaterial = xxMaterial::Create();
 }
 //------------------------------------------------------------------------------
 void Material::Shutdown()
@@ -1125,6 +1143,8 @@ void Material::Shutdown()
         return;
     xxMaterial::BinaryCreate = backupBinaryCreate;
     backupBinaryCreate = nullptr;
+
+    DefaultMaterial = nullptr;
 }
 //------------------------------------------------------------------------------
 #if defined(__clang__)

@@ -17,7 +17,7 @@ void ConstantTranslateModifier::Update(void* target, xxModifierData* data, float
         return;
     data->time = time;
 
-    auto node = (xxNode*)target;
+    auto node = (Node*)target;
     auto* constant = (Constant*)Data.data();
     node->SetTranslate(constant->translate);
 }

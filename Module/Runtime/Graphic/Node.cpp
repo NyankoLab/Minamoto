@@ -36,6 +36,41 @@ bool Node::DetachChild(xxNodePtr const& child)
 #endif
 }
 //------------------------------------------------------------------------------
+void Node::Invalidate()
+{
+    for (auto& constantData : ConstantDatas)
+    {
+        xxDestroyPipeline(constantData.pipeline);
+        xxDestroyShader(constantData.device, constantData.meshShader);
+        xxDestroyShader(constantData.device, constantData.vertexShader);
+        xxDestroyShader(constantData.device, constantData.fragmentShader);
+        constantData.pipeline = 0;
+        constantData.meshShader = 0;
+        constantData.vertexShader = 0;
+        constantData.fragmentShader = 0;
+    }
+    return xxNode::Invalidate();
+}
+//------------------------------------------------------------------------------
+void Node::Draw(xxDrawData const& data)
+{
+    if (Mesh == nullptr)
+        return;
+    xxMaterialPtr const& material = Material ? Material : Material::DefaultMaterial;
+
+    data.mesh = Mesh.get();
+    data.node = this;
+
+    Mesh->Setup(data.device);
+    material->Setup(data);
+
+    if (data.constantData->ready <= 0)
+        return;
+
+    material->Draw(data);
+    Mesh->Draw(data.commandEncoder);
+}
+//------------------------------------------------------------------------------
 bool Node::Traversal(xxNodePtr const& node, std::function<bool(xxNodePtr const&)> callback)
 {
 #if defined(xxMACOS) || defined(xxIOS)
