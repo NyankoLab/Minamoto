@@ -87,15 +87,15 @@ void Mesh::Draw(uint64_t commandEncoder, int instanceCount, int firstIndex, int 
         buffers[3] = m_buffers[STORAGE2][m_bufferIndex[STORAGE2]];
         xxSetMeshBuffers(commandEncoder, 4, buffers);
         xxDrawMeshed(commandEncoder, Count[STORAGE0], 1, 1);
+        return;
     }
-    else if (Count[INDEX] == 0)
+    xxSetVertexBuffers(commandEncoder, 1, &m_buffers[VERTEX][m_bufferIndex[VERTEX]], m_vertexAttribute);
+    if (Count[INDEX] == 0)
     {
-        xxSetVertexBuffers(commandEncoder, 1, &m_buffers[VERTEX][m_bufferIndex[VERTEX]], m_vertexAttribute);
         xxDraw(commandEncoder, Count[VERTEX] - firstIndex * 3, instanceCount, vertexOffset + firstIndex * 3, firstInstance);
     }
     else
     {
-        xxSetVertexBuffers(commandEncoder, 1, &m_buffers[VERTEX][m_bufferIndex[VERTEX]], m_vertexAttribute);
         xxDrawIndexed(commandEncoder, m_buffers[INDEX][m_bufferIndex[INDEX]], Count[INDEX], Count[VERTEX], instanceCount, firstIndex, vertexOffset, firstInstance);
     }
 }

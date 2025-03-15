@@ -104,7 +104,7 @@ void Inspector::UpdateCamera(const UpdateData& updateData, xxCameraPtr const& ca
         ImGui::SliderFloat3("Direction" Q, camera->LightDirection, -1.0f, 1.0f);
         if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
             camera->LightDirection /= camera->LightDirection.Length();
-        ImGui::SliderFloat("Lambert Round" Q, &camera->LambertRound, 0.0f, 1.0f);
+        ImGui::SliderFloat("Lambert Step" Q, &camera->LambertStep, 0.0f, 1.0f);
     }
 }
 //------------------------------------------------------------------------------
@@ -205,7 +205,7 @@ void Inspector::UpdateMaterial(const UpdateData& updateData, xxMaterialPtr const
                 ImGui::ColorEdit3("Specular" Q, material->SpecularColor);
                 ImGui::SliderFloat("Power" Q, &material->SpecularHighlight, 0.0f, 256.0f);
             }
-            if (ImGui::Checkbox("Lambert Round" Q, &material->LambertRound))
+            if (ImGui::Checkbox("Lambert Step" Q, &material->LambertStep))
                 invalidate = material;
         }
         if (ImGui::Checkbox("AlphaTest" Q, &material->AlphaTest))
@@ -270,7 +270,11 @@ void Inspector::UpdateMaterial(const UpdateData& updateData, xxMaterialPtr const
             invalidate = material;
         if (ImGui::Checkbox("Frustum Culling" Q, &material->FrustumCulling))
             invalidate = material;
+        if (ImGui::Checkbox("Debug Meshlet" Q, &material->DebugMeshlet))
+            invalidate = material;
         if (ImGui::Checkbox("Debug Normal" Q, &material->DebugNormal))
+            invalidate = material;
+        if (ImGui::Checkbox("Debug Wireframe" Q, &material->DebugWireframe))
             invalidate = material;
         for (auto& texture : material->Textures)
         {

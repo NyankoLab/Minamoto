@@ -13,12 +13,12 @@
 //==============================================================================
 static std::map<uint64_t, uint64_t>                 blendStates;
 static uint64_t                                     depthStencilStates[1 << 4];
-static uint64_t                                     rasterizerStates[1 << 2];
+static uint64_t                                     rasterizerStates[1 << 3];
 static std::map<std::array<uint64_t, 8>, uint64_t>  pipelines;
 //------------------------------------------------------------------------------
 static uint64_t (*xxCreateBlendStateSystem)(uint64_t device, char const* sourceColor, char const* operationColor, char const* destinationColor, char const* sourceAlpha, char const* operationAlpha, char const* destinationAlpha);
 static uint64_t (*xxCreateDepthStencilStateSystem)(uint64_t device, char const* depthTest, bool depthWrite);
-static uint64_t (*xxCreateRasterizerStateSystem)(uint64_t device, bool cull, bool scissor);
+static uint64_t (*xxCreateRasterizerStateSystem)(uint64_t device, bool cull, bool fill, bool scissor);
 static uint64_t (*xxCreatePipelineSystem)(uint64_t device, uint64_t renderPass, uint64_t blendState, uint64_t depthStencilState, uint64_t rasterizerState, uint64_t vertexAttribute, uint64_t meshShader, uint64_t vertexShader, uint64_t fragmentShader);
 static void     (*xxDestroyBlendStateSystem)(uint64_t blendState);
 static void     (*xxDestroyDepthStencilStateSystem)(uint64_t depthStencilState);
@@ -67,16 +67,17 @@ static uint64_t xxCreateDepthStencilStateRuntime(uint64_t device, char const* de
     return output;
 }
 //------------------------------------------------------------------------------
-static uint64_t xxCreateRasterizerStateRuntime(uint64_t device, bool cull, bool scissor)
+static uint64_t xxCreateRasterizerStateRuntime(uint64_t device, bool cull, bool fill, bool scissor)
 {
     uint8_t hash = 0;
     hash |= cull    << 0;
-    hash |= scissor << 1;
+    hash |= fill    << 1;
+    hash |= scissor << 2;
 
     uint64_t output = rasterizerStates[hash];
     if (output == 0)
     {
-        output = rasterizerStates[hash] = xxCreateRasterizerStateSystem(device, cull, scissor);
+        output = rasterizerStates[hash] = xxCreateRasterizerStateSystem(device, cull, fill, scissor);
     }
     return output;
 }

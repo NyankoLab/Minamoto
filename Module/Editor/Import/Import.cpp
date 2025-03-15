@@ -211,4 +211,30 @@ std::string Import::CheckDuplicateName(xxNodePtr const& node, std::string const&
     }
     return output;
 }
+//------------------------------------------------------------------------------
+bool Import::CheckTextureAlpha(xxTexturePtr const& texture)
+{
+    if (texture == nullptr)
+        return false;
+    if (texture->Format != "RGBA8888"_CC)
+        return false;
+
+    int width = texture->Width;
+    int height = texture->Height;
+    int depth = texture->Depth;
+    for (int z = 0; z < depth; ++z)
+    {
+        for (int y = 0; y < height; ++y)
+        {
+            uint8_t* pixel = static_cast<uint8_t*>((*texture)(0, y, z));
+            for (int x = 0; x < width; ++x)
+            {
+                if (pixel[x * 4 + 3] != 0xFF)
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
 //==============================================================================

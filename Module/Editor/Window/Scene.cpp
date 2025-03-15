@@ -31,6 +31,7 @@ xxCameraPtr Scene::sceneCamera;
 xxCameraPtr Scene::mainCamera;
 xxNodePtr Scene::sceneRoot;
 xxNodePtr Scene::selected;
+xxNodePtr Scene::selecting;
 //------------------------------------------------------------------------------
 static xxVector3 sceneArcball = {0.85f, -M_PI_2, 14.0f};
 static xxVector3 mainCameraOffset = {1.0f, 0.0f, 0.0f};
@@ -113,6 +114,7 @@ void Scene::Shutdown(bool suspend)
     sceneRoot = nullptr;
     sceneGrid = nullptr;
     selected = nullptr;
+    selecting = nullptr;
     viewViewport = nullptr;
     drawScenes = std::vector<Node*>();
     drawGUIs = std::vector<Node*>();
@@ -218,6 +220,8 @@ void Scene::DrawNodeBound(xxNodePtr const& root)
 //------------------------------------------------------------------------------
 static void PreSelectMouse()
 {
+    Scene::selecting = nullptr;
+
     if (manipulateHovered)
         return;
 
@@ -242,6 +246,8 @@ static void PreSelectMouse()
                 {
                     Tools::Sphere(bound.xyz, bound.radius);
                 }
+
+                Scene::selecting = node;
             }
         }
     }
@@ -611,10 +617,10 @@ bool Scene::Update(const UpdateData& updateData, bool& show)
             DrawNodeLine(sceneRoot);
             DrawNodeBound(sceneRoot);
 
-            if (selected)
-            {
-                DrawCameraLine(updateData, selected->Camera);
-            }
+//          if (selected)
+//          {
+//              DrawCameraLine(updateData, selected->Camera);
+//          }
         }
     }
 
@@ -747,7 +753,7 @@ void Scene::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
     drawData.commandEncoder = commandEncoder;
     drawData.camera2D = screenCamera;
     drawData.camera3D = mainCamera;
-    drawData.materialIndex = 0;
+    drawData.materialIndex = Material::DEFAULT;
 
     xxMatrix4x2 frustum[6];
     if (sceneCamera)
@@ -765,6 +771,14 @@ void Scene::Callback(const ImDrawList* list, const ImDrawCmd* cmd)
     Profiler::End(xxHash("Scene Render"));
 
     DrawTools::Draw(drawData, sceneGrid);
+
+    if (selecting)
+    {
+        drawData.materialIndex = Material::SELECT;
+        if (selecting && selecting->Mesh)
+            selecting->Draw(drawData);
+        drawData.materialIndex = Material::DEFAULT;
+    }
 
 #if HAVE_MINIGUI
     Profiler::Begin(xxHash("MiniGUI Render"));

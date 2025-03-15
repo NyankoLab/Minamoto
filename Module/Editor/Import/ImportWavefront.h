@@ -11,7 +11,7 @@
 
 struct ImportWavefront : public Import
 {
-    struct Material
+    struct WavefrontMaterial
     {
         xxMaterialPtr output;
         xxTexturePtr map_Ka;
@@ -25,6 +25,6 @@ struct ImportWavefront : public Import
     };
 
 public:
-    static std::map<std::string, Material> CreateMaterial(char const* mtl);
+    static std::map<std::string, WavefrontMaterial> CreateMaterial(char const* mtl);
     static xxNodePtr Create(char const* obj, std::function<void(xxNodePtr&&)> callback = nullptr);
 };

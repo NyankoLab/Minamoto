@@ -58,8 +58,8 @@ xxNodePtr ImportInterQuake::Create(char const* iqe, std::function<void(xxNodePtr
 
     // material
     std::string mtllib = xxFile::GetPath(iqe, true) + xxFile::GetName(iqe) + ".mtl";
-    std::map<std::string, ImportWavefront::Material> materials = ImportWavefront::CreateMaterial(mtllib.c_str());
-    ImportWavefront::Material* material = nullptr;
+    auto materials = ImportWavefront::CreateMaterial(mtllib.c_str());
+    ImportWavefront::WavefrontMaterial* material = nullptr;
 
     xxNodePtr root = xxNode::Create();
     root->Name = xxFile::GetName(iqe);

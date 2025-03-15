@@ -12,6 +12,13 @@
 struct RuntimeAPI Material : public xxMaterial
 {
 public:
+    enum MaterialIndex
+    {
+        DEFAULT             = 0,
+        SHADOW              = 1,
+        SELECT              = 2,
+    };
+
     enum TextureType
     {
         BASE                = 0,
@@ -48,17 +55,15 @@ protected:
     void                    UpdateTransformConstant(xxDrawData const& data, int& size, xxVector4** pointer = nullptr, struct MaterialSelector* s = nullptr) const;
     void                    UpdateWorldViewProjectionConstant(xxDrawData const& data, int& size, xxVector4** pointer = nullptr, struct MaterialSelector* s = nullptr) const;
 
-    uint16_t                m_meshTextureSlot = 0;
-    uint16_t                m_vertexTextureSlot = 0;
-    uint16_t                m_fragmentTextureSlot = 0;
-
 public:
-    bool                    LambertRound = false;
+    bool                    LambertStep = false;
 
     bool                    BackfaceCulling = false;
     bool                    FrustumCulling = false;
 
+    bool                    DebugMeshlet = false;
     bool                    DebugNormal = false;
+    bool                    DebugWireframe = false;
 
     static xxMaterialPtr    DefaultMaterial;
 
