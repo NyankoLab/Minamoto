@@ -12,7 +12,7 @@
 struct RuntimeAPI Camera : public xxCamera
 {
 public:
-    float       LambertRound = 0.5f;
+    float       LambertStep = 0.5f;
 
 public:
     static void Initialize();

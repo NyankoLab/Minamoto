@@ -95,7 +95,16 @@ void Texture::Loader(xxTexturePtr& texture, std::string const& path)
     if (texture == nullptr || (*texture)() != nullptr)
         return;
 
-    auto& ref = textures[texture->Name];
+    std::string name;
+    name.reserve(texture->Name.size());
+    for (char c : texture->Name)
+    {
+        if (c >= 'A' && c <= 'Z')
+            c = c + ('a' - 'A');
+        name.push_back(c);
+    }
+
+    auto& ref = textures[name];
     if (ref != nullptr)
     {
         texture = ref;
@@ -293,7 +302,7 @@ void Texture::DDSWriter(xxTexturePtr const& texture, std::string const& filename
         if (file == nullptr)
             break;
         DDS_HEADER header = {};
-        header.dwMagic = uint32_t("DDS "_cc);
+        header.dwMagic = "DDS "_cc;
         header.dwSize = sizeof(DDS_HEADER) - sizeof(header.dwMagic);
         header.dwFlags = DDSD_CAPS | DDSD_PIXELFORMAT;
         header.dwHeight = texture->Height;

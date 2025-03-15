@@ -55,10 +55,10 @@ static xxTexturePtr CreateTexture(char const* img)
     return texture;
 }
 //------------------------------------------------------------------------------
-std::map<std::string, ImportWavefront::Material> ImportWavefront::CreateMaterial(char const* mtl)
+std::map<std::string, ImportWavefront::WavefrontMaterial> ImportWavefront::CreateMaterial(char const* mtl)
 {
-    std::map<std::string, Material> materials;
-    Material material;
+    std::map<std::string, WavefrontMaterial> materials;
+    WavefrontMaterial material;
 
     FILE* file = fopen(mtl, "rb");
     if (file == nullptr)
@@ -93,11 +93,15 @@ std::map<std::string, ImportWavefront::Material> ImportWavefront::CreateMaterial
             material.output->Blending = material.output->Opacity != 1.0f;
             if (material.map_Kd)
             {
-                material.output->SetTexture(::Material::BASE, material.map_Kd);
+                material.output->SetTexture(Material::BASE, material.map_Kd);
+                if (material.output->Opacity == 1.0f && CheckTextureAlpha(material.map_Kd))
+                {
+                    material.output->AlphaTest = true;
+                }
             }
             if (material.bump)
             {
-                material.output->SetTexture(::Material::BUMP, material.bump);
+                material.output->SetTexture(Material::BUMP, material.bump);
             }
             materials[material.output->Name] = material;
         }
@@ -210,7 +214,7 @@ std::map<std::string, ImportWavefront::Material> ImportWavefront::CreateMaterial
 //------------------------------------------------------------------------------
 xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&&)> callback)
 {
-    std::map<std::string, Material> materials;
+    std::map<std::string, WavefrontMaterial> materials;
     std::vector<xxVector3> vertices;
     std::vector<xxVector3> normals;
     std::vector<xxVector2> textures;
@@ -218,7 +222,7 @@ xxNodePtr ImportWavefront::Create(char const* obj, std::function<void(xxNodePtr&
     std::vector<xxVector3> faceNormals;
     std::vector<xxVector2> faceTextures;
     std::string name;
-    Material* material = nullptr;
+    WavefrontMaterial* material = nullptr;
     xxNodePtr root;
 
     FILE* file = fopen(obj, "rb");

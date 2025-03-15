@@ -14,6 +14,7 @@ public:
     static xxCameraPtr mainCamera;
     static xxNodePtr sceneRoot;
     static xxNodePtr selected;
+    static xxNodePtr selecting;
 public:
     static void Initialize();
     static void Shutdown(bool suspend = false);

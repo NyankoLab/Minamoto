@@ -240,7 +240,7 @@ void NodeTools::ResetBoneMatrix(xxNodePtr const& node)
             totalWorldTranslate /= float(node->GetChildCount());
         }
 
-        if (totalWorldTranslate != xxVector3::ZERO)
+        if (totalWorldTranslate != xxVector3::ZERO && totalWorldTranslate != node->GetWorldTranslate())
         {
             xxMatrix3 rotate = rotationMatrix(totalWorldTranslate - node->GetWorldTranslate());
             node->WorldMatrix.v[0].xyz = rotate.v[0];

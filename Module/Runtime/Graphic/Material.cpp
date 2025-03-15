@@ -236,7 +236,7 @@ void Material::Draw(xxDrawData const& data) const
     uint64_t samplers[16];
 
     size_t count = std::min<size_t>(16, Textures.size());
-    unsigned int slot = m_fragmentTextureSlot;
+    unsigned int slot = constantData->fragmentTextureSlot;
     for (unsigned int i = 0; i < count; ++i)
     {
         if (slot & 1)
@@ -268,9 +268,7 @@ void Material::CreatePipeline(xxDrawData const& data)
     if (vertexAttribute == 0)
         return;
 
-    auto* node = data.node;
     auto* constantData = data.constantData;
-
     if (constantData->pipeline == 0)
     {
         if (m_blendState == 0)
@@ -295,11 +293,11 @@ void Material::CreatePipeline(xxDrawData const& data)
         }
         if (m_rasterizerState == 0)
         {
-            m_rasterizerState = xxCreateRasterizerState(m_device, Cull, Scissor);
+            m_rasterizerState = xxCreateRasterizerState(m_device, Cull, (DebugWireframe == false), Scissor);
         }
         if (constantData->meshShader == 0 && constantData->vertexShader == 0 && constantData->fragmentShader == 0)
         {
-            if (constantData->meshShader == 0 && mesh->Count[xxMesh::STORAGE0] && mesh->Count[xxMesh::STORAGE1] && mesh->Count[xxMesh::STORAGE2])
+            if (constantData->meshShader == 0 && mesh->Count[xxMesh::STORAGE0])
             {
                 constantData->meshShader = xxCreateMeshShader(m_device, GetShader(data, 'mesh').c_str());
             }
@@ -316,7 +314,18 @@ void Material::CreatePipeline(xxDrawData const& data)
         {
             m_renderPass = xxCreateRenderPass(m_device, true, true, true, true, true, true);
         }
-        constantData->pipeline = xxCreatePipeline(m_device, m_renderPass, m_blendState, m_depthStencilState, m_rasterizerState, vertexAttribute, constantData->meshShader, constantData->vertexShader, constantData->fragmentShader);
+        if (data.materialIndex == SELECT)
+        {
+            uint64_t blendState = xxCreateBlendState(m_device, "1", "+", "1", "1", "+", "0");
+            uint64_t rasterizerState = xxCreateRasterizerState(m_device, Cull, (DebugWireframe == false), Scissor);
+            constantData->pipeline = xxCreatePipeline(m_device, m_renderPass, blendState, m_depthStencilState, rasterizerState, vertexAttribute, constantData->meshShader, constantData->vertexShader, constantData->fragmentShader);
+            xxDestroyBlendState(blendState);
+            xxDestroyRasterizerState(rasterizerState);
+        }
+        else
+        {
+            constantData->pipeline = xxCreatePipeline(m_device, m_renderPass, m_blendState, m_depthStencilState, m_rasterizerState, vertexAttribute, constantData->meshShader, constantData->vertexShader, constantData->fragmentShader);
+        }
     }
 }
 //------------------------------------------------------------------------------
@@ -398,6 +407,7 @@ void Material::UpdateConstant(xxDrawData const& data) const
 std::string Material::GetShader(xxDrawData const& data, int type) const
 {
     auto* mesh = data.mesh;
+    auto* constantData = data.constantData;
 
     char const* deviceString = xxGetInstanceName();
     MaterialSelector::Language language = MaterialSelector::GLSL;
@@ -409,9 +419,9 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
     if (language == 0 && strstr(deviceString, "GL"))         language = MaterialSelector::GLSL;
 
     std::string shader;
-    uint16_t meshTextureSlot = 0;
-    uint16_t vertexTextureSlot = 0;
-    uint16_t fragmentTextureSlot = 0;
+    int meshTextureSlot = 0;
+    int vertexTextureSlot = 0;
+    int fragmentTextureSlot = 0;
 
     struct MaterialSelector s(shader, language, type);
 
@@ -437,6 +447,7 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
         ShaderConstant(data, s);
         ShaderVarying(data, s);
         ShaderMesh(data, s);
+        constantData->meshTextureSlot = meshTextureSlot;
         break;
     case 'vert':
         s.Define("SHADER_UNIFORM", GetVertexConstantSize(data) / sizeof(xxVector4));
@@ -447,6 +458,7 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
         ShaderConstant(data, s);
         ShaderVarying(data, s);
         ShaderVertex(data, s);
+        constantData->vertexTextureSlot = vertexTextureSlot;
         break;
     case 'frag':
         s.Define("SHADER_UNIFORM", GetFragmentConstantSize(data) / sizeof(xxVector4));
@@ -463,12 +475,9 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
         {
             fragmentTextureSlot |= 0b10;
         }
+        constantData->fragmentTextureSlot = fragmentTextureSlot;
         break;
     }
-
-    const_cast<uint16_t&>(m_meshTextureSlot) = meshTextureSlot;
-    const_cast<uint16_t&>(m_vertexTextureSlot) = vertexTextureSlot;
-    const_cast<uint16_t&>(m_fragmentTextureSlot) = fragmentTextureSlot;
 
     return shader;
 }
@@ -673,38 +682,40 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
     UpdateWorldViewProjectionConstant(data, size, nullptr, &s);
     UpdateCullingConstant(data, size, nullptr, &s);
 
-    s(true,        "if (gtid == 0)"                                                                                                     );
-    s(true,        "{"                                                                                                                  );
-    s.HM(true,     "SetMeshOutputCounts(m.VertexCount, m.TriangleCount);", ""                                                           );
-    s.HM(true, "", "output.set_primitive_count(m.TriangleCount);"                                                                       );
-    s(true,        "}"                                                                                                                  );
-    s(true,        "if (gtid < m.TriangleCount)"                                                                                        );
-    s(true,        "{"                                                                                                                  );
-    s(true,        "uint index = 3 * gtid;"                                                                                             );
-    s(true,        "uint packed = TriangeIndices[m.TriangleOffset + gtid];"                                                             );
-    s.HM(true,     "triangles[gtid].x = (packed >>  0) & 0xFF);", ""                                                                    );
-    s.HM(true,     "triangles[gtid].y = (packed >>  8) & 0xFF);", ""                                                                    );
-    s.HM(true,     "triangles[gtid].z = (packed >> 16) & 0xFF);", ""                                                                    );
-    s.HM(true, "", "output.set_index(index + 0, (packed >>  0) & 0xFF);"                                                                );
-    s.HM(true, "", "output.set_index(index + 1, (packed >>  8) & 0xFF);"                                                                );
-    s.HM(true, "", "output.set_index(index + 2, (packed >> 16) & 0xFF);"                                                                );
-    s(true,        "}"                                                                                                                  );
-    s(true,        "if (gtid >= m.VertexCount) return;"                                                                                 );
-    s(true,        "uint vertexIndex = VertexIndices[m.VertexOffset + gtid];"                                                           );
-    s(true,        "Attribute attr = Vertices[vertexIndex];"                                                                            );
-    s(true,        "float3 attrPosition = float3(attr.Position[0], attr.Position[1], attr.Position[2]);"                                );
-    s(skinning,    "float3 attrBoneWeight = float3(attr.BoneWeight[0], attr.BoneWeight[1], attr.BoneWeight[2]);"                        );
-    s(skinning,    "uint4 attrBoneIndices = uint4(attr.BoneIndices[0], attr.BoneIndices[1], attr.BoneIndices[2], attr.BoneIndices[3]);" );
-    s(color,       "float4 attrColor = float4(attr.Color[0], attr.Color[1], attr.Color[2], attr.Color[3]);"                             );
-    s(texture > 0, "float2 attrUV0 = float2(attr.UV0[0], attr.UV0[1]);"                                                                 );
-    s(normal > 0,  "float3 attrNormal = float3(attr.Normal & 0xFF, (attr.Normal >> 8) & 0xFF, (attr.Normal >> 16) & 0xFF);"             );
-    s(normal > 1,  "float3 attrTangent = float3(attr.Tangent & 0xFF, (attr.Tangent >> 8) & 0xFF, (attr.Tangent >> 16) & 0xFF);"         );
-    s(normal > 2,  "float3 attrBinormal = float3(attr.Binormal & 0xFF, (attr.Binormal >> 8) & 0xFF, (attr.Binormal >> 16) & 0xFF);"     );
-    s(true,        "float4 color = float4(1.0, 1.0, 1.0, 1.0);"                                                                         );
-    s(normal > 0,  "float3 normal = attrNormal / 127.5 - 1.0;"                                                                          );
-    s(normal > 1,  "float3 tangent = attrTangent / 127.5 - 1.0;"                                                                        );
-    s(normal > 2,  "float3 binormal = attrBinormal / 127.5 - 1.0;"                                                                      );
-    s(color,       "color = attrColor;"                                                                                                 );
+    s(true,         "if (gtid == 0)"                                                                                                     );
+    s(true,         "{"                                                                                                                  );
+    s.HM(true,      "SetMeshOutputCounts(m.VertexCount, m.TriangleCount);", ""                                                           );
+    s.HM(true,  "", "output.set_primitive_count(m.TriangleCount);"                                                                       );
+    s(true,         "}"                                                                                                                  );
+    s(true,         "if (gtid < m.TriangleCount)"                                                                                        );
+    s(true,         "{"                                                                                                                  );
+    s(true,         "uint index = 3 * gtid;"                                                                                             );
+    s(true,         "uint packed = TriangeIndices[m.TriangleOffset + gtid];"                                                             );
+    s.HM(true,      "triangles[gtid].x = (packed >>  0) & 0xFF);", ""                                                                    );
+    s.HM(true,      "triangles[gtid].y = (packed >>  8) & 0xFF);", ""                                                                    );
+    s.HM(true,      "triangles[gtid].z = (packed >> 16) & 0xFF);", ""                                                                    );
+    s.HM(true,  "", "output.set_index(index + 0, (packed >>  0) & 0xFF);"                                                                );
+    s.HM(true,  "", "output.set_index(index + 1, (packed >>  8) & 0xFF);"                                                                );
+    s.HM(true,  "", "output.set_index(index + 2, (packed >> 16) & 0xFF);"                                                                );
+    s(true,         "}"                                                                                                                  );
+    s(true,         "if (gtid >= m.VertexCount) return;"                                                                                 );
+    s(true,         "uint vertexIndex = VertexIndices[m.VertexOffset + gtid];"                                                           );
+    s(true,         "Attribute attr = Vertices[vertexIndex];"                                                                            );
+    s(true,         "float3 attrPosition = float3(attr.Position[0], attr.Position[1], attr.Position[2]);"                                );
+    s(skinning,     "float3 attrBoneWeight = float3(attr.BoneWeight[0], attr.BoneWeight[1], attr.BoneWeight[2]);"                        );
+    s(skinning,     "uint4 attrBoneIndices = uint4(attr.BoneIndices[0], attr.BoneIndices[1], attr.BoneIndices[2], attr.BoneIndices[3]);" );
+    s(color,        "float4 attrColor = float4(attr.Color[0], attr.Color[1], attr.Color[2], attr.Color[3]);"                             );
+    s(texture > 0,  "float2 attrUV0 = float2(attr.UV0[0], attr.UV0[1]);"                                                                 );
+    s(normal > 0,   "float3 attrNormal = float3(attr.Normal & 0xFF, (attr.Normal >> 8) & 0xFF, (attr.Normal >> 16) & 0xFF);"             );
+    s(normal > 1,   "float3 attrTangent = float3(attr.Tangent & 0xFF, (attr.Tangent >> 8) & 0xFF, (attr.Tangent >> 16) & 0xFF);"         );
+    s(normal > 2,   "float3 attrBinormal = float3(attr.Binormal & 0xFF, (attr.Binormal >> 8) & 0xFF, (attr.Binormal >> 16) & 0xFF);"     );
+    s(true,         "float4 color = float4(1.0, 1.0, 1.0, 1.0);"                                                                         );
+    s(normal > 0,   "float3 normal = attrNormal / 127.5 - 1.0;"                                                                          );
+    s(normal > 1,   "float3 tangent = attrTangent / 127.5 - 1.0;"                                                                        );
+    s(normal > 2,   "float3 binormal = attrBinormal / 127.5 - 1.0;"                                                                      );
+    s(color,        "color = attrColor;"                                                                                                 );
+    s(DebugMeshlet, "uint hash = gid * -16777619;"                                                                                       );
+    s(DebugMeshlet, "color.rgb = float3(uint3(hash & 0xFF, (hash >> 8) & 0xFF, (hash >> 16) & 0xFF)) / 255.0;"                           );
 
     UpdateTransformConstant(data, size, nullptr, &s);
     UpdateBlendingConstant(data, size, nullptr, &s);
@@ -965,7 +976,7 @@ void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVecto
         if (camera)
         {
             vector[0].xyz = camera->Location;
-            vector[1].w = camera->LambertRound;
+            vector[1].w = camera->LambertStep;
             vector[1].xyz = camera->LightDirection;
             vector[2].xyz = camera->LightColor;
         }
@@ -992,7 +1003,7 @@ void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVecto
 
         bool bump = GetTexture(BUMP) != nullptr;
         bool lighting = (frag == bump);
-        if (DebugNormal || LambertRound)
+        if (DebugNormal || LambertStep)
         {
             lighting = frag;
         }
@@ -1001,15 +1012,15 @@ void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVecto
         (*s)((mesh || vert) && normal > 1, "float3 worldTangent = normalize(mul(float4(tangent, 0.0), world).xyz);"   );
         (*s)((mesh || vert) && normal > 2, "float3 worldBinormal = normalize(mul(float4(binormal, 0.0), world).xyz);" );
 
-        (*s)(true,         "float3 cameraPosition = uniBuffer[uniIndex++].xyz;" );
-        (*s)(LambertRound, "float lambertRound = uniBuffer[uniIndex].w;"        );
-        (*s)(true,         "float3 lightDirection = uniBuffer[uniIndex++].xyz;" );
-        (*s)(true,         "float3 lightColor = uniBuffer[uniIndex++].xyz;"     );
-        (*s)(true,         "float3 ambientColor = uniBuffer[uniIndex++].xyz;"   );
-        (*s)(true,         "float3 diffuseColor = uniBuffer[uniIndex++].xyz;"   );
-        (*s)(true,         "float3 emissiveColor = uniBuffer[uniIndex++].xyz;"  );
-        (*s)(true,         "float3 specularColor = uniBuffer[uniIndex].xyz;"    );
-        (*s)(true,         "float specularHighlight = uniBuffer[uniIndex++].w;" );
+        (*s)(true,        "float3 cameraPosition = uniBuffer[uniIndex++].xyz;" );
+        (*s)(LambertStep, "float lambertStep = uniBuffer[uniIndex].w;"        );
+        (*s)(true,        "float3 lightDirection = uniBuffer[uniIndex++].xyz;" );
+        (*s)(true,        "float3 lightColor = uniBuffer[uniIndex++].xyz;"     );
+        (*s)(true,        "float3 ambientColor = uniBuffer[uniIndex++].xyz;"   );
+        (*s)(true,        "float3 diffuseColor = uniBuffer[uniIndex++].xyz;"   );
+        (*s)(true,        "float3 emissiveColor = uniBuffer[uniIndex++].xyz;"  );
+        (*s)(true,        "float3 specularColor = uniBuffer[uniIndex].xyz;"    );
+        (*s)(true,        "float specularHighlight = uniBuffer[uniIndex++].w;" );
 
         (*s)(true,                         "float3 L = lightDirection;"                                    );
         (*s)(true,                         "float3 N = float3(1.0, 1.0, 1.0) / sqrt(3.0);"                 );
@@ -1020,7 +1031,7 @@ void Material::UpdateLightingConstant(xxDrawData const& data, int& size, xxVecto
         (*s)(frag && bump && normal > 2,   "N.y = dot(varyWorldBinormal, bump.xyz);"                       );
 
         (*s)(lighting,                     "float lambert = max(dot(N, L), 0.0);"                          );
-        (*s)(lighting && LambertRound,     "lambert = (lambert >= lambertRound) ? 1.0 : 0.0;"              );
+        (*s)(lighting && LambertStep,      "lambert = step(lambertStep, lambert);"                         );
 
         (*s)(frag && Specular,             "float3 V = normalize(cameraPosition - varyWorldPosition);"     );
         (*s)(frag && Specular,             "float3 H = normalize(V + L);"                                  );
