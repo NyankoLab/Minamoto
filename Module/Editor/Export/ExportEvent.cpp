@@ -74,7 +74,7 @@ double ExportEvent::Execute()
             if (config.path.size() && config.path.back() != '/')
                 config.path.resize(config.path.rfind('/') + 1);
 #endif
-            fileDialog->OpenDialog("Export", "Choose File", nullptr, config);
+            fileDialog->OpenDialog("Export", "Choose Folder", nullptr, config);
 #endif
         }
         ImGui::InputTextEx("Name", nullptr, name);
