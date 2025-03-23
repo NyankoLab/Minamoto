@@ -26,7 +26,7 @@
 ImportEvent::ImportEvent(xxNodePtr const& root, std::string const& name)
 {
     static unsigned int accum = 0;
-    this->title = std::format("Import {} ({})", xxFile::GetName(name.c_str()), accum++);
+    this->title = "Import " + xxFile::GetName(name.c_str()) + " (" + std::to_string(accum++) + ")";
     this->root = root;
     this->name = name;
     this->thread = std::thread([this] { this->ThreadedExecute(); });
