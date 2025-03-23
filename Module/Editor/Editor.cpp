@@ -23,7 +23,7 @@
 #include "Window/Game.h"
 #include "Window/Setup.h"
 
-#if _HAS_EXCEPTIONS == 0 && __cpp_exceptions == 0
+#if _CPPUNWIND == 0 && __cpp_exceptions == 0
 #if defined(xxWINDOWS)
 #include <windows.h>
 #endif
