@@ -24,14 +24,6 @@
 #include "Scene.h"
 #include "Inspector.h"
 
-#if defined(__APPLE__)
-#define HAVE_FILEDIALOG 1
-#elif defined(_WIN32) && !defined(__clang__)
-#define HAVE_FILEDIALOG 1
-#else
-#define HAVE_FILEDIALOG 0
-#endif
-
 #define TAG "Hierarchy"
 
 float Hierarchy::windowPosY = 0.0f;
@@ -78,18 +70,14 @@ void Hierarchy::Initialize()
     selectedRight = nullptr;
     importNode = nullptr;
     exportNode = nullptr;
-#if HAVE_FILEDIALOG
     importFileDialog = new ImGuiFileDialog;
     exportFileDialog = new ImGuiFileDialog;
-#endif
 }
 //------------------------------------------------------------------------------
 void Hierarchy::Shutdown()
 {
-#if HAVE_FILEDIALOG
     delete importFileDialog;
     delete exportFileDialog;
-#endif
     selectedLeft = nullptr;
     selectedRight = nullptr;
     importNode = nullptr;
@@ -141,7 +129,6 @@ void Hierarchy::Import(const UpdateData& updateData)
         ImGui::SameLine();
         if (ImGui::Button("..."))
         {
-#if HAVE_FILEDIALOG
             if (importName[0] == 0 && exportName[0])
                 strcpy(importName, exportName);
 #if defined(_WIN32)
@@ -160,7 +147,6 @@ void Hierarchy::Import(const UpdateData& updateData)
                 "Wavefront Object(*.obj){.obj},"
                 "All Files(*.*){.*},";
             importFileDialog->OpenDialog("Import", "Choose File", filters, config);
-#endif
         }
         ImGui::Checkbox("Axis Up Y to Z", &Import::EnableAxisUpYToZ);
         ImGui::Checkbox("Merge Node", &Import::EnableMergeNode);
@@ -195,7 +181,6 @@ void Hierarchy::Import(const UpdateData& updateData)
     }
     ImGui::End();
 
-#if HAVE_FILEDIALOG
     if (importFileDialog->Display("Import", 0, ImVec2(384 * updateData.scale, 256 * updateData.scale)))
     {
         if (importFileDialog->IsOk())
@@ -204,14 +189,11 @@ void Hierarchy::Import(const UpdateData& updateData)
         }
         importFileDialog->Close();
     }
-#endif
 
     if (show == false)
     {
         importNode = nullptr;
-#if HAVE_FILEDIALOG
         importFileDialog->Close();
-#endif
     }
 }
 //------------------------------------------------------------------------------
@@ -228,7 +210,6 @@ void Hierarchy::Export(const UpdateData& updateData)
         ImGui::SameLine();
         if (ImGui::Button("..."))
         {
-#if HAVE_FILEDIALOG
             if (exportName[0] == 0 && importName[0])
                 strcpy(exportName, importName);
 #if defined(_WIN32)
@@ -244,7 +225,6 @@ void Hierarchy::Export(const UpdateData& updateData)
                 "Double Cross Binary(*.xxb){.xxb},"
                 "All Files(*.*){.*},";
             exportFileDialog->OpenDialog("Export", "Choose File", filters, config);
-#endif
         }
         if (ImGui::Button("Export"))
         {
@@ -264,7 +244,6 @@ void Hierarchy::Export(const UpdateData& updateData)
     }
     ImGui::End();
 
-#if HAVE_FILEDIALOG
     if (exportFileDialog->Display("Export", 0, ImVec2(384 * updateData.scale, 256 * updateData.scale)))
     {
         if (exportFileDialog->IsOk())
@@ -273,14 +252,11 @@ void Hierarchy::Export(const UpdateData& updateData)
         }
         exportFileDialog->Close();
     }
-#endif
 
     if (show == false)
     {
         exportNode = nullptr;
-#if HAVE_FILEDIALOG
         exportFileDialog->Close();
-#endif
     }
 }
 //------------------------------------------------------------------------------

@@ -44,10 +44,6 @@
 		D6169D162BB17FE200E5490C /* new.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6169D152BB17FE200E5490C /* new.cpp */; };
 		D6169D1A2BB1801100E5490C /* ucrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6169D192BB1801100E5490C /* ucrt.cpp */; };
 		D6169D1C2BB1802100E5490C /* tls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6169D1B2BB1802100E5490C /* tls.cpp */; };
-		D62CAC082C4CBCD80035DBE9 /* libxxShaderAssembler.macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D62CAC072C4CBCD80035DBE9 /* libxxShaderAssembler.macOS.a */; };
-		D62CAC8D2C4E569E0035DBE9 /* xxShaderAssembler.Windows.lib in Frameworks */ = {isa = PBXBuildFile; fileRef = D62CAC8C2C4E569E0035DBE9 /* xxShaderAssembler.Windows.lib */; };
-		D62CAC8F2C4E56A60035DBE9 /* libxxShaderAssembler.iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D62CAC8E2C4E56A60035DBE9 /* libxxShaderAssembler.iOS.a */; };
-		D62CAC912C4E56AE0035DBE9 /* libxxShaderAssembler.Android.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D62CAC902C4E56AE0035DBE9 /* libxxShaderAssembler.Android.a */; };
 		D62FEBED2BE50FD3004E9FDF /* dllmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D62FEBEC2BE50FD2004E9FDF /* dllmain.cpp */; };
 		D62FEBF42BE53D41004E9FDF /* About.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D62FEBF22BE53D41004E9FDF /* About.cpp */; };
 		D62FEBF52BE53D41004E9FDF /* About.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D62FEBF22BE53D41004E9FDF /* About.cpp */; };
@@ -69,8 +65,6 @@
 		D63370832B3958F3001D4057 /* Import.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D63370812B3958F3001D4057 /* Import.cpp */; };
 		D63370842B3958F3001D4057 /* Import.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D63370812B3958F3001D4057 /* Import.cpp */; };
 		D63370852B3958F3001D4057 /* Import.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D63370812B3958F3001D4057 /* Import.cpp */; };
-		D633709A2B399792001D4057 /* ImGuiFileDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D63370962B399792001D4057 /* ImGuiFileDialog.cpp */; };
-		D633709B2B399792001D4057 /* ImGuiFileDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D63370962B399792001D4057 /* ImGuiFileDialog.cpp */; settings = {COMPILER_FLAGS = "-include assert.h -frtti -fexceptions"; }; };
 		D6346EF02BFA10210075D7F1 /* QuickJSConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6346EEF2BFA10210075D7F1 /* QuickJSConsole.cpp */; };
 		D6346EF12BFA10210075D7F1 /* QuickJSConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6346EEF2BFA10210075D7F1 /* QuickJSConsole.cpp */; };
 		D6346EF22BFA10210075D7F1 /* QuickJSConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6346EEF2BFA10210075D7F1 /* QuickJSConsole.cpp */; };
@@ -345,7 +339,6 @@
 				D60790DE2BF24990008810BD /* libimgui.so in Frameworks */,
 				D6CB0B2D2BB95D0D009DCD26 /* libRuntime.so in Frameworks */,
 				D68CAE732D17F8A900ACE81B /* libmeshoptimizer.Android.a in Frameworks */,
-				D62CAC912C4E56AE0035DBE9 /* libxxShaderAssembler.Android.a in Frameworks */,
 				D6E6B5752C044673003F6D85 /* libcxx.Android.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -357,7 +350,6 @@
 				D60790DA2BF2497A008810BD /* imgui.dll in Frameworks */,
 				D6CB0B292BB95CEF009DCD26 /* Runtime.dll in Frameworks */,
 				D68CAE6D2D17F88500ACE81B /* meshoptimizer.Windows.lib in Frameworks */,
-				D62CAC8D2C4E569E0035DBE9 /* xxShaderAssembler.Windows.lib in Frameworks */,
 				D6E6B56D2C0445F1003F6D85 /* libcxx.Windows.lib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -369,7 +361,6 @@
 				D60790DC2BF24986008810BD /* imgui.bundle in Frameworks */,
 				D6CB0B2B2BB95D00009DCD26 /* Runtime.bundle in Frameworks */,
 				D68CAE712D17F89C00ACE81B /* libmeshoptimizer.iOS.a in Frameworks */,
-				D62CAC8F2C4E56A60035DBE9 /* libxxShaderAssembler.iOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,7 +371,6 @@
 				D60790D62BF24543008810BD /* imgui.dylib in Frameworks */,
 				D6CB0B272BB95CE5009DCD26 /* Runtime.dylib in Frameworks */,
 				D68CAE6F2D17F89200ACE81B /* libmeshoptimizer.macOS.a in Frameworks */,
-				D62CAC082C4CBCD80035DBE9 /* libxxShaderAssembler.macOS.a in Frameworks */,
 				D6386A622BDAAE500008C9D1 /* Metal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -897,7 +887,6 @@
 				D6F563FF2BE9D568006D32D9 /* Profiler.cpp in Sources */,
 				D68CAE192D16706800ACE81B /* ImportPolygon.cpp in Sources */,
 				F53DE73A2D3FAF0C0083B457 /* Event.cpp in Sources */,
-				D633709A2B399792001D4057 /* ImGuiFileDialog.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -940,7 +929,6 @@
 				D6F564002BE9D568006D32D9 /* Profiler.cpp in Sources */,
 				D68CAE1A2D16706800ACE81B /* ImportPolygon.cpp in Sources */,
 				F53DE73B2D3FAF0C0083B457 /* Event.cpp in Sources */,
-				D633709B2B399792001D4057 /* ImGuiFileDialog.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

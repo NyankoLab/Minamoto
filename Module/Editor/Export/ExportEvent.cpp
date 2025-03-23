@@ -5,7 +5,6 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Editor.h"
-#include <format>
 #include <xxGraphicPlus/xxFile.h>
 #include <Runtime/Graphic/Binary.h>
 #include <Runtime/Graphic/Node.h>
@@ -15,14 +14,6 @@
 #include "ExportWavefront.h"
 #include "ExportEvent.h"
 
-#if defined(__APPLE__)
-#define HAVE_FILEDIALOG 1
-#elif defined(_WIN32) && !defined(__clang__)
-#define HAVE_FILEDIALOG 1
-#else
-#define HAVE_FILEDIALOG 0
-#endif
-
 #define TAG "ExportEvent"
 
 //==============================================================================
@@ -31,7 +22,7 @@
 ExportEvent::ExportEvent(xxNodePtr const& root)
 {
     static unsigned int accum = 0;
-    this->title = std::format("Export {} ({})", root->Name, accum++);
+    this->title = "Export " + root->Name + " (" + std::to_string(accum++) + ")";
     this->root = root;
 #if defined(_WIN32)
     this->path = std::string(xxGetDocumentPath()) + '\\';
@@ -39,16 +30,12 @@ ExportEvent::ExportEvent(xxNodePtr const& root)
     this->path = std::string(xxGetDocumentPath()) + '/';
 #endif
     this->name = root->Name;
-#if HAVE_FILEDIALOG
     this->fileDialog = new ImGuiFileDialog;
-#endif
 }
 //------------------------------------------------------------------------------
 ExportEvent::~ExportEvent()
 {
-#if HAVE_FILEDIALOG
     delete fileDialog;
-#endif
 }
 //------------------------------------------------------------------------------
 double ExportEvent::Execute()
@@ -65,7 +52,6 @@ double ExportEvent::Execute()
         ImGui::SameLine();
         if (ImGui::Button("..."))
         {
-#if HAVE_FILEDIALOG
             IGFD::FileDialogConfig config = { path };
 #if defined(_WIN32)
             if (config.path.size() && config.path.back() != '\\')
@@ -75,7 +61,6 @@ double ExportEvent::Execute()
                 config.path.resize(config.path.rfind('/') + 1);
 #endif
             fileDialog->OpenDialog("Export", "Choose Folder", nullptr, config);
-#endif
         }
         ImGui::InputTextEx("Name", nullptr, name);
         ImGui::BeginTabBar("Export");
@@ -101,7 +86,6 @@ double ExportEvent::Execute()
     }
     ImGui::End();
 
-#if HAVE_FILEDIALOG
     if (fileDialog->Display("Export", 0, ImVec2(512, 384)))
     {
         if (fileDialog->IsOk())
@@ -110,7 +94,6 @@ double ExportEvent::Execute()
         }
         fileDialog->Close();
     }
-#endif
 
     if (show)
     {
