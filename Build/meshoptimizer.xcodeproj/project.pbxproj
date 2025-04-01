@@ -9,68 +9,68 @@
 /* Begin PBXBuildFile section */
 		D68CAE2C2D17F85F00ACE81B /* allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1B2D17F85F00ACE81B /* allocator.cpp */; };
 		D68CAE2D2D17F85F00ACE81B /* spatialorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE242D17F85F00ACE81B /* spatialorder.cpp */; };
-		D68CAE2E2D17F85F00ACE81B /* vfetchanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE2A2D17F85F00ACE81B /* vfetchanalyzer.cpp */; };
 		D68CAE2F2D17F85F00ACE81B /* vfetchoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE2B2D17F85F00ACE81B /* vfetchoptimizer.cpp */; };
 		D68CAE302D17F85F00ACE81B /* indexcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1D2D17F85F00ACE81B /* indexcodec.cpp */; };
 		D68CAE312D17F85F00ACE81B /* overdrawoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE212D17F85F00ACE81B /* overdrawoptimizer.cpp */; };
 		D68CAE322D17F85F00ACE81B /* stripifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE252D17F85F00ACE81B /* stripifier.cpp */; };
 		D68CAE332D17F85F00ACE81B /* vertexcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE282D17F85F00ACE81B /* vertexcodec.cpp */; };
-		D68CAE342D17F85F00ACE81B /* vcacheanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE262D17F85F00ACE81B /* vcacheanalyzer.cpp */; };
 		D68CAE352D17F85F00ACE81B /* quantization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE222D17F85F00ACE81B /* quantization.cpp */; };
 		D68CAE362D17F85F00ACE81B /* simplifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE232D17F85F00ACE81B /* simplifier.cpp */; };
 		D68CAE372D17F85F00ACE81B /* indexgenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1E2D17F85F00ACE81B /* indexgenerator.cpp */; };
-		D68CAE382D17F85F00ACE81B /* overdrawanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE202D17F85F00ACE81B /* overdrawanalyzer.cpp */; };
 		D68CAE392D17F85F00ACE81B /* vertexfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE292D17F85F00ACE81B /* vertexfilter.cpp */; };
 		D68CAE3A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE272D17F85F00ACE81B /* vcacheoptimizer.cpp */; };
 		D68CAE3B2D17F85F00ACE81B /* clusterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1C2D17F85F00ACE81B /* clusterizer.cpp */; };
 		D68CAE3C2D17F85F00ACE81B /* allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1B2D17F85F00ACE81B /* allocator.cpp */; };
 		D68CAE3D2D17F85F00ACE81B /* spatialorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE242D17F85F00ACE81B /* spatialorder.cpp */; };
-		D68CAE3E2D17F85F00ACE81B /* vfetchanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE2A2D17F85F00ACE81B /* vfetchanalyzer.cpp */; };
 		D68CAE3F2D17F85F00ACE81B /* vfetchoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE2B2D17F85F00ACE81B /* vfetchoptimizer.cpp */; };
 		D68CAE402D17F85F00ACE81B /* indexcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1D2D17F85F00ACE81B /* indexcodec.cpp */; };
 		D68CAE412D17F85F00ACE81B /* overdrawoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE212D17F85F00ACE81B /* overdrawoptimizer.cpp */; };
 		D68CAE422D17F85F00ACE81B /* stripifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE252D17F85F00ACE81B /* stripifier.cpp */; };
 		D68CAE432D17F85F00ACE81B /* vertexcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE282D17F85F00ACE81B /* vertexcodec.cpp */; };
-		D68CAE442D17F85F00ACE81B /* vcacheanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE262D17F85F00ACE81B /* vcacheanalyzer.cpp */; };
 		D68CAE452D17F85F00ACE81B /* quantization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE222D17F85F00ACE81B /* quantization.cpp */; };
 		D68CAE462D17F85F00ACE81B /* simplifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE232D17F85F00ACE81B /* simplifier.cpp */; };
 		D68CAE472D17F85F00ACE81B /* indexgenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1E2D17F85F00ACE81B /* indexgenerator.cpp */; };
-		D68CAE482D17F85F00ACE81B /* overdrawanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE202D17F85F00ACE81B /* overdrawanalyzer.cpp */; };
 		D68CAE492D17F85F00ACE81B /* vertexfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE292D17F85F00ACE81B /* vertexfilter.cpp */; };
 		D68CAE4A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE272D17F85F00ACE81B /* vcacheoptimizer.cpp */; };
 		D68CAE4B2D17F85F00ACE81B /* clusterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1C2D17F85F00ACE81B /* clusterizer.cpp */; };
 		D68CAE4C2D17F85F00ACE81B /* allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1B2D17F85F00ACE81B /* allocator.cpp */; };
 		D68CAE4D2D17F85F00ACE81B /* spatialorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE242D17F85F00ACE81B /* spatialorder.cpp */; };
-		D68CAE4E2D17F85F00ACE81B /* vfetchanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE2A2D17F85F00ACE81B /* vfetchanalyzer.cpp */; };
 		D68CAE4F2D17F85F00ACE81B /* vfetchoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE2B2D17F85F00ACE81B /* vfetchoptimizer.cpp */; };
 		D68CAE502D17F85F00ACE81B /* indexcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1D2D17F85F00ACE81B /* indexcodec.cpp */; };
 		D68CAE512D17F85F00ACE81B /* overdrawoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE212D17F85F00ACE81B /* overdrawoptimizer.cpp */; };
 		D68CAE522D17F85F00ACE81B /* stripifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE252D17F85F00ACE81B /* stripifier.cpp */; };
 		D68CAE532D17F85F00ACE81B /* vertexcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE282D17F85F00ACE81B /* vertexcodec.cpp */; };
-		D68CAE542D17F85F00ACE81B /* vcacheanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE262D17F85F00ACE81B /* vcacheanalyzer.cpp */; };
 		D68CAE552D17F85F00ACE81B /* quantization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE222D17F85F00ACE81B /* quantization.cpp */; };
 		D68CAE562D17F85F00ACE81B /* simplifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE232D17F85F00ACE81B /* simplifier.cpp */; };
 		D68CAE572D17F85F00ACE81B /* indexgenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1E2D17F85F00ACE81B /* indexgenerator.cpp */; };
-		D68CAE582D17F85F00ACE81B /* overdrawanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE202D17F85F00ACE81B /* overdrawanalyzer.cpp */; };
 		D68CAE592D17F85F00ACE81B /* vertexfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE292D17F85F00ACE81B /* vertexfilter.cpp */; };
 		D68CAE5A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE272D17F85F00ACE81B /* vcacheoptimizer.cpp */; };
 		D68CAE5B2D17F85F00ACE81B /* clusterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1C2D17F85F00ACE81B /* clusterizer.cpp */; };
 		D68CAE5C2D17F85F00ACE81B /* allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1B2D17F85F00ACE81B /* allocator.cpp */; };
 		D68CAE5D2D17F85F00ACE81B /* spatialorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE242D17F85F00ACE81B /* spatialorder.cpp */; };
-		D68CAE5E2D17F85F00ACE81B /* vfetchanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE2A2D17F85F00ACE81B /* vfetchanalyzer.cpp */; };
 		D68CAE5F2D17F85F00ACE81B /* vfetchoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE2B2D17F85F00ACE81B /* vfetchoptimizer.cpp */; };
 		D68CAE602D17F85F00ACE81B /* indexcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1D2D17F85F00ACE81B /* indexcodec.cpp */; };
 		D68CAE612D17F85F00ACE81B /* overdrawoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE212D17F85F00ACE81B /* overdrawoptimizer.cpp */; };
 		D68CAE622D17F85F00ACE81B /* stripifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE252D17F85F00ACE81B /* stripifier.cpp */; };
 		D68CAE632D17F85F00ACE81B /* vertexcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE282D17F85F00ACE81B /* vertexcodec.cpp */; };
-		D68CAE642D17F85F00ACE81B /* vcacheanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE262D17F85F00ACE81B /* vcacheanalyzer.cpp */; };
 		D68CAE652D17F85F00ACE81B /* quantization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE222D17F85F00ACE81B /* quantization.cpp */; };
 		D68CAE662D17F85F00ACE81B /* simplifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE232D17F85F00ACE81B /* simplifier.cpp */; };
 		D68CAE672D17F85F00ACE81B /* indexgenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1E2D17F85F00ACE81B /* indexgenerator.cpp */; };
-		D68CAE682D17F85F00ACE81B /* overdrawanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE202D17F85F00ACE81B /* overdrawanalyzer.cpp */; };
 		D68CAE692D17F85F00ACE81B /* vertexfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE292D17F85F00ACE81B /* vertexfilter.cpp */; };
 		D68CAE6A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE272D17F85F00ACE81B /* vcacheoptimizer.cpp */; };
 		D68CAE6B2D17F85F00ACE81B /* clusterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1C2D17F85F00ACE81B /* clusterizer.cpp */; };
+		F5F46BBD2D9AE23B007BD314 /* partition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBB2D9AE23B007BD314 /* partition.cpp */; };
+		F5F46BBE2D9AE23B007BD314 /* indexanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBA2D9AE23B007BD314 /* indexanalyzer.cpp */; };
+		F5F46BBF2D9AE23B007BD314 /* rasterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBC2D9AE23B007BD314 /* rasterizer.cpp */; };
+		F5F46BC02D9AE23B007BD314 /* partition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBB2D9AE23B007BD314 /* partition.cpp */; };
+		F5F46BC12D9AE23B007BD314 /* indexanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBA2D9AE23B007BD314 /* indexanalyzer.cpp */; };
+		F5F46BC22D9AE23B007BD314 /* rasterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBC2D9AE23B007BD314 /* rasterizer.cpp */; };
+		F5F46BC32D9AE23B007BD314 /* partition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBB2D9AE23B007BD314 /* partition.cpp */; };
+		F5F46BC42D9AE23B007BD314 /* indexanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBA2D9AE23B007BD314 /* indexanalyzer.cpp */; };
+		F5F46BC52D9AE23B007BD314 /* rasterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBC2D9AE23B007BD314 /* rasterizer.cpp */; };
+		F5F46BC62D9AE23B007BD314 /* partition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBB2D9AE23B007BD314 /* partition.cpp */; };
+		F5F46BC72D9AE23B007BD314 /* indexanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBA2D9AE23B007BD314 /* indexanalyzer.cpp */; };
+		F5F46BC82D9AE23B007BD314 /* rasterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBC2D9AE23B007BD314 /* rasterizer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -85,19 +85,19 @@
 		D68CAE1D2D17F85F00ACE81B /* indexcodec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = indexcodec.cpp; path = ../SDK/meshoptimizer/src/indexcodec.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE1E2D17F85F00ACE81B /* indexgenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = indexgenerator.cpp; path = ../SDK/meshoptimizer/src/indexgenerator.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE1F2D17F85F00ACE81B /* meshoptimizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = meshoptimizer.h; path = ../SDK/meshoptimizer/src/meshoptimizer.h; sourceTree = SOURCE_ROOT; };
-		D68CAE202D17F85F00ACE81B /* overdrawanalyzer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = overdrawanalyzer.cpp; path = ../SDK/meshoptimizer/src/overdrawanalyzer.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE212D17F85F00ACE81B /* overdrawoptimizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = overdrawoptimizer.cpp; path = ../SDK/meshoptimizer/src/overdrawoptimizer.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE222D17F85F00ACE81B /* quantization.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = quantization.cpp; path = ../SDK/meshoptimizer/src/quantization.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE232D17F85F00ACE81B /* simplifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = simplifier.cpp; path = ../SDK/meshoptimizer/src/simplifier.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE242D17F85F00ACE81B /* spatialorder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = spatialorder.cpp; path = ../SDK/meshoptimizer/src/spatialorder.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE252D17F85F00ACE81B /* stripifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = stripifier.cpp; path = ../SDK/meshoptimizer/src/stripifier.cpp; sourceTree = SOURCE_ROOT; };
-		D68CAE262D17F85F00ACE81B /* vcacheanalyzer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = vcacheanalyzer.cpp; path = ../SDK/meshoptimizer/src/vcacheanalyzer.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE272D17F85F00ACE81B /* vcacheoptimizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = vcacheoptimizer.cpp; path = ../SDK/meshoptimizer/src/vcacheoptimizer.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE282D17F85F00ACE81B /* vertexcodec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = vertexcodec.cpp; path = ../SDK/meshoptimizer/src/vertexcodec.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE292D17F85F00ACE81B /* vertexfilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = vertexfilter.cpp; path = ../SDK/meshoptimizer/src/vertexfilter.cpp; sourceTree = SOURCE_ROOT; };
-		D68CAE2A2D17F85F00ACE81B /* vfetchanalyzer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = vfetchanalyzer.cpp; path = ../SDK/meshoptimizer/src/vfetchanalyzer.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE2B2D17F85F00ACE81B /* vfetchoptimizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = vfetchoptimizer.cpp; path = ../SDK/meshoptimizer/src/vfetchoptimizer.cpp; sourceTree = SOURCE_ROOT; };
 		D6AA5DB92BD7DA9E00AE1C30 /* ClangPlatform.Darwin.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ClangPlatform.Darwin.xcconfig; sourceTree = "<group>"; };
+		F5F46BBA2D9AE23B007BD314 /* indexanalyzer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = indexanalyzer.cpp; path = ../SDK/meshoptimizer/src/indexanalyzer.cpp; sourceTree = SOURCE_ROOT; };
+		F5F46BBB2D9AE23B007BD314 /* partition.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = partition.cpp; path = ../SDK/meshoptimizer/src/partition.cpp; sourceTree = SOURCE_ROOT; };
+		F5F46BBC2D9AE23B007BD314 /* rasterizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rasterizer.cpp; path = ../SDK/meshoptimizer/src/rasterizer.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,20 +148,20 @@
 				CE999BC925D21D9F00351116 /* Configs */,
 				D68CAE1B2D17F85F00ACE81B /* allocator.cpp */,
 				D68CAE1C2D17F85F00ACE81B /* clusterizer.cpp */,
+				F5F46BBA2D9AE23B007BD314 /* indexanalyzer.cpp */,
 				D68CAE1D2D17F85F00ACE81B /* indexcodec.cpp */,
 				D68CAE1E2D17F85F00ACE81B /* indexgenerator.cpp */,
 				D68CAE1F2D17F85F00ACE81B /* meshoptimizer.h */,
-				D68CAE202D17F85F00ACE81B /* overdrawanalyzer.cpp */,
 				D68CAE212D17F85F00ACE81B /* overdrawoptimizer.cpp */,
+				F5F46BBB2D9AE23B007BD314 /* partition.cpp */,
 				D68CAE222D17F85F00ACE81B /* quantization.cpp */,
+				F5F46BBC2D9AE23B007BD314 /* rasterizer.cpp */,
 				D68CAE232D17F85F00ACE81B /* simplifier.cpp */,
 				D68CAE242D17F85F00ACE81B /* spatialorder.cpp */,
 				D68CAE252D17F85F00ACE81B /* stripifier.cpp */,
-				D68CAE262D17F85F00ACE81B /* vcacheanalyzer.cpp */,
 				D68CAE272D17F85F00ACE81B /* vcacheoptimizer.cpp */,
 				D68CAE282D17F85F00ACE81B /* vertexcodec.cpp */,
 				D68CAE292D17F85F00ACE81B /* vertexfilter.cpp */,
-				D68CAE2A2D17F85F00ACE81B /* vfetchanalyzer.cpp */,
 				D68CAE2B2D17F85F00ACE81B /* vfetchoptimizer.cpp */,
 				D644A042231ED82900B75B77 /* Products */,
 			);
@@ -294,19 +294,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5F46BC62D9AE23B007BD314 /* partition.cpp in Sources */,
+				F5F46BC72D9AE23B007BD314 /* indexanalyzer.cpp in Sources */,
+				F5F46BC82D9AE23B007BD314 /* rasterizer.cpp in Sources */,
 				D68CAE3C2D17F85F00ACE81B /* allocator.cpp in Sources */,
 				D68CAE3D2D17F85F00ACE81B /* spatialorder.cpp in Sources */,
-				D68CAE3E2D17F85F00ACE81B /* vfetchanalyzer.cpp in Sources */,
 				D68CAE3F2D17F85F00ACE81B /* vfetchoptimizer.cpp in Sources */,
 				D68CAE402D17F85F00ACE81B /* indexcodec.cpp in Sources */,
 				D68CAE412D17F85F00ACE81B /* overdrawoptimizer.cpp in Sources */,
 				D68CAE422D17F85F00ACE81B /* stripifier.cpp in Sources */,
 				D68CAE432D17F85F00ACE81B /* vertexcodec.cpp in Sources */,
-				D68CAE442D17F85F00ACE81B /* vcacheanalyzer.cpp in Sources */,
 				D68CAE452D17F85F00ACE81B /* quantization.cpp in Sources */,
 				D68CAE462D17F85F00ACE81B /* simplifier.cpp in Sources */,
 				D68CAE472D17F85F00ACE81B /* indexgenerator.cpp in Sources */,
-				D68CAE482D17F85F00ACE81B /* overdrawanalyzer.cpp in Sources */,
 				D68CAE492D17F85F00ACE81B /* vertexfilter.cpp in Sources */,
 				D68CAE4A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */,
 				D68CAE4B2D17F85F00ACE81B /* clusterizer.cpp in Sources */,
@@ -317,19 +317,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5F46BC02D9AE23B007BD314 /* partition.cpp in Sources */,
+				F5F46BC12D9AE23B007BD314 /* indexanalyzer.cpp in Sources */,
+				F5F46BC22D9AE23B007BD314 /* rasterizer.cpp in Sources */,
 				D68CAE4C2D17F85F00ACE81B /* allocator.cpp in Sources */,
 				D68CAE4D2D17F85F00ACE81B /* spatialorder.cpp in Sources */,
-				D68CAE4E2D17F85F00ACE81B /* vfetchanalyzer.cpp in Sources */,
 				D68CAE4F2D17F85F00ACE81B /* vfetchoptimizer.cpp in Sources */,
 				D68CAE502D17F85F00ACE81B /* indexcodec.cpp in Sources */,
 				D68CAE512D17F85F00ACE81B /* overdrawoptimizer.cpp in Sources */,
 				D68CAE522D17F85F00ACE81B /* stripifier.cpp in Sources */,
 				D68CAE532D17F85F00ACE81B /* vertexcodec.cpp in Sources */,
-				D68CAE542D17F85F00ACE81B /* vcacheanalyzer.cpp in Sources */,
 				D68CAE552D17F85F00ACE81B /* quantization.cpp in Sources */,
 				D68CAE562D17F85F00ACE81B /* simplifier.cpp in Sources */,
 				D68CAE572D17F85F00ACE81B /* indexgenerator.cpp in Sources */,
-				D68CAE582D17F85F00ACE81B /* overdrawanalyzer.cpp in Sources */,
 				D68CAE592D17F85F00ACE81B /* vertexfilter.cpp in Sources */,
 				D68CAE5A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */,
 				D68CAE5B2D17F85F00ACE81B /* clusterizer.cpp in Sources */,
@@ -340,19 +340,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5F46BC32D9AE23B007BD314 /* partition.cpp in Sources */,
+				F5F46BC42D9AE23B007BD314 /* indexanalyzer.cpp in Sources */,
+				F5F46BC52D9AE23B007BD314 /* rasterizer.cpp in Sources */,
 				D68CAE5C2D17F85F00ACE81B /* allocator.cpp in Sources */,
 				D68CAE5D2D17F85F00ACE81B /* spatialorder.cpp in Sources */,
-				D68CAE5E2D17F85F00ACE81B /* vfetchanalyzer.cpp in Sources */,
 				D68CAE5F2D17F85F00ACE81B /* vfetchoptimizer.cpp in Sources */,
 				D68CAE602D17F85F00ACE81B /* indexcodec.cpp in Sources */,
 				D68CAE612D17F85F00ACE81B /* overdrawoptimizer.cpp in Sources */,
 				D68CAE622D17F85F00ACE81B /* stripifier.cpp in Sources */,
 				D68CAE632D17F85F00ACE81B /* vertexcodec.cpp in Sources */,
-				D68CAE642D17F85F00ACE81B /* vcacheanalyzer.cpp in Sources */,
 				D68CAE652D17F85F00ACE81B /* quantization.cpp in Sources */,
 				D68CAE662D17F85F00ACE81B /* simplifier.cpp in Sources */,
 				D68CAE672D17F85F00ACE81B /* indexgenerator.cpp in Sources */,
-				D68CAE682D17F85F00ACE81B /* overdrawanalyzer.cpp in Sources */,
 				D68CAE692D17F85F00ACE81B /* vertexfilter.cpp in Sources */,
 				D68CAE6A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */,
 				D68CAE6B2D17F85F00ACE81B /* clusterizer.cpp in Sources */,
@@ -363,19 +363,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5F46BBD2D9AE23B007BD314 /* partition.cpp in Sources */,
+				F5F46BBE2D9AE23B007BD314 /* indexanalyzer.cpp in Sources */,
+				F5F46BBF2D9AE23B007BD314 /* rasterizer.cpp in Sources */,
 				D68CAE2C2D17F85F00ACE81B /* allocator.cpp in Sources */,
 				D68CAE2D2D17F85F00ACE81B /* spatialorder.cpp in Sources */,
-				D68CAE2E2D17F85F00ACE81B /* vfetchanalyzer.cpp in Sources */,
 				D68CAE2F2D17F85F00ACE81B /* vfetchoptimizer.cpp in Sources */,
 				D68CAE302D17F85F00ACE81B /* indexcodec.cpp in Sources */,
 				D68CAE312D17F85F00ACE81B /* overdrawoptimizer.cpp in Sources */,
 				D68CAE322D17F85F00ACE81B /* stripifier.cpp in Sources */,
 				D68CAE332D17F85F00ACE81B /* vertexcodec.cpp in Sources */,
-				D68CAE342D17F85F00ACE81B /* vcacheanalyzer.cpp in Sources */,
 				D68CAE352D17F85F00ACE81B /* quantization.cpp in Sources */,
 				D68CAE362D17F85F00ACE81B /* simplifier.cpp in Sources */,
 				D68CAE372D17F85F00ACE81B /* indexgenerator.cpp in Sources */,
-				D68CAE382D17F85F00ACE81B /* overdrawanalyzer.cpp in Sources */,
 				D68CAE392D17F85F00ACE81B /* vertexfilter.cpp in Sources */,
 				D68CAE3A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */,
 				D68CAE3B2D17F85F00ACE81B /* clusterizer.cpp in Sources */,
