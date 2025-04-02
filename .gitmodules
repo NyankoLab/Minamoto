@@ -38,5 +38,5 @@
 	path = SDK/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
 [submodule "SDK/xxMaxReader"]
-	path = SDK/xxMaxReader
-	url = https://github.com/metarutaiga/xxMaxReader
+	path = SDK/miMAX
+	url = https://github.com/metarutaiga/miMAX
