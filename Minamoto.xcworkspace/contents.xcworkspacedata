@@ -27,6 +27,9 @@
          location = "group:Module/Editor/Build/Editor.xcodeproj">
       </FileRef>
       <FileRef
+         location = "group:SDK/miMarkup/ui/minamoto/Build/Markup.xcodeproj">
+      </FileRef>
+      <FileRef
          location = "group:SDK/miMAX/ui/minamoto/Build/MaxReader.xcodeproj">
       </FileRef>
       <FileRef

@@ -40,3 +40,6 @@
 [submodule "SDK/xxMaxReader"]
 	path = SDK/miMAX
 	url = https://github.com/metarutaiga/miMAX
+[submodule "SDK/miMarkup"]
+	path = SDK/miMarkup
+	url = https://github.com/NyankoLab/miMarkup
