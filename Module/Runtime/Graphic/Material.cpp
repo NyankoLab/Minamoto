@@ -5,6 +5,7 @@
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #include "Runtime.h"
+#include <xxGraphic/internal/xxGraphicInternal.h>
 #include <xxGraphicPlus/xxTexture.h>
 #include "Camera.h"
 #include "Mesh.h"
@@ -575,6 +576,14 @@ void Material::ShaderAttribute(xxDrawData const& data, struct MaterialSelector& 
     }
 }
 //------------------------------------------------------------------------------
+#define M xxStringify(MESH_UNIFORM)
+#define V xxStringify(VERTEX_UNIFORM)
+#define F xxStringify(FRAGMENT_UNIFORM)
+#define T0 xxStringify(FRAGMENT_TEXTURE + 0)
+#define T1 xxStringify(FRAGMENT_TEXTURE + 1)
+#define S0 xxStringify(FRAGMENT_SAMPLER + 0)
+#define S1 xxStringify(FRAGMENT_SAMPLER + 1)
+//------------------------------------------------------------------------------
 void Material::ShaderConstant(xxDrawData const& data, struct MaterialSelector& s) const
 {
     bool mesh = s.type == 'mesh';
@@ -597,36 +606,36 @@ void Material::ShaderConstant(xxDrawData const& data, struct MaterialSelector& s
         s(true, "};"                     );
     }
 
-    //            GLSL / HLSL                                  HLSL10                               MSL                                           MSL Argument
-    s.HHMM(true,  "",                                          "",                                  "",                                           "struct Uniform"                         );
-    s.HHMM(true,  "",                                          "",                                  "",                                           "{"                                      );
-    s.HHMM(mesh,  "",                                          "",                                  "struct MeshBuffer",                          ""                                       );
-    s.HHMM(mesh,  "",                                          "",                                  "{",                                          ""                                       );
-    s.HHMM(mesh,  "",                                          "",                                  "device Attribute* Vertices [[buffer(0)]];",  "device Attribute* Vertices [[id(0)]];"  );
-    s.HHMM(mesh,  "",                                          "",                                  "device Meshlet* Meshlets [[buffer(1)]];",    "device Meshlet* Meshlets [[id(1)]];"    );
-    s.HHMM(mesh,  "",                                          "",                                  "device uint* VertexIndices [[buffer(2)]];",  "device uint* VertexIndices [[id(2)]];"  );
-    s.HHMM(mesh,  "",                                          "",                                  "device uint* TriangeIndices [[buffer(3)]];", "device uint* TriangeIndices [[id(3)]];" );
-    s.HHMM(mesh,  "",                                          "",                                  "};",                                         ""                                       );
-    s.HHHMM(mesh, "", "cbuffer Uniform",         "[[vk::binding(30, 0)]] cbuffer Uniform",          "struct Uniform",                             ""                                       );
-    s.HHHMM(vert, "", "cbuffer Uniform",         "[[vk::binding(0, 0)]] cbuffer Uniform",           "struct Uniform",                             ""                                       );
-    s.HHHMM(frag, "", "cbuffer Uniform",         "[[vk::binding(1, 0)]] cbuffer Uniform",           "struct Uniform",                             ""                                       );
-    s.HHMM(true,  "",                                          "{",                                 "{",                                          ""                                       );
-    s.HHMM(true,  "#if SHADER_UNIFORM",                        "#if SHADER_UNIFORM",                "#if SHADER_UNIFORM",                         ""                                       );
-    s.HHMM(mesh,  "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];", "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(30)]];"      );
-    s.HHMM(vert,  "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];", "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(0)]];"       );
-    s.HHMM(frag,  "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];", "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(1)]];"       );
-    s.HHMM(true,  "#endif",                                    "#endif",                            "#endif",                                     ""                                       );
-    s.HHMM(true,  "",                                          "};",                                "};",                                         ""                                       );
-    s.HHMM(true,  "",                                          "",                                  "struct Sampler",                             ""                                       );
-    s.HHMM(true,  "",                                          "",                                  "{",                                          ""                                       );
-    s.HHHMM(base, "", "Texture2D<float4> Base;", "[[vk::binding(4, 0)]] Texture2D<float4> Base;",   "texture2d<float> Base [[texture(0)]];",      "texture2d<float> Base [[id(4)]];"       );
-    s.HHHMM(bump, "", "Texture2D<float4> Bump;", "[[vk::binding(5, 0)]] Texture2D<float4> Bump;",   "texture2d<float> Bump [[texture(1)]];",      "texture2d<float> Bump [[id(5)]];"       );
-    s.HHHMM(base, "", "sampler BaseSampler;",    "[[vk::binding(18, 0)]] sampler BaseSampler;",     "sampler BaseSampler [[sampler(0)]];",        "sampler BaseSampler [[id(18)]];"        );
-    s.HHHMM(bump, "", "sampler BumpSampler;",    "[[vk::binding(19, 0)]] sampler BumpSampler;",     "sampler BumpSampler [[sampler(1)]];",        "sampler BumpSampler [[id(19)]];"        );
-    s.HHMM(base,  "uniform sampler2D BaseSampler;",            "",                                  "",                                           ""                                       );
-    s.HHMM(bump,  "uniform sampler2D BumpSampler;",            "",                                  "",                                           ""                                       );
-    s.HHMM(true,  "",                                          "",                                  "};",                                         "};"                                     );
-    s.HHMM(frag,  "",                                          "",                                  "",                                           "struct Sampler {};"                     );
+    //            GLSL / HLSL                                  HLSL10                                   MSL                                           MSL Argument
+    s.HHMM(true,  "",                                          "",                                      "",                                           "struct Uniform"                         );
+    s.HHMM(true,  "",                                          "",                                      "",                                           "{"                                      );
+    s.HHMM(mesh,  "",                                          "",                                      "struct MeshBuffer",                          ""                                       );
+    s.HHMM(mesh,  "",                                          "",                                      "{",                                          ""                                       );
+    s.HHMM(mesh,  "",                                          "",                                      "device Attribute* Vertices [[buffer(0)]];",  "device Attribute* Vertices [[id(0)]];"  );
+    s.HHMM(mesh,  "",                                          "",                                      "device Meshlet* Meshlets [[buffer(1)]];",    "device Meshlet* Meshlets [[id(1)]];"    );
+    s.HHMM(mesh,  "",                                          "",                                      "device uint* VertexIndices [[buffer(2)]];",  "device uint* VertexIndices [[id(2)]];"  );
+    s.HHMM(mesh,  "",                                          "",                                      "device uint* TriangeIndices [[buffer(3)]];", "device uint* TriangeIndices [[id(3)]];" );
+    s.HHMM(mesh,  "",                                          "",                                      "};",                                         ""                                       );
+    s.HHHMM(mesh, "", "cbuffer Uniform",         "[[vk::binding(" M ", 0)]] cbuffer Uniform",           "struct Uniform",                             ""                                       );
+    s.HHHMM(vert, "", "cbuffer Uniform",         "[[vk::binding(" V ", 0)]] cbuffer Uniform",           "struct Uniform",                             ""                                       );
+    s.HHHMM(frag, "", "cbuffer Uniform",         "[[vk::binding(" F ", 0)]] cbuffer Uniform",           "struct Uniform",                             ""                                       );
+    s.HHMM(true,  "",                                          "{",                                     "{",                                          ""                                       );
+    s.HHMM(true,  "#if SHADER_UNIFORM",                        "#if SHADER_UNIFORM",                    "#if SHADER_UNIFORM",                         ""                                       );
+    s.HHMM(mesh,  "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];",     "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(" M ")]];"   );
+    s.HHMM(vert,  "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];",     "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(" V ")]];"   );
+    s.HHMM(frag,  "uniform float4 uniBuffer[SHADER_UNIFORM];", "float4 uniBuffer[SHADER_UNIFORM];",     "float4 Buffer[SHADER_UNIFORM];",             "device float4* Buffer [[id(" F ")]];"   );
+    s.HHMM(true,  "#endif",                                    "#endif",                                "#endif",                                     ""                                       );
+    s.HHMM(true,  "",                                          "};",                                    "};",                                         ""                                       );
+    s.HHMM(true,  "",                                          "",                                      "struct Sampler",                             ""                                       );
+    s.HHMM(true,  "",                                          "",                                      "{",                                          ""                                       );
+    s.HHHMM(base, "", "Texture2D<float4> Base;", "[[vk::binding(" T0 ", 0)]] Texture2D<float4> Base;",  "texture2d<float> Base [[texture(0)]];",      "texture2d<float> Base [[id(" T0 ")]];"  );
+    s.HHHMM(bump, "", "Texture2D<float4> Bump;", "[[vk::binding(" T1 ", 0)]] Texture2D<float4> Bump;",  "texture2d<float> Bump [[texture(1)]];",      "texture2d<float> Bump [[id(" T1 ")]];"  );
+    s.HHHMM(base, "", "sampler BaseSampler;",    "[[vk::binding(" S0 ", 0)]] sampler BaseSampler;",     "sampler BaseSampler [[sampler(0)]];",        "sampler BaseSampler [[id(" S0 ")]];"    );
+    s.HHHMM(bump, "", "sampler BumpSampler;",    "[[vk::binding(" S1 ", 0)]] sampler BumpSampler;",     "sampler BumpSampler [[sampler(1)]];",        "sampler BumpSampler [[id(" S1 ")]];"    );
+    s.HHMM(base,  "uniform sampler2D BaseSampler;",            "",                                      "",                                           ""                                       );
+    s.HHMM(bump,  "uniform sampler2D BumpSampler;",            "",                                      "",                                           ""                                       );
+    s.HHMM(true,  "",                                          "",                                      "};",                                         "};"                                     );
+    s.HHMM(frag,  "",                                          "",                                      "",                                           "struct Sampler {};"                     );
 }
 //------------------------------------------------------------------------------
 void Material::ShaderVarying(xxDrawData const& data, struct MaterialSelector& s) const
@@ -664,7 +673,7 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
     s.HMM(true,    "[numthreads(128, 1, 1)",           "",                                                        ""                                                        );
     s.HMM(true,    "void Main",                        "void Main",                                               "void Main"                                               );
     s.HMM(true,    "(",                                "(",                                                       "("                                                       );
-    s.HMM(true,    "",                                 "constant Uniform& uni [[buffer(30)]], MeshBuffer mb,",    "constant Uniform& uni [[buffer(0)]],"                    );
+    s.HMM(true,    "",                                 "constant Uniform& uni [[buffer(" M ")]], MeshBuffer mb,", "constant Uniform& uni [[buffer(" M ")]],"                );
     s.HMM(true,    "uint gtid : SV_GroupThreadID,",    "uint gtid [[thread_position_in_threadgroup]],",           "uint gtid [[thread_position_in_threadgroup]],"           );
     s.HMM(true,    "uint gid : SV_GroupID,",           "uint gid [[threadgroup_position_in_grid]],",              "uint gid [[threadgroup_position_in_grid]],"              );
     s.HMM(true,    "out indices uint3 triangles[64],", "mesh<Varying, void, 64, 128, topology::triangle> output", "mesh<Varying, void, 64, 128, topology::triangle> output" );
@@ -744,14 +753,14 @@ void Material::ShaderVertex(xxDrawData const& data, struct MaterialSelector& s) 
     int fragNormal = (Lighting || DebugNormal) ? normal : 0;
 
     //          GLSL           HLSL              MSL
-    s.GHM(true, "",            "",               "vertex"                              );
-    s.GHM(true, "void main()", "Varying Main",   "Varying Main"                        );
-    s.GHM(true, "",            "(",              "("                                   );
-    s.GHM(true, "",            "Attribute attr", "Attribute attr [[stage_in]],"        );
-    s.GHM(true, "",            "",               "constant Uniform& uni [[buffer(0)]]" );
-    s.GHM(true, "",            ")",              ")"                                   );
-    s.GHM(true, "{",           "{",              "{"                                   );
-    s.GHM(true, "",            "",               "auto uniBuffer = uni.Buffer;"        );
+    s.GHM(true, "",            "",               "vertex"                                  );
+    s.GHM(true, "void main()", "Varying Main",   "Varying Main"                            );
+    s.GHM(true, "",            "(",              "("                                       );
+    s.GHM(true, "",            "Attribute attr", "Attribute attr [[stage_in]],"            );
+    s.GHM(true, "",            "",               "constant Uniform& uni [[buffer(" V ")]]" );
+    s.GHM(true, "",            ")",              ")"                                       );
+    s.GHM(true, "{",           "{",              "{"                                       );
+    s.GHM(true, "",            "",               "auto uniBuffer = uni.Buffer;"            );
 
     //                GLSL                       HLSL / MSL
     s.GH(true,        "int uniIndex = 0;",       "int uniIndex = 0;"                         );
@@ -803,17 +812,17 @@ void Material::ShaderFragment(xxDrawData const& data, struct MaterialSelector& s
     bool bump = texture && GetTexture(BUMP) != nullptr;
 
     //          GLSL           HLSL            MSL
-    s.GHM(true, "",            "",             "fragment"                             );
-    s.GHM(true, "void main()", "float4 Main",  "float4 Main"                          );
-    s.GHM(true, "",            "(",            "("                                    );
-    s.GHM(true, "",            "Varying vary", "Varying vary [[stage_in]],"           );
-    s.GHM(true, "",            "",             "constant Uniform& uni [[buffer(0)]]," );
-    s.GHM(true, "",            "",             "Sampler sam"                          );
-    s.GHM(true, "",            ") : COLOR0",   ")"                                    );
-    s.GHM(true, "{",           "{",            "{"                                    );
-    s.GHM(true, "",            "",             "#if SHADER_UNIFORM"                   );
-    s.GHM(true, "",            "",             "auto uniBuffer = uni.Buffer;"         );
-    s.GHM(true, "",            "",             "#endif"                               );
+    s.GHM(true, "",            "",             "fragment"                                 );
+    s.GHM(true, "void main()", "float4 Main",  "float4 Main"                              );
+    s.GHM(true, "",            "(",            "("                                        );
+    s.GHM(true, "",            "Varying vary", "Varying vary [[stage_in]],"               );
+    s.GHM(true, "",            "",             "constant Uniform& uni [[buffer(" F ")]]," );
+    s.GHM(true, "",            "",             "Sampler sam"                              );
+    s.GHM(true, "",            ") : COLOR0",   ")"                                        );
+    s.GHM(true, "{",           "{",            "{"                                        );
+    s.GHM(true, "",            "",             "#if SHADER_UNIFORM"                       );
+    s.GHM(true, "",            "",             "auto uniBuffer = uni.Buffer;"             );
+    s.GHM(true, "",            "",             "#endif"                                   );
 
     //                         GLSL                       HLSL / MSL
     s.GH(true,                 "int uniIndex = 0;",       "int uniIndex = 0;"                              );
@@ -846,6 +855,14 @@ void Material::ShaderFragment(xxDrawData const& data, struct MaterialSelector& s
     s.GH(true, "gl_FragColor = color;", "return color;" );
     s.GH(true, "}",                     "}"             );
 }
+//------------------------------------------------------------------------------
+#undef M
+#undef V
+#undef F
+#undef T0
+#undef T1
+#undef S0
+#undef S1
 //------------------------------------------------------------------------------
 void Material::UpdateAlphaTestingConstant(xxDrawData const& data, int& size, xxVector4** pointer, struct MaterialSelector* s) const
 {
