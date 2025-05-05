@@ -30,5 +30,14 @@
 #endif
 
 #define CONFIG_BIGNUM
+#define EMSCRIPTEN
+
+#if defined(_MSC_VER)
+#include <math.h>
+#undef NAN
+#undef INFINITY
+#define NAN 1e+300 - 1e+300
+#define INFINITY 1e+300 * 1e+300
+#endif
 
 #endif /* QUICKJS_USER_H */

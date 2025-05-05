@@ -71,6 +71,48 @@
     <ClCompile Include="..\Tools\CSV.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
+    <ClCompile Include="..\Graphic\Buffer.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Graphic\Camera.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Graphic\Material.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Graphic\Mesh.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Graphic\Node.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Tools\DrawTools.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modifier\ArrayModifier.cpp">
+      <Filter>Modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modifier\Float2Modifier.cpp">
+      <Filter>Modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modifier\Float3Modifier.cpp">
+      <Filter>Modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modifier\Float4Modifier.cpp">
+      <Filter>Modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modifier\FloatModifier.cpp">
+      <Filter>Modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modifier\StringModifier.cpp">
+      <Filter>Modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MiniGUI\Font.cpp">
+      <Filter>MiniGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MiniGUI\Window.cpp">
+      <Filter>MiniGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Runtime.h" />
@@ -143,6 +185,51 @@
     <ClInclude Include="..\Tools\CSV.h">
       <Filter>Tools</Filter>
     </ClInclude>
+    <ClInclude Include="..\Graphic\Buffer.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Graphic\Camera.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Graphic\Material.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Graphic\Mesh.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Graphic\Node.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Tools\DrawTools.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Tools\WindowsHeader.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modifier\ArrayModifier.h">
+      <Filter>Modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modifier\Float2Modifier.h">
+      <Filter>Modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modifier\Float3Modifier.h">
+      <Filter>Modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modifier\Float4Modifier.h">
+      <Filter>Modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modifier\FloatModifier.h">
+      <Filter>Modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modifier\StringModifier.h">
+      <Filter>Modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MiniGUI\Font.h">
+      <Filter>MiniGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MiniGUI\Window.h">
+      <Filter>MiniGUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Graphic">
@@ -156,6 +243,9 @@
     </Filter>
     <Filter Include="Tools">
       <UniqueIdentifier>{ab8cb51b-2858-4405-bc59-506bbd52eac0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MiniGUI">
+      <UniqueIdentifier>{48a8a231-fe19-4b5c-8918-c596dd3d4c97}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

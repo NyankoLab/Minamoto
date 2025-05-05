@@ -72,7 +72,13 @@ public:
 };
 
 #if defined(xxWINDOWS)
+#if defined(_LIBCPP_VERSION)
 #pragma comment(linker, "/alternatename:__imp_?Create@xxMaterial@@SA?AV?$shared_ptr@UMaterial@@@__1@std@@XZ=__imp_?Create@xxMaterial@@SA?AV?$shared_ptr@VxxMaterial@@@__1@std@@XZ")
 #pragma comment(linker, "/alternatename:?BinaryCreate@xxMaterial@@2P6A?AV?$shared_ptr@UMaterial@@@__1@std@@XZEA=?BinaryCreate@xxMaterial@@2P6A?AV?$shared_ptr@VxxMaterial@@@__1@std@@XZEA")
 #pragma comment(linker, "/alternatename:?Create@xxMaterial@@SA?AV?$shared_ptr@UMaterial@@@__1@std@@XZ=?Create@xxMaterial@@SA?AV?$shared_ptr@VxxMaterial@@@__1@std@@XZ")
+#else
+#pragma comment(linker, "/alternatename:__imp_?Create@xxMaterial@@SA?AV?$shared_ptr@UMaterial@@@std@@XZ=__imp_?Create@xxMaterial@@SA?AV?$shared_ptr@VxxMaterial@@@std@@XZ")
+#pragma comment(linker, "/alternatename:?BinaryCreate@xxMaterial@@2P6A?AV?$shared_ptr@UMaterial@@@std@@XZEA=?BinaryCreate@xxMaterial@@2P6A?AV?$shared_ptr@VxxMaterial@@@std@@XZEA")
+#pragma comment(linker, "/alternatename:?Create@xxMaterial@@SA?AV?$shared_ptr@UMaterial@@@std@@XZ=?Create@xxMaterial@@SA?AV?$shared_ptr@VxxMaterial@@@std@@XZ")
+#endif
 #endif

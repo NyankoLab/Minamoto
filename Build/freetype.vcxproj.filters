@@ -79,5 +79,6 @@
     <ClCompile Include="..\SDK\freetype\src\cid\type1cid.c" />
     <ClCompile Include="..\SDK\freetype\src\type42\type42.c" />
     <ClCompile Include="..\SDK\freetype\src\winfonts\winfnt.c" />
+    <ClCompile Include="..\SDK\freetype\src\sdf\sdf.c" />
   </ItemGroup>
 </Project>

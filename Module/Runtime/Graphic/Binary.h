@@ -35,3 +35,11 @@ public:
 
     static int constexpr        Current = 0x20241222;
 };
+
+#if defined(xxWINDOWS)
+#if defined(_LIBCPP_VERSION)
+#pragma comment(linker, "/alternatename:?Load@xxBinary@@SA?AV?$shared_ptr@UNode@@@__1@std@@PEBD@Z=?Load@xxBinary@@SA?AV?$shared_ptr@VxxNode@@@__1@std@@PEBD@Z")
+#else
+#pragma comment(linker, "/alternatename:?Load@xxBinary@@SA?AV?$shared_ptr@UNode@@@std@@PEBD@Z=?Load@xxBinary@@SA?AV?$shared_ptr@VxxNode@@@std@@PEBD@Z")
+#endif
+#endif

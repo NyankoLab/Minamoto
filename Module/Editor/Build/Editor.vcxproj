@@ -322,20 +322,37 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="..\..\..\SDK\ImGuiFileDialog\ImGuiFileDialog.cpp" />
+    <ClCompile Include="..\..\..\SDK\ImGuiFileDialog\ImGuiFileDialog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\SDK\ufbx\ufbx.c" />
     <ClCompile Include="..\Editor.cpp" />
-    <ClCompile Include="..\Graphic\ShaderDisassembly.cpp" />
+    <ClCompile Include="..\Event\Event.cpp" />
+    <ClCompile Include="..\Export\ExportEvent.cpp" />
+    <ClCompile Include="..\Export\ExportFilmbox.cpp" />
+    <ClCompile Include="..\Export\ExportWavefront.cpp" />
     <ClCompile Include="..\Import\Import.cpp" />
-    <ClCompile Include="..\Import\ImportFBX.cpp" />
+    <ClCompile Include="..\Import\ImportEvent.cpp" />
+    <ClCompile Include="..\Import\ImportFilmbox.cpp" />
+    <ClCompile Include="..\Import\ImportInterQuake.cpp" />
+    <ClCompile Include="..\Import\ImportPolygon.cpp" />
     <ClCompile Include="..\Import\ImportWavefront.cpp" />
     <ClCompile Include="..\Utility\Grid.cpp" />
+    <ClCompile Include="..\Utility\MeshTools.cpp" />
     <ClCompile Include="..\Utility\TextureTools.cpp" />
     <ClCompile Include="..\Utility\Tools.cpp" />
     <ClCompile Include="..\Window\About.cpp" />
     <ClCompile Include="..\Window\Component\Console.cpp" />
     <ClCompile Include="..\Window\Component\Folder.cpp" />
     <ClCompile Include="..\Window\Document.cpp" />
+    <ClCompile Include="..\Window\Game.cpp" />
     <ClCompile Include="..\Window\Hierarchy.cpp" />
     <ClCompile Include="..\Window\Inspector.cpp" />
     <ClCompile Include="..\Window\Log.cpp" />
@@ -365,18 +382,26 @@
     <ClInclude Include="..\..\..\SDK\ImGuiFileDialog\ImGuiFileDialog.h" />
     <ClInclude Include="..\..\..\SDK\ufbx\ufbx.h" />
     <ClInclude Include="..\Editor.h" />
-    <ClInclude Include="..\Graphic\ShaderDisassembly.h" />
+    <ClInclude Include="..\Event\Event.h" />
+    <ClInclude Include="..\Export\ExportEvent.h" />
+    <ClInclude Include="..\Export\ExportFilmbox.h" />
+    <ClInclude Include="..\Export\ExportWavefront.h" />
     <ClInclude Include="..\ImGuiHelper.h" />
     <ClInclude Include="..\Import\Import.h" />
-    <ClInclude Include="..\Import\ImportFBX.h" />
+    <ClInclude Include="..\Import\ImportEvent.h" />
+    <ClInclude Include="..\Import\ImportFilmbox.h" />
+    <ClInclude Include="..\Import\ImportInterQuake.h" />
+    <ClInclude Include="..\Import\ImportPolygon.h" />
     <ClInclude Include="..\Import\ImportWavefront.h" />
     <ClInclude Include="..\Utility\Grid.h" />
+    <ClInclude Include="..\Utility\MeshTools.h" />
     <ClInclude Include="..\Utility\TextureTools.h" />
     <ClInclude Include="..\Utility\Tools.h" />
     <ClInclude Include="..\Window\About.h" />
     <ClInclude Include="..\Window\Component\Console.h" />
     <ClInclude Include="..\Window\Component\Folder.h" />
     <ClInclude Include="..\Window\Document.h" />
+    <ClInclude Include="..\Window\Game.h" />
     <ClInclude Include="..\Window\Hierarchy.h" />
     <ClInclude Include="..\Window\Inspector.h" />
     <ClInclude Include="..\Window\Log.h" />
@@ -390,6 +415,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Build\imgui.vcxproj">
       <Project>{9b49443b-7fae-479e-8cdf-29919a9f786f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Build\meshoptimizer.vcxproj">
+      <Project>{5eb13274-55c2-4cc9-b3d0-3f10b4ef8f6d}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\Runtime\Build\Runtime.vcxproj">
       <Project>{66faef03-e0a2-42d3-a34b-004f7cde4346}</Project>

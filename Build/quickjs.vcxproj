@@ -69,7 +69,17 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\SDK\quickjs\quickjs.c" />
+    <ClCompile Include="..\SDK\quickjs\quickjs.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\SDK\quickjs\quickjs.fixed.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\SDK\quickjs\cutils.h" />
@@ -82,7 +92,18 @@
     <ClInclude Include="..\SDK\quickjs\quickjs-atom.h" />
     <ClInclude Include="..\SDK\quickjs\quickjs-libc.h" />
     <ClInclude Include="..\SDK\quickjs\quickjs-opcode.h" />
-    <ClInclude Include="..\SDK\quickjs\quickjs.h" />
+    <ClInclude Include="..\SDK\quickjs\quickjs.fixed.h" />
+    <ClInclude Include="..\SDK\quickjs\quickjs.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="include\quickjs-user.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SDK\quickjs\LICENSE" />
@@ -215,95 +236,103 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>CONFIG_BIGNUM;CONFIG_VERSION="2024-02-14";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CONFIG_VERSION="2024-02-14";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <StringPooling>true</StringPooling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>../Build/include/quickjs-win32;../SDK/quickjs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <AdditionalOptions>/experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles>../../Build/include/quickjs-user.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
-    <PostBuildEvent>
+    <PostBuildEvent />
+    <PreBuildEvent>
       <Command>cd $(ProjectDir)..\SDK\quickjs
 call $(ProjectDir)include\quickjs\quickjs.bat</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>CONFIG_BIGNUM;CONFIG_VERSION="2024-02-14";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CONFIG_VERSION="2024-02-14";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <StringPooling>true</StringPooling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>../Build/include/quickjs-win32;../SDK/quickjs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <AdditionalOptions>/experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles>../../Build/include/quickjs-user.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
-    <PostBuildEvent>
+    <PostBuildEvent />
+    <PreBuildEvent>
       <Command>cd $(ProjectDir)..\SDK\quickjs
 call $(ProjectDir)include\quickjs\quickjs.bat</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>CONFIG_BIGNUM;CONFIG_VERSION="2024-02-14";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CONFIG_VERSION="2024-02-14";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <StringPooling>true</StringPooling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>../Build/include/quickjs-win32;../SDK/quickjs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <AdditionalOptions>/experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles>../../Build/include/quickjs-user.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
-    <PostBuildEvent>
+    <PostBuildEvent />
+    <PreBuildEvent>
       <Command>cd $(ProjectDir)..\SDK\quickjs
 call $(ProjectDir)include\quickjs\quickjs.bat</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>CONFIG_BIGNUM;CONFIG_VERSION="2024-02-14";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CONFIG_VERSION="2024-02-14";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <StringPooling>true</StringPooling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>../Build/include/quickjs-win32;../SDK/quickjs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <AdditionalOptions>/experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles>../../Build/include/quickjs-user.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
-    <PostBuildEvent>
+    <PostBuildEvent />
+    <PreBuildEvent>
       <Command>cd $(ProjectDir)..\SDK\quickjs
 call $(ProjectDir)include\quickjs\quickjs.bat</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>CONFIG_BIGNUM;CONFIG_VERSION="2024-02-14";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CONFIG_VERSION="2024-02-14";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <StringPooling>true</StringPooling>
@@ -315,6 +344,7 @@ call $(ProjectDir)include\quickjs\quickjs.bat</Command>
       <AdditionalIncludeDirectories>../Build/include/quickjs-win32;../SDK/quickjs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <AdditionalOptions>/experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles>../../Build/include/quickjs-user.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -323,16 +353,17 @@ call $(ProjectDir)include\quickjs\quickjs.bat</Command>
       <EnableUAC>false</EnableUAC>
       <SubSystem>Windows</SubSystem>
     </Link>
-    <PostBuildEvent>
+    <PostBuildEvent />
+    <PreBuildEvent>
       <Command>cd $(ProjectDir)..\SDK\quickjs
 call $(ProjectDir)include\quickjs\quickjs.bat</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>CONFIG_BIGNUM;CONFIG_VERSION="2024-02-14";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CONFIG_VERSION="2024-02-14";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <StringPooling>true</StringPooling>
@@ -344,6 +375,7 @@ call $(ProjectDir)include\quickjs\quickjs.bat</Command>
       <AdditionalIncludeDirectories>../Build/include/quickjs-win32;../SDK/quickjs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <AdditionalOptions>/experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles>../../Build/include/quickjs-user.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -352,16 +384,17 @@ call $(ProjectDir)include\quickjs\quickjs.bat</Command>
       <EnableUAC>false</EnableUAC>
       <SubSystem>Windows</SubSystem>
     </Link>
-    <PostBuildEvent>
+    <PostBuildEvent />
+    <PreBuildEvent>
       <Command>cd $(ProjectDir)..\SDK\quickjs
 call $(ProjectDir)include\quickjs\quickjs.bat</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>CONFIG_BIGNUM;CONFIG_VERSION="2024-02-14";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CONFIG_VERSION="2024-02-14";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <StringPooling>true</StringPooling>
@@ -373,6 +406,7 @@ call $(ProjectDir)include\quickjs\quickjs.bat</Command>
       <AdditionalIncludeDirectories>../Build/include/quickjs-win32;../SDK/quickjs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <AdditionalOptions>/experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles>../../Build/include/quickjs-user.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -381,16 +415,17 @@ call $(ProjectDir)include\quickjs\quickjs.bat</Command>
       <EnableUAC>false</EnableUAC>
       <SubSystem>Windows</SubSystem>
     </Link>
-    <PostBuildEvent>
+    <PostBuildEvent />
+    <PreBuildEvent>
       <Command>cd $(ProjectDir)..\SDK\quickjs
 call $(ProjectDir)include\quickjs\quickjs.bat</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>CONFIG_BIGNUM;CONFIG_VERSION="2024-02-14";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CONFIG_VERSION="2024-02-14";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <StringPooling>true</StringPooling>
@@ -402,6 +437,7 @@ call $(ProjectDir)include\quickjs\quickjs.bat</Command>
       <AdditionalIncludeDirectories>../Build/include/quickjs-win32;../SDK/quickjs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <AdditionalOptions>/experimental:c11atomics %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles>../../Build/include/quickjs-user.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -410,10 +446,11 @@ call $(ProjectDir)include\quickjs\quickjs.bat</Command>
       <EnableUAC>false</EnableUAC>
       <SubSystem>Windows</SubSystem>
     </Link>
-    <PostBuildEvent>
+    <PostBuildEvent />
+    <PreBuildEvent>
       <Command>cd $(ProjectDir)..\SDK\quickjs
 call $(ProjectDir)include\quickjs\quickjs.bat</Command>
-    </PostBuildEvent>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
