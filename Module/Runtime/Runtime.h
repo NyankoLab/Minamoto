@@ -12,14 +12,14 @@ class xxCamera;
 class xxMaterial;
 class xxMesh;
 class xxNode;
-typedef std::shared_ptr<class Camera> xxCameraPtr;
-typedef std::shared_ptr<class Material> xxMaterialPtr;
-typedef std::shared_ptr<class Mesh> xxMeshPtr;
+typedef std::shared_ptr<struct Camera> xxCameraPtr;
+typedef std::shared_ptr<struct Material> xxMaterialPtr;
+typedef std::shared_ptr<struct Mesh> xxMeshPtr;
 typedef std::shared_ptr<class xxModifier> xxModifierPtr;
-typedef std::shared_ptr<class Node> xxNodePtr;
+typedef std::shared_ptr<struct Node> xxNodePtr;
 typedef std::shared_ptr<class xxTexture> xxTexturePtr;
 typedef std::shared_ptr<void> xxUnknownPtr;
-typedef std::weak_ptr<class Node> xxNodeWeakPtr;
+typedef std::weak_ptr<struct Node> xxNodeWeakPtr;
 typedef std::weak_ptr<class xxTexture> xxTextureWeakPtr;
 
 #define HAVE_MINIGUI 1

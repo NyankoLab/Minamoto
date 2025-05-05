@@ -314,21 +314,34 @@
   <ItemGroup>
     <ClCompile Include="..\Graphic\Binary.cpp" />
     <ClCompile Include="..\Graphic\Binding.cpp" />
+    <ClCompile Include="..\Graphic\Buffer.cpp" />
+    <ClCompile Include="..\Graphic\Camera.cpp" />
+    <ClCompile Include="..\Graphic\Material.cpp" />
+    <ClCompile Include="..\Graphic\Mesh.cpp" />
+    <ClCompile Include="..\Graphic\Node.cpp" />
     <ClCompile Include="..\Graphic\Pipeline.cpp" />
     <ClCompile Include="..\Graphic\RenderPass.cpp" />
     <ClCompile Include="..\Graphic\Sampler.cpp" />
     <ClCompile Include="..\Graphic\Shader.cpp" />
     <ClCompile Include="..\Graphic\Texture.cpp" />
     <ClCompile Include="..\Graphic\VertexAttribute.cpp" />
+    <ClCompile Include="..\MiniGUI\Font.cpp" />
+    <ClCompile Include="..\MiniGUI\Window.cpp" />
+    <ClCompile Include="..\Modifier\ArrayModifier.cpp" />
     <ClCompile Include="..\Modifier\BakedQuaternion16Modifier.cpp" />
     <ClCompile Include="..\Modifier\BakedQuaternionModifier.cpp" />
     <ClCompile Include="..\Modifier\ConstantQuaternionModifier.cpp" />
     <ClCompile Include="..\Modifier\ConstantScaleModifier.cpp" />
     <ClCompile Include="..\Modifier\ConstantTranslateModifier.cpp" />
+    <ClCompile Include="..\Modifier\Float2Modifier.cpp" />
+    <ClCompile Include="..\Modifier\Float3Modifier.cpp" />
+    <ClCompile Include="..\Modifier\Float4Modifier.cpp" />
+    <ClCompile Include="..\Modifier\FloatModifier.cpp" />
     <ClCompile Include="..\Modifier\Modifier.cpp" />
     <ClCompile Include="..\Modifier\Quaternion16Modifier.cpp" />
     <ClCompile Include="..\Modifier\QuaternionModifier.cpp" />
     <ClCompile Include="..\Modifier\ScaleModifier.cpp" />
+    <ClCompile Include="..\Modifier\StringModifier.cpp" />
     <ClCompile Include="..\Modifier\TranslateModifier.cpp" />
     <ClCompile Include="..\Runtime.cpp" />
     <ClCompile Include="..\Script\Lua.cpp" />
@@ -344,6 +357,7 @@
     </ClCompile>
     <ClCompile Include="..\Tools\CameraTools.cpp" />
     <ClCompile Include="..\Tools\CSV.cpp" />
+    <ClCompile Include="..\Tools\DrawTools.cpp" />
     <ClCompile Include="..\Tools\NodeTools.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -363,28 +377,43 @@
   <ItemGroup>
     <ClInclude Include="..\Graphic\Binary.h" />
     <ClInclude Include="..\Graphic\Binding.h" />
+    <ClInclude Include="..\Graphic\Buffer.h" />
+    <ClInclude Include="..\Graphic\Camera.h" />
+    <ClInclude Include="..\Graphic\Material.h" />
+    <ClInclude Include="..\Graphic\Mesh.h" />
+    <ClInclude Include="..\Graphic\Node.h" />
     <ClInclude Include="..\Graphic\Pipeline.h" />
     <ClInclude Include="..\Graphic\RenderPass.h" />
     <ClInclude Include="..\Graphic\Sampler.h" />
     <ClInclude Include="..\Graphic\Shader.h" />
     <ClInclude Include="..\Graphic\Texture.h" />
     <ClInclude Include="..\Graphic\VertexAttribute.h" />
+    <ClInclude Include="..\MiniGUI\Font.h" />
+    <ClInclude Include="..\MiniGUI\Window.h" />
+    <ClInclude Include="..\Modifier\ArrayModifier.h" />
     <ClInclude Include="..\Modifier\BakedQuaternion16Modifier.h" />
     <ClInclude Include="..\Modifier\BakedQuaternionModifier.h" />
     <ClInclude Include="..\Modifier\ConstantQuaternionModifier.h" />
     <ClInclude Include="..\Modifier\ConstantScaleModifier.h" />
     <ClInclude Include="..\Modifier\ConstantTranslateModifier.h" />
+    <ClInclude Include="..\Modifier\Float2Modifier.h" />
+    <ClInclude Include="..\Modifier\Float3Modifier.h" />
+    <ClInclude Include="..\Modifier\Float4Modifier.h" />
+    <ClInclude Include="..\Modifier\FloatModifier.h" />
     <ClInclude Include="..\Modifier\Modifier.h" />
     <ClInclude Include="..\Modifier\Quaternion16Modifier.h" />
     <ClInclude Include="..\Modifier\QuaternionModifier.h" />
     <ClInclude Include="..\Modifier\ScaleModifier.h" />
+    <ClInclude Include="..\Modifier\StringModifier.h" />
     <ClInclude Include="..\Modifier\TranslateModifier.h" />
     <ClInclude Include="..\Runtime.h" />
     <ClInclude Include="..\Script\Lua.h" />
     <ClInclude Include="..\Script\QuickJS.h" />
     <ClInclude Include="..\Tools\CameraTools.h" />
     <ClInclude Include="..\Tools\CSV.h" />
+    <ClInclude Include="..\Tools\DrawTools.h" />
     <ClInclude Include="..\Tools\NodeTools.h" />
+    <ClInclude Include="..\Tools\WindowsHeader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Modifier\Modifier.inl" />

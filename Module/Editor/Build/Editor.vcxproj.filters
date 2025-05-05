@@ -2,13 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\Editor.cpp" />
-    <ClCompile Include="..\Graphic\ShaderDisassembly.cpp">
-      <Filter>Graphic</Filter>
-    </ClCompile>
     <ClCompile Include="..\Import\Import.cpp">
-      <Filter>Import</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Import\ImportFBX.cpp">
       <Filter>Import</Filter>
     </ClCompile>
     <ClCompile Include="..\Import\ImportWavefront.cpp">
@@ -71,16 +65,40 @@
     <ClCompile Include="..\Window\Document.cpp">
       <Filter>Window</Filter>
     </ClCompile>
+    <ClCompile Include="..\Import\ImportEvent.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Import\ImportFilmbox.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Import\ImportInterQuake.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Import\ImportPolygon.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utility\MeshTools.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Event\Event.cpp">
+      <Filter>Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Window\Game.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Export\ExportEvent.cpp">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Export\ExportFilmbox.cpp">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Export\ExportWavefront.cpp">
+      <Filter>Export</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ImGuiHelper.h" />
-    <ClInclude Include="..\Graphic\ShaderDisassembly.h">
-      <Filter>Graphic</Filter>
-    </ClInclude>
     <ClInclude Include="..\Import\Import.h">
-      <Filter>Import</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Import\ImportFBX.h">
       <Filter>Import</Filter>
     </ClInclude>
     <ClInclude Include="..\Import\ImportWavefront.h">
@@ -159,11 +177,38 @@
     <ClInclude Include="..\Window\Document.h">
       <Filter>Window</Filter>
     </ClInclude>
+    <ClInclude Include="..\Import\ImportEvent.h">
+      <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Import\ImportFilmbox.h">
+      <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Import\ImportInterQuake.h">
+      <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Import\ImportPolygon.h">
+      <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utility\MeshTools.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Event\Event.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Window\Game.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Export\ExportEvent.h">
+      <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Export\ExportFilmbox.h">
+      <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Export\ExportWavefront.h">
+      <Filter>Export</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Graphic">
-      <UniqueIdentifier>{1e459d22-46ab-4ce2-a9ee-dd65b800d02c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Import">
       <UniqueIdentifier>{fbe4f660-3eb9-4a08-9c77-9c536f5e503e}</UniqueIdentifier>
     </Filter>
@@ -190,6 +235,12 @@
     </Filter>
     <Filter Include="Window\Component\quickjs-win32\sys">
       <UniqueIdentifier>{19cee9c7-7151-4353-acaa-159c27918cf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Event">
+      <UniqueIdentifier>{13b7795c-18c7-4a45-a8d3-d696b797c7a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Export">
+      <UniqueIdentifier>{d98d8908-f8d5-4e52-8de2-8d806c6b4a25}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

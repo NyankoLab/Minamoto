@@ -19,7 +19,7 @@
 #include <Runtime/Modifier/BakedQuaternionModifier.h>
 #include <Runtime/Modifier/Quaternion16Modifier.h>
 #include <Runtime/Modifier/BakedQuaternion16Modifier.h>
-#include "MeshTools.h"
+#include "Utility/MeshTools.h"
 #include "ImportFilmbox.h"
 
 #include "ufbx/ufbx.h"
@@ -417,7 +417,7 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
     return output;
 }
 //------------------------------------------------------------------------------
-static void CreateSkinning(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr const& root, Import::ImportCallback callback) __attribute__((optnone))
+static void CreateSkinning(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr const& root, Import::ImportCallback callback)
 {
     ufbx_skin_deformer* skin_deformer = mesh->skin_deformers.count ? mesh->skin_deformers.data[0] : nullptr;
 

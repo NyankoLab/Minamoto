@@ -43,6 +43,9 @@ int     quickjs_fprintf(FILE*, char const*, ...);
 #define isatty(a) false
 #define atexit(a) ((void)a)
 #define select(a,b,c,d,e) select(a,b,c,d,&(struct timeval){0})
+#ifndef __llvm__
+#include <quickjs/quickjs.fixed.h>
+#endif
 #include <quickjs/quickjs-libc.c>
 
 bool quickjs_stdin = false;

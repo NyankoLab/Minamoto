@@ -9,6 +9,7 @@
     <ClCompile Include="..\SDK\quickjs\qjsc.c" />
     <ClCompile Include="..\SDK\quickjs\quickjs-libc.c" />
     <ClCompile Include="..\SDK\quickjs\quickjs.c" />
+    <ClCompile Include="..\SDK\quickjs\quickjs.fixed.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\SDK\quickjs\cutils.h" />
@@ -22,10 +23,19 @@
     <ClInclude Include="..\SDK\quickjs\quickjs-libc.h" />
     <ClInclude Include="..\SDK\quickjs\quickjs-opcode.h" />
     <ClInclude Include="..\SDK\quickjs\quickjs.h" />
+    <ClInclude Include="..\SDK\quickjs\quickjs.fixed.h" />
+    <ClInclude Include="include\quickjs-user.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SDK\quickjs\LICENSE" />
     <None Include="..\SDK\quickjs\Makefile" />
     <None Include="..\SDK\quickjs\qjscalc.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{a289f547-bade-40af-9b82-735550af0fb1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

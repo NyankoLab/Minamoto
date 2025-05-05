@@ -35,52 +35,31 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\SDK\freetype\src\autofit\autofit.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftbase.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftbbox.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftbdf.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftbitmap.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftcid.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftdebug.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftfstype.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftgasp.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftglyph.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftgxval.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftinit.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftmm.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftotval.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftpatent.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftpfr.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftstroke.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftsynth.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftsystem.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\fttype1.c" />
-    <ClCompile Include="..\SDK\freetype\src\base\ftwinfnt.c" />
-    <ClCompile Include="..\SDK\freetype\src\bdf\bdf.c" />
-    <ClCompile Include="..\SDK\freetype\src\cache\ftcache.c" />
-    <ClCompile Include="..\SDK\freetype\src\cff\cff.c" />
-    <ClCompile Include="..\SDK\freetype\src\cid\type1cid.c" />
-    <ClCompile Include="..\SDK\freetype\src\gzip\ftgzip.c" />
-    <ClCompile Include="..\SDK\freetype\src\lzw\ftlzw.c" />
-    <ClCompile Include="..\SDK\freetype\src\pcf\pcf.c" />
-    <ClCompile Include="..\SDK\freetype\src\pfr\pfr.c" />
-    <ClCompile Include="..\SDK\freetype\src\psaux\psaux.c" />
-    <ClCompile Include="..\SDK\freetype\src\pshinter\pshinter.c" />
-    <ClCompile Include="..\SDK\freetype\src\psnames\psmodule.c" />
-    <ClCompile Include="..\SDK\freetype\src\raster\raster.c" />
-    <ClCompile Include="..\SDK\freetype\src\sdf\sdf.c" />
-    <ClCompile Include="..\SDK\freetype\src\sfnt\sfnt.c" />
-    <ClCompile Include="..\SDK\freetype\src\smooth\smooth.c" />
-    <ClCompile Include="..\SDK\freetype\src\truetype\truetype.c" />
-    <ClCompile Include="..\SDK\freetype\src\type1\type1.c" />
-    <ClCompile Include="..\SDK\freetype\src\type42\type42.c" />
-    <ClCompile Include="..\SDK\freetype\src\winfonts\winfnt.c" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\allocator.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\clusterizer.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\indexanalyzer.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\indexcodec.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\indexgenerator.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\overdrawoptimizer.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\partition.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\quantization.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\rasterizer.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\simplifier.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\spatialorder.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\stripifier.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\vcacheoptimizer.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\vertexcodec.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\vertexfilter.cpp" />
+    <ClCompile Include="..\SDK\meshoptimizer\src\vfetchoptimizer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\SDK\meshoptimizer\src\meshoptimizer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{D98A83DF-490D-46D9-809C-55C80BA9275F}</ProjectGuid>
+    <ProjectGuid>{5EB13274-55C2-4CC9-B3D0-3F10B4EF8F6D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>freetype</RootNamespace>
+    <RootNamespace>meshoptimizer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -202,10 +181,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>FT2_BUILD_LIBRARY;FT_CONFIG_MODULES_H="../../../Build/include/ftmodule.h";FT_CONFIG_OPTIONS_H="../../../Build/include/ftoption.h";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>../SDK/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4018;4244;4267;4312</DisableSpecificWarnings>
       <StringPooling>true</StringPooling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
@@ -219,10 +196,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>FT2_BUILD_LIBRARY;FT_CONFIG_MODULES_H="../../../Build/include/ftmodule.h";FT_CONFIG_OPTIONS_H="../../../Build/include/ftoption.h";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>../SDK/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4018;4244;4267;4312</DisableSpecificWarnings>
       <StringPooling>true</StringPooling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
@@ -236,10 +211,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>FT2_BUILD_LIBRARY;FT_CONFIG_MODULES_H="../../../Build/include/ftmodule.h";FT_CONFIG_OPTIONS_H="../../../Build/include/ftoption.h";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>../SDK/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4018;4244;4267;4312</DisableSpecificWarnings>
       <StringPooling>true</StringPooling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
@@ -253,10 +226,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>FT2_BUILD_LIBRARY;FT_CONFIG_MODULES_H="../../../Build/include/ftmodule.h";FT_CONFIG_OPTIONS_H="../../../Build/include/ftoption.h";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>../SDK/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4018;4244;4267;4312</DisableSpecificWarnings>
       <StringPooling>true</StringPooling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
@@ -270,10 +241,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>FT2_BUILD_LIBRARY;FT_CONFIG_MODULES_H="../../../Build/include/ftmodule.h";FT_CONFIG_OPTIONS_H="../../../Build/include/ftoption.h";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>../SDK/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4018;4244;4267;4312</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -294,10 +263,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>FT2_BUILD_LIBRARY;FT_CONFIG_MODULES_H="../../../Build/include/ftmodule.h";FT_CONFIG_OPTIONS_H="../../../Build/include/ftoption.h";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>../SDK/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4018;4244;4267;4312</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -318,10 +285,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>FT2_BUILD_LIBRARY;FT_CONFIG_MODULES_H="../../../Build/include/ftmodule.h";FT_CONFIG_OPTIONS_H="../../../Build/include/ftoption.h";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>../SDK/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4018;4244;4267;4312</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -342,10 +307,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>FT2_BUILD_LIBRARY;FT_CONFIG_MODULES_H="../../../Build/include/ftmodule.h";FT_CONFIG_OPTIONS_H="../../../Build/include/ftoption.h";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>../SDK/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4018;4244;4267;4312</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>

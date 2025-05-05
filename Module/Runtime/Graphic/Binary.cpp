@@ -9,10 +9,6 @@
 #include "Graphic/Node.h"
 #include "Binary.h"
 
-#if defined(xxWINDOWS)
-#pragma comment(linker, "/alternatename:?Load@xxBinary@@SA?AV?$shared_ptr@UNode@@@__1@std@@PEBD@Z=?Load@xxBinary@@SA?AV?$shared_ptr@VxxNode@@@__1@std@@PEBD@Z")
-#endif
-
 //==============================================================================
 //  Binary
 //==============================================================================
