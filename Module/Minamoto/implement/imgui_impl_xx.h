@@ -22,3 +22,6 @@ IMGUI_IMPL_API void     ImGui_ImplXX_RenderDrawData(ImDrawData* draw_data, uint6
 // Use if you want to reset your rendering device without losing ImGui state.
 IMGUI_IMPL_API bool     ImGui_ImplXX_CreateDeviceObjects();
 IMGUI_IMPL_API void     ImGui_ImplXX_InvalidateDeviceObjects();
+
+// (Advanced) Use e.g. if you need to precisely control the timing of texture updates (e.g. for staged rendering), by setting ImDrawData::Textures = NULL to handle this manually.
+IMGUI_IMPL_API void     ImGui_ImplXX_UpdateTexture(ImTextureData* tex);

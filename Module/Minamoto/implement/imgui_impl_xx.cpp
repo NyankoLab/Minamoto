@@ -122,6 +122,13 @@ void ImGui_ImplXX_RenderDrawData(ImDrawData* draw_data, uint64_t commandEncoder)
         return;
     ImGuiViewportDataXX* data = (ImGuiViewportDataXX*)draw_data->OwnerViewport->RendererUserData;
 
+    // Catch up with texture updates. Most of the times, the list will have 1 element with an OK status, aka nothing to do.
+    // (This almost always points to ImGui::GetPlatformIO().Textures[] but is part of ImDrawData to allow overriding or disabling texture updates).
+    if (draw_data->Textures != nullptr)
+        for (ImTextureData* tex : *draw_data->Textures)
+            if (tex->Status != ImTextureStatus_OK)
+                ImGui_ImplXX_UpdateTexture(tex);
+
     // Render buffers per viewport
     int&        bufferIndex         = data->BufferIndex;
     uint64_t&   vertexBuffer        = data->VertexBuffers[bufferIndex];
@@ -228,9 +235,9 @@ void ImGui_ImplXX_RenderDrawData(ImDrawData* draw_data, uint64_t commandEncoder)
                     xxSetScissor(commandEncoder, clip_x, clip_y, clip_width, clip_height);
 
                     // Texture
-                    if (boundTextureID != pcmd->TextureId)
+                    if (boundTextureID != pcmd->TexRef.GetTexID())
                     {
-                        boundTextureID = pcmd->TextureId;
+                        boundTextureID = pcmd->TexRef.GetTexID();
 
                         xxSetVertexConstantBuffer(commandEncoder, constantBuffer, 16 * 3 * sizeof(float));
                         xxSetFragmentTextures(commandEncoder, 1, &boundTextureID);
@@ -267,7 +274,11 @@ bool ImGui_ImplXX_Init(uint64_t instance, uint64_t device, uint64_t renderPass)
     ImGuiIO& io = ImGui::GetIO();
     io.BackendRendererName = "imgui_impl_xx";
     io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;  // We can honor the ImDrawCmd::VtxOffset field, allowing for large meshes.
+    io.BackendFlags |= ImGuiBackendFlags_RendererHasTextures;   // We can honor ImGuiPlatformIO::Textures[] requests during render.
     io.BackendFlags |= ImGuiBackendFlags_RendererHasViewports;  // We can create multi-viewports on the Renderer side (optional)
+
+    ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
+    platform_io.Renderer_TextureMaxWidth = platform_io.Renderer_TextureMaxHeight = 4096;
 
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         ImGui_ImplXX_InitPlatformInterface();
@@ -284,43 +295,71 @@ void ImGui_ImplXX_Shutdown()
     g_instance = 0;
 }
 
-static bool ImGui_ImplXX_CreateFontsTexture()
+void ImGui_ImplXX_UpdateTexture(ImTextureData* tex)
 {
-    // Build texture atlas
-    ImGuiIO& io = ImGui::GetIO();
-    unsigned char* pixels;
-    int width, height, bytes_per_pixel;
-    io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);
-
-    // Upload texture to graphics system
+    if (tex->Status == ImTextureStatus_WantCreate)
+    {
+        // Create and upload new texture to graphics system
+        //IMGUI_DEBUG_LOG("UpdateTexture #%03d: WantCreate %dx%d\n", tex->UniqueID, tex->Width, tex->Height);
+        IM_ASSERT(tex->TexID == ImTextureID_Invalid && tex->BackendUserData == nullptr);
+        IM_ASSERT(tex->Format == ImTextureFormat_RGBA32);
 #if defined(xxWINDOWS)
-    uint64_t format = *(uint64_t*)"BGRA8888";
+        uint64_t format = *(uint64_t*)"BGRA8888";
 #else
-    uint64_t format = *(uint64_t*)"RGBA8888";
+        uint64_t format = *(uint64_t*)"RGBA8888";
 #endif
-    xxDestroyTexture(g_fontTexture);
-    g_fontTexture = xxCreateTexture(g_device, format, width, height, 1, 1, 1, nullptr);
-    if (g_fontTexture == 0)
-        return false;
-    int stride = 0;
-    void* map = xxMapTexture(g_device, g_fontTexture, &stride, 0, 0);
-    if (map == nullptr)
-        return false;
-    for (int y = 0; y < height; y++)
-        memcpy((char*)map + stride * y, pixels + (width * bytes_per_pixel) * y, (width * bytes_per_pixel));
-    xxUnmapTexture(g_device, g_fontTexture, 0, 0);
+        uint64_t texture = xxCreateTexture(g_device, format, tex->Width, tex->Height, 1, 1, 1, nullptr);
+        if (texture == 0)
+        {
+            IM_ASSERT("Backend failed to create texture!");
+            return;
+        }
 
-    // Store our identifier
-    io.Fonts->TexID = (ImTextureID)g_fontTexture;
+        int stride = 0;
+        void* map = xxMapTexture(g_device, texture, &stride, 0, 0);
+        if (map == nullptr)
+        {
+            IM_ASSERT("Backend failed to create texture!");
+            return;
+        }
+        for (int y = 0; y < tex->Height; y++)
+            memcpy((char*)map + stride * y, (char*)tex->GetPixels() + (tex->Width * 4) * y, (tex->Width * 4));
+        xxUnmapTexture(g_device, texture, 0, 0);
 
-    return true;
+        // Store identifiers
+        tex->SetTexID(texture);
+        tex->SetStatus(ImTextureStatus_OK);
+    }
+    else if (tex->Status == ImTextureStatus_WantUpdates)
+    {
+        // Update selected blocks. We only ever write to textures regions which have never been used before!
+        // This backend choose to use tex->Updates[] but you can use tex->UpdateRect to upload a single region.
+        uint64_t texture = tex->TexID;
+        int stride = 0;
+        void* map = xxMapTexture(g_device, texture, &stride, 0, 0);
+        if (map)
+            for (int y = 0; y < tex->Height; y++)
+                memcpy((char*)map + stride * y, (char*)tex->GetPixels() + (tex->Width * 4) * y, (tex->Width * 4));
+        xxUnmapTexture(g_device, texture, 0, 0);
+        tex->SetStatus(ImTextureStatus_OK);
+    }
+    else if (tex->Status == ImTextureStatus_WantDestroy)
+    {
+        uint64_t texture = tex->TexID;
+        if (texture == 0)
+            return;
+        IM_ASSERT(tex->TexID == texture);
+        xxDestroyTexture(texture);
+
+        // Clear identifiers and mark as destroyed (in order to allow e.g. calling InvalidateDeviceObjects while running)
+        tex->SetTexID(ImTextureID_Invalid);
+        tex->SetStatus(ImTextureStatus_Destroyed);
+    }
 }
 
 bool ImGui_ImplXX_CreateDeviceObjects()
 {
     if (g_device == 0)
-        return false;
-    if (ImGui_ImplXX_CreateFontsTexture() == false)
         return false;
     ImGui_ImplXX_CreateDeviceObjectsForPlatformWindows();
 
