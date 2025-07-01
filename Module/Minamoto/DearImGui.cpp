@@ -63,15 +63,20 @@ void DearImGui::Create(void* view, float scale, float font)
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsClassic();
 
-    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+    // Setup scaling
     ImGuiStyle& style = ImGui::GetStyle();
+    style.ScaleAllSizes(scale);             // Bake a fixed style scale. (until we have a solution for dynamic style scaling, changing this requires resetting Style + calling this again)
+    style.FontScaleMain = 1.0f / font;
+    style.FontScaleDpi = scale;             // Set initial font scale. (using io.ConfigDpiScaleFonts=true makes this unnecessary. We leave both here for documentation purpose)
+    io.ConfigDpiScaleFonts = true;          // [Experimental] Automatically overwrite style.FontScaleDpi in Begin() when Monitor DPI changes. This will scale fonts but _NOT_ scale sizes/padding for now.
+    io.ConfigDpiScaleViewports = true;      // [Experimental] Scale Dear ImGui and Platform Windows when Monitor DPI changes.
+
+    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         style.WindowRounding = 0.0f;
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
-    io.FontGlobalScale = font;
-    style.ScaleAllSizes(scale);
 
     // Load Fonts
     // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
@@ -90,50 +95,38 @@ void DearImGui::Create(void* view, float scale, float font)
 
     // Load / Merge Fonts
     ImFontConfig font_config;
-    font_config.SizePixels          = 13.0f * io.FontGlobalScale;
+    font_config.SizePixels          = 13.0f * font;
     font_config.RasterizerMultiply  = 1.0f;
     io.Fonts->AddFontDefault(&font_config);
 
     static ImWchar const icons_ranges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
     font_config.MergeMode           = true;
     font_config.PixelSnapH          = true;
-    font_config.GlyphOffset.y       = 2.0f * io.FontGlobalScale;
-    font_config.GlyphMinAdvanceX    = 13.0f * io.FontGlobalScale * 2.0f;
+    font_config.GlyphOffset.y       = 2.0f * font;
+    font_config.GlyphMinAdvanceX    = 13.0f * font * 2.0f;
 #if defined(xxMACOS)
-    io.Fonts->AddFontFromFileTTF("../Resources/" FONT_ICON_FILE_NAME_FA, 13.0f * io.FontGlobalScale, &font_config, icons_ranges);
+    io.Fonts->AddFontFromFileTTF("../Resources/" FONT_ICON_FILE_NAME_FA, 13.0f * font, &font_config, icons_ranges);
 #elif defined(xxWINDOWS)
-    io.Fonts->AddFontFromFileTTF("module/" FONT_ICON_FILE_NAME_FA, 13.0f * io.FontGlobalScale, &font_config, icons_ranges);
+    io.Fonts->AddFontFromFileTTF("module/" FONT_ICON_FILE_NAME_FA, 13.0f * font, &font_config, icons_ranges);
 #endif
     font_config.GlyphOffset.y       = 0.0f;
     font_config.GlyphMinAdvanceX    = 0.0f;
 
+    static ImWchar const fonts_ranges[] = { 0x8000, 0xFFFF, 0 };
     font_config.OversampleH         = 1;
     font_config.OversampleV         = 1;
     font_config.PixelSnapH          = true;
     font_config.MergeMode           = true;
-    font_config.SizePixels          = 13.0f * io.FontGlobalScale;
-    font_config.RasterizerMultiply  = 2.0f / io.FontGlobalScale;
+    font_config.SizePixels          = 13.0f * font;
+    font_config.RasterizerMultiply  = 2.0f / font;
 #if defined(xxMACOS)
-    io.Fonts->AddFontFromFileTTF("/System/Library/Fonts/PingFang.ttc", 13.0f * io.FontGlobalScale, &font_config, io.Fonts->GetGlyphRangesJapanese());
+    io.Fonts->AddFontFromFileTTF("/System/Library/Fonts/PingFang.ttc", 13.0f, &font_config, fonts_ranges);
 #elif defined(xxWINDOWS)
-    if (io.FontGlobalScale == 1.0f)
-    {
-        if (GetFileAttributesA("C:\\Windows\\Fonts\\msgothic.ttc") != INVALID_FILE_ATTRIBUTES)
-            io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\msgothic.ttc", 13.0f, &font_config, io.Fonts->GetGlyphRangesJapanese());
-        else if (GetFileAttributesA("C:\\Windows\\Fonts\\mingliu.ttc") != INVALID_FILE_ATTRIBUTES)
-            io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\mingliu.ttc", 13.0f, &font_config, io.Fonts->GetGlyphRangesJapanese());
-    }
-    else
-    {
-        if (GetFileAttributesA("C:\\Windows\\Fonts\\meiryo.ttc") != INVALID_FILE_ATTRIBUTES)
-            io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\meiryo.ttc", 13.0f * io.FontGlobalScale, &font_config, io.Fonts->GetGlyphRangesJapanese());
-        else if (GetFileAttributesA("C:\\Windows\\Fonts\\msjh.ttc") != INVALID_FILE_ATTRIBUTES)
-            io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\msjh.ttc", 13.0f * io.FontGlobalScale, &font_config, io.Fonts->GetGlyphRangesJapanese());
-    }
+    if (GetFileAttributesA("C:\\Windows\\Fonts\\meiryo.ttc") != INVALID_FILE_ATTRIBUTES)
+        io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\meiryo.ttc", 13.0f * font, &font_config, fonts_ranges);
+    else if (GetFileAttributesA("C:\\Windows\\Fonts\\msjh.ttc") != INVALID_FILE_ATTRIBUTES)
+        io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\msjh.ttc", 13.0f * font, &font_config, fonts_ranges);
 #endif
-    io.Fonts->FontBuilderIO         = ImGuiFreeType::GetBuilderForFreeType();
-    io.Fonts->Build();
-    io.FontGlobalScale              = scale / font;
 
     // Setup Platform/Renderer bindings
 #if defined(xxMACOS)
