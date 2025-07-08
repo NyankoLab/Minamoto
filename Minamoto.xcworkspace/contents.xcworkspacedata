@@ -22,15 +22,25 @@
    </Group>
    <Group
       location = "container:"
-      name = "Module">
+      name = "Experimental">
       <FileRef
-         location = "group:Module/Editor/Build/Editor.xcodeproj">
+         location = "group:SDK/miCPU/ui/minamoto/Build/Emulator.xcodeproj">
       </FileRef>
       <FileRef
          location = "group:SDK/miMarkup/ui/minamoto/Build/Markup.xcodeproj">
       </FileRef>
       <FileRef
          location = "group:SDK/miMAX/ui/minamoto/Build/MaxReader.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:SDK/xxShaderAssembler/ui/minamoto/Build/ShaderAssembler.xcodeproj">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "Module">
+      <FileRef
+         location = "group:Module/Editor/Build/Editor.xcodeproj">
       </FileRef>
       <FileRef
          location = "group:Module/Minamoto/Build/Minamoto.xcodeproj">
@@ -40,9 +50,6 @@
       </FileRef>
       <FileRef
          location = "group:Module/Sample/Build/Sample.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:SDK/xxShaderAssembler/ui/minamoto/Build/ShaderAssembler.xcodeproj">
       </FileRef>
       <FileRef
          location = "group:Module/Validator/Build/Validator.xcodeproj">

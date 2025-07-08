@@ -43,3 +43,6 @@
 [submodule "SDK/miMarkup"]
 	path = SDK/miMarkup
 	url = https://github.com/NyankoLab/miMarkup
+[submodule "SDK/miCPU"]
+	path = SDK/miCPU
+	url = https://github.com/metarutaiga/miCPU

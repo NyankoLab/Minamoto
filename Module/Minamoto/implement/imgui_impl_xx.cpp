@@ -38,8 +38,7 @@ struct ImGuiViewportDataXX
 static uint64_t g_instance = 0;
 static uint64_t g_device = 0;
 static uint64_t g_renderPass = 0;
-static uint64_t g_fontTexture = 0;
-static uint64_t g_fontSampler = 0;
+static uint64_t g_sampler = 0;
 static uint64_t g_vertexAttribute = 0;
 static uint64_t g_vertexShader = 0;
 static uint64_t g_fragmentShader = 0;
@@ -241,7 +240,7 @@ void ImGui_ImplXX_RenderDrawData(ImDrawData* draw_data, uint64_t commandEncoder)
 
                         xxSetVertexConstantBuffer(commandEncoder, constantBuffer, 16 * 3 * sizeof(float));
                         xxSetFragmentTextures(commandEncoder, 1, &boundTextureID);
-                        xxSetFragmentSamplers(commandEncoder, 1, &g_fontSampler);
+                        xxSetFragmentSamplers(commandEncoder, 1, &g_sampler);
                     }
 
                     // Draw
@@ -317,14 +316,12 @@ void ImGui_ImplXX_UpdateTexture(ImTextureData* tex)
 
         int stride = 0;
         void* map = xxMapTexture(g_device, texture, &stride, 0, 0);
-        if (map == nullptr)
+        if (map)
         {
-            IM_ASSERT("Backend failed to create texture!");
-            return;
+            for (int y = 0; y < tex->Height; y++)
+                memcpy((char*)map + stride * y, (char*)tex->GetPixels() + (tex->Width * 4) * y, (tex->Width * 4));
+            xxUnmapTexture(g_device, texture, 0, 0);
         }
-        for (int y = 0; y < tex->Height; y++)
-            memcpy((char*)map + stride * y, (char*)tex->GetPixels() + (tex->Width * 4) * y, (tex->Width * 4));
-        xxUnmapTexture(g_device, texture, 0, 0);
 
         // Store identifiers
         tex->SetTexID(texture);
@@ -338,9 +335,11 @@ void ImGui_ImplXX_UpdateTexture(ImTextureData* tex)
         int stride = 0;
         void* map = xxMapTexture(g_device, texture, &stride, 0, 0);
         if (map)
+        {
             for (int y = 0; y < tex->Height; y++)
                 memcpy((char*)map + stride * y, (char*)tex->GetPixels() + (tex->Width * 4) * y, (tex->Width * 4));
-        xxUnmapTexture(g_device, texture, 0, 0);
+            xxUnmapTexture(g_device, texture, 0, 0);
+        }
         tex->SetStatus(ImTextureStatus_OK);
     }
     else if (tex->Status == ImTextureStatus_WantDestroy)
@@ -371,7 +370,7 @@ bool ImGui_ImplXX_CreateDeviceObjects()
         0, xxOffsetOf(ImDrawVert, uv),  'TEX2', xxSizeOf(vert.uv)
     };
 
-    g_fontSampler = xxCreateSampler(g_device, false, false, false, true, true, true, 1);
+    g_sampler = xxCreateSampler(g_device, false, false, false, true, true, true, 1);
     g_vertexAttribute = xxCreateVertexAttribute(g_device, 3, attributes);
     g_vertexShader = xxCreateVertexShader(g_device, "default", g_vertexAttribute);
     g_fragmentShader = xxCreateFragmentShader(g_device, "default");
@@ -387,8 +386,7 @@ void ImGui_ImplXX_InvalidateDeviceObjects()
 {
     if (g_device == 0)
         return;
-    xxDestroyTexture(g_fontTexture);
-    xxDestroySampler(g_fontSampler);
+    xxDestroySampler(g_sampler);
     xxDestroyVertexAttribute(g_vertexAttribute);
     xxDestroyShader(g_device, g_vertexShader);
     xxDestroyShader(g_device, g_fragmentShader);
@@ -396,8 +394,7 @@ void ImGui_ImplXX_InvalidateDeviceObjects()
     xxDestroyDepthStencilState(g_depthStencilState);
     xxDestroyRasterizerState(g_rasterizerState);
     xxDestroyPipeline(g_pipeline);
-    g_fontTexture = 0;
-    g_fontSampler = 0;
+    g_sampler = 0;
     g_vertexAttribute = 0;
     g_vertexShader = 0;
     g_fragmentShader = 0;
@@ -410,8 +407,6 @@ void ImGui_ImplXX_InvalidateDeviceObjects()
 
 void ImGui_ImplXX_NewFrame()
 {
-    if (g_fontTexture == 0)
-        ImGui_ImplXX_CreateDeviceObjects();
 }
 
 //--------------------------------------------------------------------------------------------------------
