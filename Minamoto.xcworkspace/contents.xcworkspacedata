@@ -24,7 +24,7 @@
       location = "container:"
       name = "Experimental">
       <FileRef
-         location = "group:SDK/miCPU/ui/minamoto/Build/Emulator.xcodeproj">
+         location = "group:SDK/miCPU/example/minamoto/Build/Emulator.xcodeproj">
       </FileRef>
       <FileRef
          location = "group:SDK/miMarkup/ui/minamoto/Build/Markup.xcodeproj">
