@@ -28,24 +28,12 @@
 [submodule "SDK/quickjs"]
 	path = SDK/quickjs
 	url = https://github.com/bellard/quickjs
-[submodule "SDK/xxShaderAssembler"]
-	path = SDK/xxShaderAssembler
-	url = https://github.com/metarutaiga/xxShaderAssembler
 [submodule "SDK/meshoptimizer"]
 	path = SDK/meshoptimizer
 	url = https://github.com/zeux/meshoptimizer
 [submodule "SDK/ImGuizmo"]
 	path = SDK/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
-[submodule "SDK/xxMaxReader"]
-	path = SDK/miMAX
-	url = https://github.com/metarutaiga/miMAX
-[submodule "SDK/miMarkup"]
-	path = SDK/miMarkup
-	url = https://github.com/NyankoLab/miMarkup
-[submodule "SDK/mine"]
-	path = SDK/mine
-	url = https://github.com/metarutaiga/mine
 [submodule "SDK/imgui_club"]
 	path = SDK/imgui_club
 	url = https://github.com/ocornut/imgui_club

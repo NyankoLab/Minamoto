@@ -23,18 +23,6 @@
    <Group
       location = "container:"
       name = "Experimental">
-      <FileRef
-         location = "group:SDK/mine/example/minamoto/Build/Emulator.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:SDK/miMarkup/ui/minamoto/Build/Markup.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:SDK/miMAX/ui/minamoto/Build/MaxReader.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:SDK/xxShaderAssembler/ui/minamoto/Build/ShaderAssembler.xcodeproj">
-      </FileRef>
    </Group>
    <Group
       location = "container:"
