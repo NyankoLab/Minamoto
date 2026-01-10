@@ -15,7 +15,7 @@
 #if defined(xxMACOS) || defined(xxIOS)
 extern "C" bool _ZN6xxNode11AttachChildERKNSt3__110shared_ptrIS_EE(Node* thiz, xxNodePtr const& child);
 extern "C" bool _ZN6xxNode11DetachChildERKNSt3__110shared_ptrIS_EE(Node* thiz, xxNodePtr const& child);
-extern "C" bool _ZN6xxNode9TraversalERKNSt3__110shared_ptrIS_EENS0_8functionIFbS4_EEE(xxNodePtr const& node, std::function<bool(xxNodePtr const&)> callback);
+extern "C" bool _ZN6xxNode9TraversalERKNSt3__110shared_ptrIS_EERKNS0_8functionIFiS4_EEE(xxNodePtr const& node, std::function<int(xxNodePtr const&)> const& callback);
 #endif
 //------------------------------------------------------------------------------
 bool Node::AttachChild(xxNodePtr const& child)
@@ -71,10 +71,10 @@ void Node::Draw(xxDrawData const& data)
     Mesh->Draw(data.commandEncoder);
 }
 //------------------------------------------------------------------------------
-bool Node::Traversal(xxNodePtr const& node, std::function<bool(xxNodePtr const&)> callback)
+bool Node::Traversal(xxNodePtr const& node, std::function<int(xxNodePtr const&)> const& callback)
 {
 #if defined(xxMACOS) || defined(xxIOS)
-    return _ZN6xxNode9TraversalERKNSt3__110shared_ptrIS_EENS0_8functionIFbS4_EEE(node, callback);
+    return _ZN6xxNode9TraversalERKNSt3__110shared_ptrIS_EERKNS0_8functionIFiS4_EEE(node, callback);
 #else
     return xxNode::Traversal(node, callback);
 #endif

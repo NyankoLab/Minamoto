@@ -11,6 +11,7 @@
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
 #include <Runtime/Graphic/Node.h>
+#include <Runtime/Tools/NodeTools.h>
 #include "Import.h"
 
 //#define STBI_NO_JPEG
@@ -127,7 +128,7 @@ void Import::MergeNode(xxNodePtr const& target, xxNodePtr const& source, xxNodeP
             xxNodePtr to;
             if (from)
             {
-                to = GetNodeByName(root, from->Name);
+                to = NodeTools::GetObject(root, from->Name);
             }
             if (to == nullptr)
             {
@@ -163,20 +164,6 @@ void Import::MergeTexture(xxNodePtr const& node)
         }
         return true;
     });
-}
-//------------------------------------------------------------------------------
-xxNodePtr Import::GetNodeByName(xxNodePtr const& root, std::string const& name)
-{
-    xxNodePtr output;
-
-    Node::Traversal(root, [&](xxNodePtr const& node)
-    {
-        if (node->Name == name)
-            output = node;
-        return output == nullptr;
-    });
-
-    return output;
 }
 //------------------------------------------------------------------------------
 std::string Import::CheckDuplicateName(xxNodePtr const& node, std::string const& name)

@@ -66,7 +66,7 @@ public:
     WindowPtr const&        GetChild(size_t index) const;
     std::vector<WindowPtr>& GetChildren() const;
 
-    static bool             Traversal(WindowPtr const& window, std::function<bool(WindowPtr const&)> callback);
+    static bool             Traversal(WindowPtr const& window, std::function<int(WindowPtr const&)> const& callback);
 
     static WindowPtr        Create();
 

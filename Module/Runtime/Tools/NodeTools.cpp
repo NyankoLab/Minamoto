@@ -55,7 +55,7 @@ xxNodePtr const& NodeTools::GetObject(xxNodePtr const& node, std::string const& 
     {
         if (node->Name == name)
             output = &node;
-        return output == nullptr;
+        return output ? -1 : 1;
     });
     if (output == nullptr)
     {
@@ -71,17 +71,17 @@ xxNodePtr const& NodeTools::Intersect(xxNodePtr const& node, xxVector3 const& po
     xxNodePtr const* output = nullptr;
     Node::Traversal(node, [&](xxNodePtr const& node)
     {
-        if (node->Mesh)
+        auto& worldBound = node->WorldBound;
+        float distance = worldBound.Intersect(position, direction);
+        if (distance < 0.0f)
+            return 0;
+        distance += worldBound.w;
+        if (nearDistance > distance)
         {
-            xxVector3 diff = node->WorldBound.xyz - position;
-            float distance = diff.SquaredLength();
-            if (nearDistance > distance && distance > 1.0f && node->WorldBound.Intersect(position, direction) >= 0.0f)
-            {
-                nearDistance = distance;
-                output = &node;
-            }
+            nearDistance = distance;
+            output = &node;
         }
-        return true;
+        return 1;
     });
 
     if (output == nullptr)
@@ -102,15 +102,15 @@ void NodeTools::ConvertQuadTree(xxNodePtr const& node)
         return o;
     };
 
-    std::function<void(xxNodePtr const&, xxVector3 const&, xxNodePtr const&)> attachChild = [&](xxNodePtr const& node, xxVector3 const& nodeBound, xxNodePtr const& child)
+    auto attachChild = [&](auto&& attachChild, xxNodePtr const& node, xxVector3 const& nodeBound, xxNodePtr const& child) -> void
     {
-        float half = nodeBound.z / 2.0f;
+        float half = nodeBound.radius / 2.0f;
 
         xxVector3 quads[4];
-        quads[0].z = half;
-        quads[1].z = half;
-        quads[2].z = half;
-        quads[3].z = half;
+        quads[0].radius = half;
+        quads[1].radius = half;
+        quads[2].radius = half;
+        quads[3].radius = half;
         quads[0].xy = nodeBound.xy + xxVector2{  1,  1 } * half;
         quads[1].xy = nodeBound.xy + xxVector2{  1, -1 } * half;
         quads[2].xy = nodeBound.xy + xxVector2{ -1, -1 } * half;
@@ -124,22 +124,17 @@ void NodeTools::ConvertQuadTree(xxNodePtr const& node)
             }
 
             xxVector3 childBound = Bound2D(child->WorldBound);
-            if (0.0f < childBound.z && childBound.z <= half)
+            if (0.0f < childBound.radius && childBound.radius <= half)
             {
-                size_t index = 0;
-                float nearest = FLT_MAX;
-                float distances[4];
                 for (size_t i = 0; i < 4; ++i)
                 {
-                    distances[i] = (quads[i].xy - childBound.xy).Length();
-                    if (nearest > distances[i])
+                    if (fabsf(quads[i].x - childBound.x) + childBound.radius <= half &&
+                        fabsf(quads[i].y - childBound.y) + childBound.radius <= half)
                     {
-                        index = i;
-                        nearest = distances[i];
+                        attachChild(attachChild, node->GetChild(i), quads[i], child);
+                        return;
                     }
                 }
-                attachChild(node->GetChild(index), quads[index], child);
-                return;
             }
         }
 
@@ -158,7 +153,7 @@ void NodeTools::ConvertQuadTree(xxNodePtr const& node)
 
     for (xxNodePtr const& child : children)
     {
-        attachChild(node, nodeBound, child);
+        attachChild(attachChild, node, nodeBound, child);
     }
 
     RemoveEmptyNode(node);

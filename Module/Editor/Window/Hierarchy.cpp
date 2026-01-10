@@ -304,7 +304,7 @@ bool Hierarchy::Update(const UpdateData& updateData, bool& show, xxNodePtr const
         bool clickedLeft = false;
         bool clickedRight = false;
         size_t TEST_OPEN_FLAG = xxNode::RESERVED0;
-        std::function<void(xxNodePtr const&)> traversal = [&](xxNodePtr const& node)
+        auto traversal = [&](auto&& traversal, xxNodePtr const& node) -> void
         {
             if (node == nullptr)
                 return;
@@ -372,14 +372,14 @@ bool Hierarchy::Update(const UpdateData& updateData, bool& show, xxNodePtr const
             {
                 ImGui::Indent();
                 for (xxNodePtr const& child : *node)
-                    traversal(child);
+                    traversal(traversal, child);
                 ImGui::Unindent();
             }
         };
         if (root)
         {
             for (xxNodePtr const& child : *root)
-                traversal(child);
+                traversal(traversal, child);
 
             // Drag
             ImVec2 avail = ImGui::GetContentRegionAvail();

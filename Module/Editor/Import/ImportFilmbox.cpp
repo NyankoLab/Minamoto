@@ -19,6 +19,7 @@
 #include <Runtime/Modifier/BakedQuaternionModifier.h>
 #include <Runtime/Modifier/Quaternion16Modifier.h>
 #include <Runtime/Modifier/BakedQuaternion16Modifier.h>
+#include <Runtime/Tools/NodeTools.h>
 #include "Utility/MeshTools.h"
 #include "ImportFilmbox.h"
 
@@ -115,7 +116,7 @@ static void CreateAnimation(ufbx_scene* scene, xxNodePtr const& root, Import::Im
         }
         else
         {
-            target = Import::GetNodeByName(root, element->name.data);
+            target = NodeTools::GetObject(root, element->name.data);
         }
         if (target_node == nullptr && target == nullptr)
         {
@@ -472,13 +473,7 @@ static void CreateSkinning(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr con
             xxNodePtr to;
             if (from)
             {
-                char const* name = from->name.data;
-                Node::Traversal(root, [&](xxNodePtr const& node)
-                {
-                    if (node->Name == name)
-                        to = node;
-                    return to == nullptr;
-                });
+                to = NodeTools::GetObject(root, from->name.data);
             }
             if (to == nullptr)
             {
