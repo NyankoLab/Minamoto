@@ -361,7 +361,11 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
             for (int j = 0; j < colorCount; ++j)
                 (*colors[j]++) = vec4(mesh->color_sets[j].vertex_color.values[i]).ToInteger();
             for (int j = 0; j < textureCount; ++j)
-                (*textures[j]++) = vec2(mesh->uv_sets[j].vertex_uv.values[i]);
+            {
+                auto uv = vec2(mesh->uv_sets[j].vertex_uv.values[i]);
+                uv.y = 1.0f - uv.y;
+                (*textures[j]++) = uv;
+            }
         }
 
         if (mesh->vertex_position.values.count < 65536)
@@ -410,7 +414,11 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
             for (int j = 0; j < colorCount; ++j)
                 (*colors[j]++) = vec4(ufbx_get_vertex_vec4(&mesh->color_sets[j].vertex_color, i)).ToInteger();
             for (int j = 0; j < textureCount; ++j)
-                (*textures[j]++) = vec2(ufbx_get_vertex_vec2(&mesh->uv_sets[j].vertex_uv, i));
+            {
+                auto uv = vec2(ufbx_get_vertex_vec2(&mesh->uv_sets[j].vertex_uv, i));
+                uv.y = 1.0f - uv.y;
+                (*textures[j]++) = uv;
+            }
         }
     }
     output->CalculateBound();
@@ -428,6 +436,9 @@ static void CreateSkinning(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr con
         {
             ufbx_skin_cluster* cluster = skin_deformer->clusters.data[i];
 
+            // SkinMatrix
+            xxMatrix4x4 skinMatrix = mat4(cluster->geometry_to_bone);
+
             // Bound
             xxVector4 bound = xxVector4::ZERO;
             for (size_t j = 0; j < cluster->vertices.count; ++j)
@@ -436,10 +447,7 @@ static void CreateSkinning(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr con
                 xxVector3 vertex = vec3(mesh->vertices[index]);
                 bound.BoundMerge(vertex);
             }
-            bound = bound.BoundTransform(mat4(cluster->geometry_to_bone), 1.0f);
-
-            // SkinMatrix
-            xxMatrix4x4 skinMatrix = mat4(cluster->geometry_to_bone);
+            bound = bound.BoundTransform(skinMatrix);
 
             // Find the bone
             ufbx_node* from = cluster->bone_node;

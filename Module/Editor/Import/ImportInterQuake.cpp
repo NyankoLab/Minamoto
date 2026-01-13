@@ -104,7 +104,7 @@ xxNodePtr ImportInterQuake::Create(char const* iqe, std::function<void(xxNodePtr
 
                         xxNode::BoneData bone;
                         bone.bone = to;
-                        bone.bound = bound.BoundTransform(invWorldMatrix, 1.0f);
+                        bone.bound = bound.BoundTransform(invWorldMatrix);
                         bone.classSkinMatrix = invWorldMatrix;
                         bone.classBoneMatrix = {};
                         child->Bones.push_back(bone);
