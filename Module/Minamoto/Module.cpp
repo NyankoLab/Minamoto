@@ -1,8 +1,8 @@
 //==============================================================================
 // Minamoto : Module Source
 //
-// Copyright (c) 2023-2025 TAiGA
-// https://github.com/metarutaiga/minamoto
+// Copyright (c) 2023-2026 TAiGA
+// https://github.com/NyankoLab/Minamoto
 //==============================================================================
 #include "xxGraphic/xxSystem.h"
 #include "DearImGui.h"

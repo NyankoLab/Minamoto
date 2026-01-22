@@ -1,8 +1,8 @@
 //==============================================================================
 // Minamoto : Module Interface Header
 //
-// Copyright (c) 2019-2023 TAiGA
-// https://github.com/metarutaiga/minamoto
+// Copyright (c) 2019-2026 TAiGA
+// https://github.com/NyankoLab/Minamoto
 //==============================================================================
 #pragma once
 

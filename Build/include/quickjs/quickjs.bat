@@ -3,7 +3,7 @@ rem // =========================================================================
 rem // Minamoto : quickjs Batch
 rem //
 rem // Copyright (c) 2019-2026 TAiGA
-rem // https://github.com/metarutaiga/minamoto
+rem // https://github.com/NyankoLab/Minamoto
 rem //==============================================================================
 
 for /f %%s in ('dir /b /o:d VERSION quickjs-ver.h') do set newer=%%s

@@ -3,7 +3,7 @@
 # Minamoto : quickjs Bash
 # 
 # Copyright (c) 2023-2026 TAiGA
-# https://github.com/metarutaiga/minamoto
+# https://github.com/NyankoLab/Minamoto
 # ==============================================================================
 
 if [ ! -f quickjs-ver.h ] || [ VERSION -nt quickjs-ver.h ]; then

@@ -2,7 +2,7 @@
 // Minamoto : quickjs-io Source
 //
 // Copyright (c) 2023-2026 TAiGA
-// https://github.com/metarutaiga/minamoto
+// https://github.com/NyankoLab/Minamoto
 //==============================================================================
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wshorten-64-to-32"
