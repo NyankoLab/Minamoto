@@ -1,7 +1,7 @@
 //==============================================================================
 // Minamoto : quickjs-io Source
 //
-// Copyright (c) 2023-2025 TAiGA
+// Copyright (c) 2023-2026 TAiGA
 // https://github.com/metarutaiga/minamoto
 //==============================================================================
 #ifdef __clang__

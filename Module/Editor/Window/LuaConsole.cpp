@@ -21,7 +21,6 @@ extern "C"
 #include <lua/liolib.c>
 #include <lua/loadlib.c>
 #include <lua/loslib.c>
-#define luaL_openlibs(...)
 #define main lua_main
 #include <lua/lua.c>
 #undef main
@@ -32,8 +31,8 @@ extern "C"
 #undef lua_writeline
 #undef lua_writestring
 #undef lua_writestringerror
-static int  lua_readline(lua_State* L, char* buffer, char const* prompt);
-static void lua_saveline(lua_State* L, char const* line);
+static char* lua_readline(char* buffer, char const* prompt);
+static void lua_saveline(char const* line);
 static void lua_writeline();
 static void lua_writestring(char const* string, size_t length);
 static void lua_writestringerror(char const* string, char const* parameter);
@@ -49,7 +48,7 @@ void LuaConsole::Initialize()
     lua_pinitreadline = [](lua_State*){};
     lua_preadline = lua_readline;
     lua_psaveline = lua_saveline;
-    lua_pfreeline = [](lua_State*, char*){};
+    lua_pfreeline = [](char*){};
     lua_pwriteline = lua_writeline;
     lua_pwritestring = lua_writestring;
     lua_pwritestringerror = lua_writestringerror;
@@ -132,7 +131,7 @@ bool LuaConsole::Update(const UpdateData& updateData, bool& show)
 //==============================================================================
 //  Standard I/O
 //==============================================================================
-static int lua_readline(lua_State* L, char* buffer, char const* prompt)
+static char* lua_readline(char* buffer, char const* prompt)
 {
     auto& line = Outputs.back();
     if (line != prompt)
@@ -151,17 +150,17 @@ static int lua_readline(lua_State* L, char* buffer, char const* prompt)
     auto& input = console.input;
     auto& inputPos = console.inputPos;
     if (input.empty() || input[0] == 0)
-        return 0;
+        return nullptr;
     lua_writestring(input.c_str(), input.size());
     lua_writeline();
     strncpy(buffer, input.c_str(), LUA_MAXINPUT);
     size_t erase = std::min<size_t>(input.size(), LUA_MAXINPUT);
     input.erase(input.begin(), input.begin() + erase);
     inputPos -= inputPos;
-    return 1;
+    return buffer;
 }
 //------------------------------------------------------------------------------
-static void lua_saveline(lua_State* L, char const* line)
+static void lua_saveline(char const* line)
 {
     console.AddHistory(line);
 }

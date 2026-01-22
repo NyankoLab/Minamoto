@@ -11,10 +11,6 @@
 		D6346EB72BF9FFB00075D7F1 /* libregexp.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346EA22BF9FFAF0075D7F1 /* libregexp.c */; };
 		D6346EB82BF9FFB00075D7F1 /* libregexp.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346EA22BF9FFAF0075D7F1 /* libregexp.c */; };
 		D6346EB92BF9FFB00075D7F1 /* libregexp.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346EA22BF9FFAF0075D7F1 /* libregexp.c */; };
-		D6346EBA2BF9FFB00075D7F1 /* libbf.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346EA32BF9FFAF0075D7F1 /* libbf.c */; };
-		D6346EBB2BF9FFB00075D7F1 /* libbf.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346EA32BF9FFAF0075D7F1 /* libbf.c */; };
-		D6346EBC2BF9FFB00075D7F1 /* libbf.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346EA32BF9FFAF0075D7F1 /* libbf.c */; };
-		D6346EBD2BF9FFB00075D7F1 /* libbf.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346EA32BF9FFAF0075D7F1 /* libbf.c */; };
 		D6346EBE2BF9FFB00075D7F1 /* libunicode.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346EA42BF9FFAF0075D7F1 /* libunicode.c */; };
 		D6346EBF2BF9FFB00075D7F1 /* libunicode.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346EA42BF9FFAF0075D7F1 /* libunicode.c */; };
 		D6346EC02BF9FFB00075D7F1 /* libunicode.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346EA42BF9FFAF0075D7F1 /* libunicode.c */; };
@@ -27,6 +23,10 @@
 		D6346EDD2BFA00000075D7F1 /* cutils.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346ED82BFA00000075D7F1 /* cutils.c */; };
 		D6346EDE2BFA00000075D7F1 /* cutils.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346ED82BFA00000075D7F1 /* cutils.c */; };
 		D6346EDF2BFA00000075D7F1 /* cutils.c in Sources */ = {isa = PBXBuildFile; fileRef = D6346ED82BFA00000075D7F1 /* cutils.c */; };
+		F5927B2E2F22328900AD8F1C /* dtoa.c in Sources */ = {isa = PBXBuildFile; fileRef = F5927B2D2F22328900AD8F1C /* dtoa.c */; };
+		F5927B2F2F22328900AD8F1C /* dtoa.c in Sources */ = {isa = PBXBuildFile; fileRef = F5927B2D2F22328900AD8F1C /* dtoa.c */; };
+		F5927B302F22328900AD8F1C /* dtoa.c in Sources */ = {isa = PBXBuildFile; fileRef = F5927B2D2F22328900AD8F1C /* dtoa.c */; };
+		F5927B312F22328900AD8F1C /* dtoa.c in Sources */ = {isa = PBXBuildFile; fileRef = F5927B2D2F22328900AD8F1C /* dtoa.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,7 +37,6 @@
 		D60EC63526A85BA70051A948 /* ClangPlatform.Windows.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ClangPlatform.Windows.xcconfig; sourceTree = "<group>"; };
 		D6346EA12BF9FFAF0075D7F1 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../SDK/quickjs/LICENSE; sourceTree = "<group>"; };
 		D6346EA22BF9FFAF0075D7F1 /* libregexp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = libregexp.c; path = ../SDK/quickjs/libregexp.c; sourceTree = "<group>"; };
-		D6346EA32BF9FFAF0075D7F1 /* libbf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = libbf.c; path = ../SDK/quickjs/libbf.c; sourceTree = "<group>"; };
 		D6346EA42BF9FFAF0075D7F1 /* libunicode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = libunicode.c; path = ../SDK/quickjs/libunicode.c; sourceTree = "<group>"; };
 		D6346EA52BF9FFAF0075D7F1 /* list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = list.h; path = ../SDK/quickjs/list.h; sourceTree = "<group>"; };
 		D6346EA62BF9FFAF0075D7F1 /* libunicode-table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "libunicode-table.h"; path = "../SDK/quickjs/libunicode-table.h"; sourceTree = "<group>"; };
@@ -51,9 +50,7 @@
 		D6346EAE2BF9FFB00075D7F1 /* quickjs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = quickjs.c; path = ../SDK/quickjs/quickjs.c; sourceTree = "<group>"; };
 		D6346EAF2BF9FFB00075D7F1 /* libunicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libunicode.h; path = ../SDK/quickjs/libunicode.h; sourceTree = "<group>"; };
 		D6346EB02BF9FFB00075D7F1 /* qjs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = qjs.c; path = ../SDK/quickjs/qjs.c; sourceTree = "<group>"; };
-		D6346EB12BF9FFB00075D7F1 /* libbf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libbf.h; path = ../SDK/quickjs/libbf.h; sourceTree = "<group>"; };
 		D6346EB32BF9FFB00075D7F1 /* libregexp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libregexp.h; path = ../SDK/quickjs/libregexp.h; sourceTree = "<group>"; };
-		D6346EB42BF9FFB00075D7F1 /* qjscalc.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = qjscalc.js; path = ../SDK/quickjs/qjscalc.js; sourceTree = "<group>"; };
 		D6346EB52BF9FFB00075D7F1 /* quickjs-atom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "quickjs-atom.h"; path = "../SDK/quickjs/quickjs-atom.h"; sourceTree = "<group>"; };
 		D6346ED62BFA00000075D7F1 /* cutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cutils.h; path = ../SDK/quickjs/cutils.h; sourceTree = "<group>"; };
 		D6346ED72BFA00000075D7F1 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../SDK/quickjs/TODO; sourceTree = "<group>"; };
@@ -63,6 +60,8 @@
 		D6346EDB2BFA00000075D7F1 /* Changelog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Changelog; path = ../SDK/quickjs/Changelog; sourceTree = "<group>"; };
 		D644A041231ED82900B75B77 /* libquickjs.macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libquickjs.macOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6AA5DB92BD7DA9E00AE1C30 /* ClangPlatform.Darwin.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ClangPlatform.Darwin.xcconfig; sourceTree = "<group>"; };
+		F5927B2C2F22328900AD8F1C /* dtoa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = dtoa.h; path = ../SDK/quickjs/dtoa.h; sourceTree = SOURCE_ROOT; };
+		F5927B2D2F22328900AD8F1C /* dtoa.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = dtoa.c; path = ../SDK/quickjs/dtoa.c; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,8 +113,8 @@
 				D6346EDB2BFA00000075D7F1 /* Changelog */,
 				D6346ED82BFA00000075D7F1 /* cutils.c */,
 				D6346ED62BFA00000075D7F1 /* cutils.h */,
-				D6346EA32BF9FFAF0075D7F1 /* libbf.c */,
-				D6346EB12BF9FFB00075D7F1 /* libbf.h */,
+				F5927B2C2F22328900AD8F1C /* dtoa.h */,
+				F5927B2D2F22328900AD8F1C /* dtoa.c */,
 				D6346EAB2BF9FFB00075D7F1 /* libregexp-opcode.h */,
 				D6346EA22BF9FFAF0075D7F1 /* libregexp.c */,
 				D6346EB32BF9FFB00075D7F1 /* libregexp.h */,
@@ -126,7 +125,6 @@
 				D6346EA52BF9FFAF0075D7F1 /* list.h */,
 				D6346EB02BF9FFB00075D7F1 /* qjs.c */,
 				D6346EA72BF9FFAF0075D7F1 /* qjsc.c */,
-				D6346EB42BF9FFB00075D7F1 /* qjscalc.js */,
 				D6346EB52BF9FFB00075D7F1 /* quickjs-atom.h */,
 				D6346EAA2BF9FFB00075D7F1 /* quickjs-libc.c */,
 				D6346EAD2BF9FFB00075D7F1 /* quickjs-libc.h */,
@@ -230,7 +228,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1630;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					30A9A74925ADC5C3000FA104 = {
 						CreatedOnToolsVersion = 12.3;
@@ -356,8 +354,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5927B302F22328900AD8F1C /* dtoa.c in Sources */,
 				D6346EDC2BFA00000075D7F1 /* cutils.c in Sources */,
-				D6346EBA2BF9FFB00075D7F1 /* libbf.c in Sources */,
 				D6346EB62BF9FFB00075D7F1 /* libregexp.c in Sources */,
 				D6346EBE2BF9FFB00075D7F1 /* libunicode.c in Sources */,
 				D6346ECA2BF9FFB00075D7F1 /* quickjs.c in Sources */,
@@ -368,8 +366,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5927B312F22328900AD8F1C /* dtoa.c in Sources */,
 				D6346EDF2BFA00000075D7F1 /* cutils.c in Sources */,
-				D6346EBD2BF9FFB00075D7F1 /* libbf.c in Sources */,
 				D6346EB92BF9FFB00075D7F1 /* libregexp.c in Sources */,
 				D6346EC12BF9FFB00075D7F1 /* libunicode.c in Sources */,
 				D6346ECD2BF9FFB00075D7F1 /* quickjs.c in Sources */,
@@ -380,8 +378,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5927B2F2F22328900AD8F1C /* dtoa.c in Sources */,
 				D6346EDD2BFA00000075D7F1 /* cutils.c in Sources */,
-				D6346EBB2BF9FFB00075D7F1 /* libbf.c in Sources */,
 				D6346EB72BF9FFB00075D7F1 /* libregexp.c in Sources */,
 				D6346EBF2BF9FFB00075D7F1 /* libunicode.c in Sources */,
 				D6346ECB2BF9FFB00075D7F1 /* quickjs.c in Sources */,
@@ -392,8 +390,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5927B2E2F22328900AD8F1C /* dtoa.c in Sources */,
 				D6346EDE2BFA00000075D7F1 /* cutils.c in Sources */,
-				D6346EBC2BF9FFB00075D7F1 /* libbf.c in Sources */,
 				D6346EB82BF9FFB00075D7F1 /* libregexp.c in Sources */,
 				D6346EC02BF9FFB00075D7F1 /* libunicode.c in Sources */,
 				D6346ECC2BF9FFB00075D7F1 /* quickjs.c in Sources */,
@@ -562,6 +560,7 @@
 				PRODUCT_NAME = quickjs;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SYMROOT = ../bin;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -642,6 +641,7 @@
 				PRODUCT_NAME = quickjs;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SYMROOT = ../bin;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

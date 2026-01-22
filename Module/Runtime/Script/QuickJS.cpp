@@ -67,7 +67,7 @@ void QuickJS::Eval(char const* buf, size_t len)
     {
         if (dump_error)
             dump_error(ctx);
-        JS_ResetUncatchableError(ctx);
+//      JS_ResetUncatchableError(ctx);
     }
     JS_FreeValue(ctx, val);
 }

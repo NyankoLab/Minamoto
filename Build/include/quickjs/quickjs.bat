@@ -2,7 +2,7 @@
 rem // ==============================================================================
 rem // Minamoto : quickjs Batch
 rem //
-rem // Copyright (c) 2019-2024 TAiGA
+rem // Copyright (c) 2019-2026 TAiGA
 rem // https://github.com/metarutaiga/minamoto
 rem //==============================================================================
 
@@ -28,10 +28,7 @@ if not %newer%==quickjs.fixed.c (
   del quickjs.fixed.3
 )
 if not exist qjsc.exe (
-  cl -std:c11 -experimental:c11atomics -I. -I../../Build/include/quickjs-win32 -FI ../../Build/include/quickjs-user.h -Ox cutils.c libbf.c libregexp.c libunicode.c qjsc.c quickjs.fixed.c quickjs-libc.c -o qjsc.exe
-)
-if not exist qjscalc.c (
-  qjsc.exe -c -o qjscalc.c -m qjscalc.js
+  cl -std:c11 -experimental:c11atomics -I. -I../../Build/include/quickjs-win32 -FI ../../Build/include/quickjs-user.h -Ox cutils.c dtoa.c libregexp.c libunicode.c qjsc.c quickjs.fixed.c quickjs-libc.c -o qjsc.exe
 )
 if not exist repl.c (
   qjsc.exe -c -o repl.c -m repl.js

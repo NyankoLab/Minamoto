@@ -50,9 +50,9 @@
 #define lua_saveline lua_psaveline
 #define lua_freeline lua_pfreeline
 LUAEX_API extern void (*lua_pinitreadline)(lua_State* L);
-LUAEX_API extern int  (*lua_preadline)(lua_State* L, char* buffer, char const* prompt);
-LUAEX_API extern void (*lua_psaveline)(lua_State* L, char const* line);
-LUAEX_API extern void (*lua_pfreeline)(lua_State* L, char* buffer);
+LUAEX_API extern char* (*lua_preadline)(char* buffer, char const* prompt);
+LUAEX_API extern void (*lua_psaveline)(char const* line);
+LUAEX_API extern void (*lua_pfreeline)(char* buffer);
 
 #define lua_writeline lua_pwriteline
 #define lua_writestring lua_pwritestring

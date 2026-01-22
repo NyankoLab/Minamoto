@@ -43,7 +43,7 @@ void QuickJSConsole::Initialize()
     js_std_init_handlers(QuickJS::rt);
 
     /* loader for ES6 modules */
-    JS_SetModuleLoaderFunc(QuickJS::rt, nullptr, js_module_loader, nullptr);
+    JS_SetModuleLoaderFunc2(QuickJS::rt, nullptr, js_module_loader, nullptr, nullptr);
 
     /* system modules */
     js_init_module_std(QuickJS::ctx, "std");

@@ -36,15 +36,15 @@ void Lua::Initialize()
             if (nsize == 0)
             {
                 xxFree(ptr);
-                return NULL;
+                return nullptr;
             }
             return xxRealloc(ptr, char, nsize);
-        }, nullptr);  /* create state */
+        }, nullptr, luaL_makeseed(nullptr));  /* create state */
 
         lua_pinitreadline = [](lua_State*){};
-        lua_preadline = [](lua_State*, char*, char const*){ return 0; };
-        lua_psaveline = [](lua_State*, char const*){};
-        lua_pfreeline = [](lua_State*, char*){};
+        lua_preadline = [](char*, char const*) -> char* { return nullptr; };
+        lua_psaveline = [](char const*){};
+        lua_pfreeline = [](char*){};
         lua_pwriteline = []{};
         lua_pwritestring = [](char const*, size_t){};
         lua_pwritestringerror = [](char const*, char const*){};
@@ -105,9 +105,9 @@ void Lua::Update()
 //  Standard I/O
 //==============================================================================
 LUAEX_API void (*lua_pinitreadline)(lua_State* L);
-LUAEX_API int  (*lua_preadline)(lua_State* L, char* buffer, char const* prompt);
-LUAEX_API void (*lua_psaveline)(lua_State* L, char const* line);
-LUAEX_API void (*lua_pfreeline)(lua_State* L, char* buffer);
+LUAEX_API char* (*lua_preadline)(char* buffer, char const* prompt);
+LUAEX_API void (*lua_psaveline)(char const* line);
+LUAEX_API void (*lua_pfreeline)(char* buffer);
 LUAEX_API void (*lua_pwriteline)(void);
 LUAEX_API void (*lua_pwritestring)(char const* string, size_t length);
 LUAEX_API void (*lua_pwritestringerror)(char const* string, char const* parameter);

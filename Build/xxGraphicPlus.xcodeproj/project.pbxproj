@@ -260,7 +260,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1630;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					30A9A78025ADC6D9000FA104 = {
 						CreatedOnToolsVersion = 12.3;
@@ -499,6 +499,7 @@
 				PRODUCT_NAME = xxGraphicPlus;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SYMROOT = ../bin;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -578,6 +579,7 @@
 				PRODUCT_NAME = xxGraphicPlus;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SYMROOT = ../bin;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
