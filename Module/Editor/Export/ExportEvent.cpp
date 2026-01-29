@@ -9,7 +9,6 @@
 #include <Runtime/Graphic/Binary.h>
 #include <Runtime/Graphic/Node.h>
 #include <Runtime/Tools/NodeTools.h>
-#include <ImGuiFileDialog/ImGuiFileDialog.h>
 #include "ExportFilmbox.h"
 #include "ExportWavefront.h"
 #include "ExportEvent.h"
@@ -30,12 +29,10 @@ ExportEvent::ExportEvent(xxNodePtr const& root)
     this->path = std::string(xxGetDocumentPath()) + '/';
 #endif
     this->name = root->Name;
-    this->fileDialog = new ImGuiFileDialog;
 }
 //------------------------------------------------------------------------------
 ExportEvent::~ExportEvent()
 {
-    delete fileDialog;
 }
 //------------------------------------------------------------------------------
 double ExportEvent::Execute()
@@ -52,15 +49,6 @@ double ExportEvent::Execute()
         ImGui::SameLine();
         if (ImGui::Button("..."))
         {
-            IGFD::FileDialogConfig config = { path };
-#if defined(_WIN32)
-            if (config.path.size() && config.path.back() != '\\')
-                config.path.resize(config.path.rfind('\\') + 1);
-#else
-            if (config.path.size() && config.path.back() != '/')
-                config.path.resize(config.path.rfind('/') + 1);
-#endif
-            fileDialog->OpenDialog("Export", "Choose Folder", nullptr, config);
         }
         ImGui::InputTextEx("Name", nullptr, name);
         ImGui::BeginTabBar("Export");
@@ -85,15 +73,6 @@ double ExportEvent::Execute()
         ImGui::EndTabBar();
     }
     ImGui::End();
-
-    if (fileDialog->Display("Export", 0, ImVec2(512, 384)))
-    {
-        if (fileDialog->IsOk())
-        {
-            path = fileDialog->GetCurrentPath();
-        }
-        fileDialog->Close();
-    }
 
     if (show)
     {

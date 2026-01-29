@@ -6,7 +6,6 @@
 //==============================================================================
 #include "Editor.h"
 #include <freetype/freetype.h>
-#include <ImGuiFileDialog/ImGuiFileDialog.h>
 #include <lua/lua.h>
 #include <ufbx/ufbx.h>
 #include "About.h"
@@ -30,7 +29,6 @@ bool About::Update(const UpdateData& updateData, bool& show)
         ImGui::TextUnformatted("FreeType : " xxStringify(FREETYPE_MAJOR) "." xxStringify(FREETYPE_MINOR) "." xxStringify(FREETYPE_PATCH));
         ImGui::TextUnformatted("Lua : " LUA_VERSION_MAJOR "." LUA_VERSION_MINOR "." LUA_VERSION_RELEASE);
         ImGui::Separator();
-        ImGui::TextUnformatted("ImGuiFileDialog : " IGFD_VERSION);
         ImGui::TextUnformatted("ufbx : " UFBX_VERSION);
     }
     ImGui::End();

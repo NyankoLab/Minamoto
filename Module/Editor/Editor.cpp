@@ -23,16 +23,6 @@
 #include "Window/Game.h"
 #include "Window/Setup.h"
 
-#if _CPPUNWIND == 0 && __cpp_exceptions == 0
-#if defined(xxWINDOWS)
-#include <windows.h>
-#endif
-#define try         if (1) {
-#define catch(x)    } else { std::exception e; std::string msg;
-#define throw       }
-#endif
-#include <ImGuiFileDialog/ImGuiFileDialog.cpp>
-
 #if defined(__ANDROID__)
 extern "C" void __cxa_pure_virtual(void) {}
 #endif

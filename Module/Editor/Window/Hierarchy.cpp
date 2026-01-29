@@ -11,7 +11,6 @@
 #include <Runtime/Graphic/Node.h>
 #include <Runtime/MiniGUI/Window.h>
 #include <Runtime/Tools/NodeTools.h>
-#include <ImGuiFileDialog/ImGuiFileDialog.h>
 #include "Export/ExportEvent.h"
 #include "Import/Import.h"
 #include "Import/ImportEvent.h"
@@ -34,8 +33,6 @@ xxNodePtr Hierarchy::importNode;
 xxNodePtr Hierarchy::exportNode;
 char Hierarchy::importName[1024];
 char Hierarchy::exportName[1024];
-ImGuiFileDialog* Hierarchy::importFileDialog;
-ImGuiFileDialog* Hierarchy::exportFileDialog;
 //==============================================================================
 static void AddCamera(xxNodePtr const& root)
 {
@@ -70,20 +67,14 @@ void Hierarchy::Initialize()
     selectedRight = nullptr;
     importNode = nullptr;
     exportNode = nullptr;
-    importFileDialog = new ImGuiFileDialog;
-    exportFileDialog = new ImGuiFileDialog;
 }
 //------------------------------------------------------------------------------
 void Hierarchy::Shutdown()
 {
-    delete importFileDialog;
-    delete exportFileDialog;
     selectedLeft = nullptr;
     selectedRight = nullptr;
     importNode = nullptr;
     exportNode = nullptr;
-    importFileDialog = nullptr;
-    exportFileDialog = nullptr;
 }
 //------------------------------------------------------------------------------
 static xxNodePtr ImportFile(xxNodePtr const& node, char const* name)
@@ -131,22 +122,6 @@ void Hierarchy::Import(const UpdateData& updateData)
         {
             if (importName[0] == 0 && exportName[0])
                 strcpy(importName, exportName);
-#if defined(_WIN32)
-            IGFD::FileDialogConfig config = { importName[0] ? importName : std::string(xxGetDocumentPath()) + '\\' };
-            if (config.path.size() && config.path.back() != '\\')
-                config.path.resize(config.path.rfind('\\') + 1);
-#else
-            IGFD::FileDialogConfig config = { importName[0] ? importName : std::string(xxGetDocumentPath()) + '/' };
-            if (config.path.size() && config.path.back() != '/')
-                config.path.resize(config.path.rfind('/') + 1);
-#endif
-            char const* filters =
-                "Supported Files(*.fbx,*.obj,*.xxb){.fbx,.obj,.xxb},"
-                "Double Cross Binary(*.xxb){.xxb},"
-                "Kaydara Flimbox(*.fbx){.fbx},"
-                "Wavefront Object(*.obj){.obj},"
-                "All Files(*.*){.*},";
-            importFileDialog->OpenDialog("Import", "Choose File", filters, config);
         }
         ImGui::Checkbox("Axis Up Y to Z", &Import::EnableAxisUpYToZ);
         ImGui::Checkbox("Merge Node", &Import::EnableMergeNode);
@@ -181,19 +156,9 @@ void Hierarchy::Import(const UpdateData& updateData)
     }
     ImGui::End();
 
-    if (importFileDialog->Display("Import", 0, ImVec2(384 * updateData.scale, 256 * updateData.scale)))
-    {
-        if (importFileDialog->IsOk())
-        {
-            strcpy(importName, importFileDialog->GetFilePathName().c_str());
-        }
-        importFileDialog->Close();
-    }
-
     if (show == false)
     {
         importNode = nullptr;
-        importFileDialog->Close();
     }
 }
 //------------------------------------------------------------------------------
@@ -212,19 +177,6 @@ void Hierarchy::Export(const UpdateData& updateData)
         {
             if (exportName[0] == 0 && importName[0])
                 strcpy(exportName, importName);
-#if defined(_WIN32)
-            IGFD::FileDialogConfig config = { exportName[0] ? exportName : std::string(xxGetDocumentPath()) + '\\' };
-            if (config.path.size() && config.path.back() != '\\')
-                config.path.resize(config.path.rfind('\\') + 1);
-#else
-            IGFD::FileDialogConfig config = { exportName[0] ? exportName : std::string(xxGetDocumentPath()) + '/' };
-            if (config.path.size() && config.path.back() != '/')
-                config.path.resize(config.path.rfind('/') + 1);
-#endif
-            char const* filters =
-                "Double Cross Binary(*.xxb){.xxb},"
-                "All Files(*.*){.*},";
-            exportFileDialog->OpenDialog("Export", "Choose File", filters, config);
         }
         if (ImGui::Button("Export"))
         {
@@ -244,19 +196,9 @@ void Hierarchy::Export(const UpdateData& updateData)
     }
     ImGui::End();
 
-    if (exportFileDialog->Display("Export", 0, ImVec2(384 * updateData.scale, 256 * updateData.scale)))
-    {
-        if (exportFileDialog->IsOk())
-        {
-            strcpy(exportName, exportFileDialog->GetFilePathName().c_str());
-        }
-        exportFileDialog->Close();
-    }
-
     if (show == false)
     {
         exportNode = nullptr;
-        exportFileDialog->Close();
     }
 }
 //------------------------------------------------------------------------------

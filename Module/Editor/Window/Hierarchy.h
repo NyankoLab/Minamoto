@@ -18,8 +18,6 @@ class Hierarchy
     static xxNodePtr exportNode;
     static char importName[];
     static char exportName[];
-    static IGFD::FileDialog* importFileDialog;
-    static IGFD::FileDialog* exportFileDialog;
 public:
     static void Initialize();
     static void Shutdown();

@@ -253,9 +253,6 @@
 		D63370882B395B54001D4057 /* libxxGraphic.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libxxGraphic.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		D633708A2B395B61001D4057 /* xxGraphic.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = xxGraphic.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		D633708C2B395B70001D4057 /* xxGraphic.dll */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = xxGraphic.dll; sourceTree = BUILT_PRODUCTS_DIR; };
-		D63370962B399792001D4057 /* ImGuiFileDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ImGuiFileDialog.cpp; path = ../../../SDK/ImGuiFileDialog/ImGuiFileDialog.cpp; sourceTree = "<group>"; };
-		D63370972B399792001D4057 /* ImGuiFileDialogConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImGuiFileDialogConfig.h; path = ../../../SDK/ImGuiFileDialog/ImGuiFileDialogConfig.h; sourceTree = "<group>"; };
-		D63370982B399792001D4057 /* ImGuiFileDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImGuiFileDialog.h; path = ../../../SDK/ImGuiFileDialog/ImGuiFileDialog.h; sourceTree = "<group>"; };
 		D6346EEE2BFA10210075D7F1 /* QuickJSConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QuickJSConsole.h; path = ../Window/QuickJSConsole.h; sourceTree = "<group>"; };
 		D6346EEF2BFA10210075D7F1 /* QuickJSConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuickJSConsole.cpp; path = ../Window/QuickJSConsole.cpp; sourceTree = "<group>"; };
 		D6386A612BDAAE500008C9D1 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
@@ -493,7 +490,6 @@
 			isa = PBXGroup;
 			children = (
 				D60790BF2BF1AE29008810BD /* Component */,
-				D63370952B399774001D4057 /* ImGuiFileDialog */,
 				D6EFE1492D1EF66000E77042 /* ImGuizmo */,
 				D62FEBF22BE53D41004E9FDF /* About.cpp */,
 				D62FEBF32BE53D41004E9FDF /* About.h */,
@@ -522,16 +518,6 @@
 			);
 			name = Window;
 			path = ../Window;
-			sourceTree = "<group>";
-		};
-		D63370952B399774001D4057 /* ImGuiFileDialog */ = {
-			isa = PBXGroup;
-			children = (
-				D63370962B399792001D4057 /* ImGuiFileDialog.cpp */,
-				D63370982B399792001D4057 /* ImGuiFileDialog.h */,
-				D63370972B399792001D4057 /* ImGuiFileDialogConfig.h */,
-			);
-			name = ImGuiFileDialog;
 			sourceTree = "<group>";
 		};
 		D644A038231ED82900B75B77 = {
