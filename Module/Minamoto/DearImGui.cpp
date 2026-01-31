@@ -120,7 +120,9 @@ void DearImGui::Create(void* view, float scale, float font)
     font_config.SizePixels          = 13.0f * font;
     font_config.RasterizerMultiply  = 2.0f / font;
 #if defined(xxMACOS)
-    io.Fonts->AddFontFromFileTTF("/System/Library/Fonts/PingFang.ttc", 13.0f, &font_config, fonts_ranges);
+    struct stat st;
+    if (stat("/System/Library/Fonts/PingFang.ttc", &st) == 0)
+        io.Fonts->AddFontFromFileTTF("/System/Library/Fonts/PingFang.ttc", 13.0f, &font_config, fonts_ranges);
 #elif defined(xxWINDOWS)
     if (GetFileAttributesA("C:\\Windows\\Fonts\\meiryo.ttc") != INVALID_FILE_ATTRIBUTES)
         io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\meiryo.ttc", 13.0f * font, &font_config, fonts_ranges);

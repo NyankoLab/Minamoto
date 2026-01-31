@@ -78,7 +78,7 @@ void Mesh::Setup(uint64_t device)
 //------------------------------------------------------------------------------
 void Mesh::Draw(uint64_t commandEncoder, int instanceCount, int firstIndex, int vertexOffset, int firstInstance)
 {
-    if (Count[STORAGE0] != 0)
+    if (ActiveCount[STORAGE0] != 0)
     {
         uint64_t buffers[4];
         buffers[0] = m_buffers[VERTEX][m_bufferIndex[VERTEX]];
@@ -92,12 +92,18 @@ void Mesh::Draw(uint64_t commandEncoder, int instanceCount, int firstIndex, int 
     xxSetVertexBuffers(commandEncoder, 1, &m_buffers[VERTEX][m_bufferIndex[VERTEX]], m_vertexAttribute);
     if (Count[INDEX] == 0)
     {
-        xxDraw(commandEncoder, Count[VERTEX] - firstIndex * 3, instanceCount, vertexOffset + firstIndex * 3, firstInstance);
+        xxDraw(commandEncoder, ActiveCount[VERTEX] - firstIndex * 3, instanceCount, vertexOffset + firstIndex * 3, firstInstance);
     }
-    else
+    else if (Count[VERTEX] && ActiveCount[INDEX])
     {
-        xxDrawIndexed(commandEncoder, m_buffers[INDEX][m_bufferIndex[INDEX]], Count[INDEX], Count[VERTEX], instanceCount, firstIndex, vertexOffset, firstInstance);
+        xxDrawIndexed(commandEncoder, m_buffers[INDEX][m_bufferIndex[INDEX]], ActiveCount[INDEX], ActiveCount[VERTEX], instanceCount, firstIndex, vertexOffset, firstInstance);
     }
+}
+//------------------------------------------------------------------------------
+void Mesh::SetIndexCount(int count)
+{
+    xxMesh::SetIndexCount(count);
+    ActiveCount[INDEX] = count;
 }
 //------------------------------------------------------------------------------
 void Mesh::SetVertexCount(int count)
@@ -112,6 +118,13 @@ void Mesh::SetVertexCount(int count)
         const_cast<int&>(Stride[VERTEX]) += xxSizeOf(xxVector2) * TextureCount;
     }
     xxMesh::SetVertexCount(count);
+    ActiveCount[VERTEX] = count;
+}
+//------------------------------------------------------------------------------
+void Mesh::SetStorageCount(int index, int count, int stride)
+{
+    xxMesh::SetStorageCount(index, count, stride);
+    ActiveCount[index] = count;
 }
 //------------------------------------------------------------------------------
 xxStrideIterator<uint32_t> Mesh::GetNormal(int index) const
@@ -166,6 +179,10 @@ unsigned int Mesh::GetIndex(int index) const
 void Mesh::BinaryRead(xxBinary& binary)
 {
     xxMesh::BinaryRead(binary);
+    for (int i = STORAGE0; i < MAX; ++i)
+    {
+        ActiveCount[i] = Count[i];
+    }
 
     // legacy
     if (NormalCount)

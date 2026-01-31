@@ -156,6 +156,10 @@
 		F57864942D51B3D900EF5BCC /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57864922D51B3D900EF5BCC /* ImportEvent.cpp */; };
 		F57864952D51B3D900EF5BCC /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57864922D51B3D900EF5BCC /* ImportEvent.cpp */; };
 		F57864962D51B3D900EF5BCC /* ImportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57864922D51B3D900EF5BCC /* ImportEvent.cpp */; };
+		F5927B472F2CB2BF00AD8F1C /* ParticleTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B462F2CB2BE00AD8F1C /* ParticleTools.cpp */; };
+		F5927B482F2CB2BF00AD8F1C /* ParticleTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B462F2CB2BE00AD8F1C /* ParticleTools.cpp */; };
+		F5927B492F2CB2BF00AD8F1C /* ParticleTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B462F2CB2BE00AD8F1C /* ParticleTools.cpp */; };
+		F5927B4A2F2CB2BF00AD8F1C /* ParticleTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B462F2CB2BE00AD8F1C /* ParticleTools.cpp */; };
 		F5E5B1B12D7354C6008E0D21 /* ExportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */; };
 		F5E5B1B22D7354C6008E0D21 /* ExportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */; };
 		F5E5B1B32D7354C6008E0D21 /* ExportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */; };
@@ -319,6 +323,8 @@
 		F53DE7382D3FAE590083B457 /* Event.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Event.cpp; sourceTree = "<group>"; };
 		F57864912D51B3D900EF5BCC /* ImportEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImportEvent.h; sourceTree = "<group>"; };
 		F57864922D51B3D900EF5BCC /* ImportEvent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ImportEvent.cpp; sourceTree = "<group>"; };
+		F5927B452F2CB2B200AD8F1C /* ParticleTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleTools.h; sourceTree = "<group>"; };
+		F5927B462F2CB2BE00AD8F1C /* ParticleTools.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleTools.cpp; sourceTree = "<group>"; };
 		F5E5B1AF2D7354C6008E0D21 /* ExportEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExportEvent.h; sourceTree = "<group>"; };
 		F5E5B1B02D7354C6008E0D21 /* ExportEvent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ExportEvent.cpp; sourceTree = "<group>"; };
 		F5E5B1B52D736D24008E0D21 /* ExportWavefront.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExportWavefront.h; sourceTree = "<group>"; };
@@ -443,6 +449,8 @@
 				D6012A1D2B1DE28F00C3875A /* Grid.h */,
 				D68CAE812D1961FD00ACE81B /* MeshTools.cpp */,
 				D68CAE802D1961FD00ACE81B /* MeshTools.h */,
+				F5927B462F2CB2BE00AD8F1C /* ParticleTools.cpp */,
+				F5927B452F2CB2B200AD8F1C /* ParticleTools.h */,
 				D60790F52BF33502008810BD /* TextureTools.cpp */,
 				D60790F62BF33502008810BD /* TextureTools.h */,
 				D6D26F9C2BDE36B400D57772 /* Tools.cpp */,
@@ -780,6 +788,7 @@
 				D60791092BF61829008810BD /* Setup.cpp in Sources */,
 				F5E5B1BD2D75CA7D008E0D21 /* ImportInterQuake.cpp in Sources */,
 				D666E3CF2BE3BCEC00EFA1F2 /* LuaConsole.cpp in Sources */,
+				F5927B482F2CB2BF00AD8F1C /* ParticleTools.cpp in Sources */,
 				D633707C2B382156001D4057 /* Hierarchy.cpp in Sources */,
 				F57864932D51B3D900EF5BCC /* ImportEvent.cpp in Sources */,
 				D60790F72BF33502008810BD /* TextureTools.cpp in Sources */,
@@ -818,6 +827,7 @@
 				F5E5B1B82D736D34008E0D21 /* ExportWavefront.cpp in Sources */,
 				D6169D1A2BB1801100E5490C /* ucrt.cpp in Sources */,
 				D6169D162BB17FE200E5490C /* new.cpp in Sources */,
+				F5927B4A2F2CB2BF00AD8F1C /* ParticleTools.cpp in Sources */,
 				F5E72CAA2D5651EB005A1A54 /* except.cpp in Sources */,
 				D6169D1C2BB1802100E5490C /* tls.cpp in Sources */,
 				D62FEBED2BE50FD3004E9FDF /* dllmain.cpp in Sources */,
@@ -869,6 +879,7 @@
 				D6530A032BB70A270006AD64 /* ImportFilmbox.cpp in Sources */,
 				3039F9D92447499200E671A7 /* Editor.cpp in Sources */,
 				D63370832B3958F3001D4057 /* Import.cpp in Sources */,
+				F5927B492F2CB2BF00AD8F1C /* ParticleTools.cpp in Sources */,
 				D633707D2B382156001D4057 /* Hierarchy.cpp in Sources */,
 				D6F563FF2BE9D568006D32D9 /* Profiler.cpp in Sources */,
 				D68CAE192D16706800ACE81B /* ImportPolygon.cpp in Sources */,
@@ -911,6 +922,7 @@
 				D6530A042BB70A270006AD64 /* ImportFilmbox.cpp in Sources */,
 				300264C5242690D0004559E0 /* Editor.cpp in Sources */,
 				D63370842B3958F3001D4057 /* Import.cpp in Sources */,
+				F5927B472F2CB2BF00AD8F1C /* ParticleTools.cpp in Sources */,
 				D633707E2B382156001D4057 /* Hierarchy.cpp in Sources */,
 				D6F564002BE9D568006D32D9 /* Profiler.cpp in Sources */,
 				D68CAE1A2D16706800ACE81B /* ImportPolygon.cpp in Sources */,

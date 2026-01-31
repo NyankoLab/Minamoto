@@ -31,6 +31,3 @@
 [submodule "SDK/ImGuizmo"]
 	path = SDK/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
-[submodule "SDK/imgui_club"]
-	path = SDK/imgui_club
-	url = https://github.com/ocornut/imgui_club

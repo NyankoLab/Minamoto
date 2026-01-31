@@ -45,6 +45,8 @@
 #define LUAEX_API   __declspec(dllimport)
 #endif
 
+#define luai_openlibs(...)
+
 #define lua_initreadline lua_pinitreadline
 #define lua_readline lua_preadline
 #define lua_saveline lua_psaveline

@@ -19,35 +19,36 @@
 #include "BakedQuaternionModifier.h"
 #include "Quaternion16Modifier.h"
 #include "BakedQuaternion16Modifier.h"
+#include "Particle/RainParticleModifier.h"
 #include "Modifier.h"
 
-#define LOADER(class) reinterpret_cast<void(xxModifier::*)(void*, xxModifierData*, float)>(&class::Update)
+#define UPDATE(class)   reinterpret_cast<void(xxModifier::*)(void*, xxModifierData*, float)>(&class::Update)
 
-static struct { std::string name; xxModifier::UpdateFunction function; size_t header; size_t size; } const loaders[] =
+static struct { std::string name; xxModifier::UpdateDeclaration function; size_t header; size_t size; } const loaders[] =
 {
-    { "UNKNOWN",              [](xxModifier*, void*, xxModifierData*, float) {}, 0,                         1 },
-    { "FLOAT",                [](xxModifier*, void*, xxModifierData*, float) {}, 0,                         sizeof(float) },
-    { "FLOAT2",               [](xxModifier*, void*, xxModifierData*, float) {}, 0,                         sizeof(xxVector2) },
-    { "FLOAT3",               [](xxModifier*, void*, xxModifierData*, float) {}, 0,                         sizeof(xxVector3) },
-    { "FLOAT4",               [](xxModifier*, void*, xxModifierData*, float) {}, 0,                         sizeof(xxVector4) },
-    { "ARRAY",                [](xxModifier*, void*, xxModifierData*, float) {}, 0,                         sizeof(char) },
-    { "STRING",               [](xxModifier*, void*, xxModifierData*, float) {}, 0,                         sizeof(char) },
-                                {}, {}, {},
-    { "CONSTANT_QUATERNION",  LOADER(ConstantQuaternionModifier), 0,                                        sizeof(ConstantQuaternionModifier::Constant) },
-    { "CONSTANT_TRANSLATE",   LOADER(ConstantTranslateModifier),  0,                                        sizeof(ConstantTranslateModifier::Constant) },
-    { "CONSTANT_SCALE",       LOADER(ConstantScaleModifier),      0,                                        sizeof(ConstantScaleModifier::Constant) },
-                {}, {}, {}, {}, {}, {}, {},
-    { "QUATERNION",           LOADER(QuaternionModifier),         0,                                        sizeof(QuaternionModifier::Key) },
-    { "TRANSLATE",            LOADER(TranslateModifier),          0,                                        sizeof(TranslateModifier::Key) },
-    { "SCALE",                LOADER(ScaleModifier),              0,                                        sizeof(ScaleModifier::Key) },
-                {}, {}, {}, {}, {}, {}, {},
-    { "BAKED_QUATERNION",     LOADER(BakedQuaternionModifier),    sizeof(BakedQuaternionModifier::Baked),   sizeof(xxVector4) },
-        {}, {}, {}, {}, {}, {}, {}, {}, {},
-    {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-    { "QUATERNION16",         LOADER(Quaternion16Modifier),       0,                                        sizeof(Quaternion16Modifier::Key) },
-    { "BAKED_QUATERNION16",   LOADER(BakedQuaternion16Modifier),  sizeof(BakedQuaternion16Modifier::Baked), sizeof(v4hi) },
+    { "UNKNOWN",              &xxModifier::UpdateDummy,           0,                                        1 },
+    { "FLOAT",                &xxModifier::UpdateDummy,           0,                                        sizeof(float) },
+    { "FLOAT2",               &xxModifier::UpdateDummy,           0,                                        sizeof(xxVector2) },
+    { "FLOAT3",               &xxModifier::UpdateDummy,           0,                                        sizeof(xxVector3) },
+    { "FLOAT4",               &xxModifier::UpdateDummy,           0,                                        sizeof(xxVector4) },
+    { "ARRAY",                &xxModifier::UpdateDummy,           0,                                        sizeof(char) },
+    { "STRING",               &xxModifier::UpdateDummy,           0,                                        sizeof(char) },
+                                {}, {}, {}, {}, {}, {}, {}, {}, {},
+    { "CONSTANT_QUATERNION",  UPDATE(ConstantQuaternionModifier), 0,                                        sizeof(ConstantQuaternionModifier::Constant) },
+    { "CONSTANT_TRANSLATE",   UPDATE(ConstantTranslateModifier),  0,                                        sizeof(ConstantTranslateModifier::Constant) },
+    { "CONSTANT_SCALE",       UPDATE(ConstantScaleModifier),      0,                                        sizeof(ConstantScaleModifier::Constant) },
+                {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+    { "QUATERNION",           UPDATE(QuaternionModifier),         0,                                        sizeof(QuaternionModifier::Key) },
+    { "TRANSLATE",            UPDATE(TranslateModifier),          0,                                        sizeof(TranslateModifier::Key) },
+    { "SCALE",                UPDATE(ScaleModifier),              0,                                        sizeof(ScaleModifier::Key) },
+                {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+    { "QUATERNION16",         UPDATE(Quaternion16Modifier),       0,                                        sizeof(Quaternion16Modifier::Key) },
+    { "BAKED_QUATERNION",     UPDATE(BakedQuaternionModifier),    sizeof(BakedQuaternionModifier::Baked),   sizeof(xxVector4) },
+        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+    { "BAKED_QUATERNION16",   UPDATE(BakedQuaternion16Modifier),  sizeof(BakedQuaternion16Modifier::Baked), sizeof(v4hi) },
+    { "RAIN_PARTICLE",        UPDATE(RainParticleModifier),       sizeof(RainParticleModifier::Parameter),  1 },
 };
-static_assert(xxCountOf(loaders) == Modifier::BAKED_QUATERNION16 + 1);
+static_assert(xxCountOf(loaders) == Modifier::RAIN_PARTICLE + 1);
 //==============================================================================
 void Modifier::Initialize()
 {
@@ -56,14 +57,14 @@ void Modifier::Initialize()
 //------------------------------------------------------------------------------
 void Modifier::Shutdown()
 {
-    xxModifier::Loader = [](xxModifier&, size_t){};
+    xxModifier::Loader = [](xxModifier&, size_t) {};
 }
 //------------------------------------------------------------------------------
 void Modifier::Loader(xxModifier& modifier, size_t type)
 {
     if (type >= xxCountOf(loaders) || loaders[type].function == nullptr)
         type = UNKNOWN;
-    const_cast<xxModifier::UpdateFunction&>(modifier.Update) = loaders[type].function;
+    const_cast<xxModifier::UpdateDeclaration&>(modifier.UpdateFunction) = loaders[type].function;
     if (type != UNKNOWN)
         const_cast<size_t&>(modifier.DataType) = type;
 }

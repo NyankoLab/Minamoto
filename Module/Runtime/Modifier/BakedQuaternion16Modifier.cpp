@@ -23,7 +23,7 @@ void BakedQuaternion16Modifier::Update(void* target, xxModifierData* data, float
     auto node = (Node*)target;
     xxVector4 L = { __builtin_convertvector(*A, v4sf) };
     xxVector4 R = { __builtin_convertvector(*B, v4sf) };
-    node->SetRotate(xxMatrix3::Quaternion(Lerp(L, R, F) / 32767.0f));
+    node->SetRotate(xxMatrix3::Quaternion(Lerp(L, R, F) / INT16_MAX));
 }
 //------------------------------------------------------------------------------
 xxModifierPtr BakedQuaternion16Modifier::Create(size_t count, float duration, std::function<void(size_t index, xxVector4& quaternion)> fill)
@@ -46,7 +46,7 @@ xxModifierPtr BakedQuaternion16Modifier::Create(size_t count, float duration, st
         {
             xxVector4 quaternion;
             fill(i, quaternion);
-            quaternion *= 32767.0f;
+            quaternion *= INT16_MAX;
             (v4hi&)baked->values[i] = __builtin_convertvector(quaternion.v, v4hi);
         }
     }

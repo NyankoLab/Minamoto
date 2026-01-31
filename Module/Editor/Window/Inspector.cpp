@@ -12,6 +12,7 @@
 #include <Runtime/Graphic/Node.h>
 #include <Runtime/MiniGUI/Window.h>
 #include <Runtime/Modifier/Modifier.h>
+#include <Runtime/Modifier/Particle/RainParticleModifier.h>
 #include <Runtime/Tools/NodeTools.h>
 #include "Utility/Tools.h"
 #include "Log.h"
@@ -365,12 +366,41 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
             ImGui::PopStyleColor();
             if (open)
             {
-                size_t size = data.modifier->Data.size();
-                size_t count = Modifier::Count(*data.modifier);
-                ImGui::InputInt("Size" Q, (int*)&size, 0, 0, ImGuiInputTextFlags_ReadOnly);
-                ImGui::InputInt("Count" Q, (int*)&count, 0, 0, ImGuiInputTextFlags_ReadOnly);
-                ImGui::InputFloat("Time" Q, (float*)&data.time, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
-                ImGui::InputInt("Index" Q, (int*)&data.index, 0, 0, ImGuiInputTextFlags_ReadOnly);
+                switch (data.modifier->DataType)
+                {
+                case Modifier::RAIN_PARTICLE:
+                {
+                    RainParticleModifier* modifier = (RainParticleModifier*)data.modifier.get();
+                    bool update = false;
+                    auto parameter = (RainParticleModifier::Parameter*)modifier->Data.data();
+                    update |= ImGui::InputInt("Now" Q, &parameter->now, 0, 0, ImGuiInputTextFlags_ReadOnly);
+                    update |= ImGui::InputInt("Count" Q, &parameter->count, 1, 100);
+                    update |= ImGui::InputFloat("Start" Q, &parameter->start, 1, 100);
+                    update |= ImGui::InputFloat("Birth" Q, &parameter->birth, 1, 100);
+                    update |= ImGui::InputFloat("Life" Q, &parameter->life, 1, 100);
+                    update |= ImGui::InputFloat("Width" Q, &parameter->width, 1, 100);
+                    update |= ImGui::InputFloat("Height" Q, &parameter->height, 1, 100);
+                    update |= ImGui::InputFloat("Size" Q, &parameter->size, 1, 100);
+                    update |= ImGui::InputFloat("Speed" Q, &parameter->speed, 1, 100);
+                    update |= ImGui::InputFloat("Variation" Q, &parameter->variation, 1, 100);
+                    if (update)
+                    {
+                        modifier->CalculateBound((xxModifierData*)&data);
+                    }
+                    break;
+                }
+                default:
+                    int sizeCount[2];
+                    sizeCount[0] = (int)data.modifier->Data.size();
+                    sizeCount[1] = (int)Modifier::Count(*data.modifier);
+                    float time[2];
+                    time[0] = data.start;
+                    time[1] = data.time;
+                    ImGui::InputInt2("Size / Count" Q, sizeCount, ImGuiInputTextFlags_ReadOnly);
+                    ImGui::InputFloat2("Start / Current" Q, time, "%.3f", ImGuiInputTextFlags_ReadOnly);
+                    ImGui::SliderInt("Index" Q, (int*)&data.index, 0, sizeCount[1] - 1, "%d", ImGuiSliderFlags_ReadOnly);
+                    break;
+                }
             }
         }
     }

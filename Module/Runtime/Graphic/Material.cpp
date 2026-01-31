@@ -408,6 +408,7 @@ void Material::UpdateConstant(xxDrawData const& data) const
 std::string Material::GetShader(xxDrawData const& data, int type) const
 {
     auto* mesh = data.mesh;
+    auto* node = data.node;
     auto* constantData = data.constantData;
 
     char const* deviceString = xxGetInstanceName();
@@ -453,6 +454,7 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
     case 'vert':
         s.Define("SHADER_UNIFORM", GetVertexConstantSize(data) / sizeof(xxVector4));
         s.Define("SHADER_SKINNING", mesh->Skinning ? 1 : 0);
+        s.Define("SHADER_PARTICLE", node->Flags & Node::PARTICLE ? 1 : 0);
         s.Define("SHADER_OPACITY", Blending ? 1 : 0);
         ShaderDefault(data, s);
         ShaderAttribute(data, s);
@@ -1102,7 +1104,19 @@ void Material::UpdateTransformConstant(xxDrawData const& data, int& size, xxVect
 {
     if (s)
     {
-        (*s)(true, "float4 worldPosition = mul(float4(attrPosition, 1.0), world);"      );
+        if (data.node->Flags & Node::PARTICLE)
+        {
+            (*s)(true, "float3 cameraRight = float3(view[0][0], view[0][1], view[0][2]);"           );
+            (*s)(true, "float3 cameraUp = float3(view[1][0], view[1][1], view[1][2]);"              );
+            (*s)(true, "float4 worldPosition = float4(world[0][3], world[1][3], world[2][3], 1.0);" );
+            (*s)(true, "worldPosition.xyz += cameraRight * attrPosition.x;"                         );
+            (*s)(true, "worldPosition.xyz += cameraUp * attrPosition.y;"                            );
+            (*s)(true, "worldPosition.z += attrPosition.z;"                                         );
+        }
+        else
+        {
+            (*s)(true, "float4 worldPosition = mul(float4(attrPosition, 1.0), world);"              );
+        }
         (*s)(true, "float4 screenPosition = mul(mul(worldPosition, view), projection);" );
     }
 }

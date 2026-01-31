@@ -15,6 +15,10 @@ bool Modifier::UpdateKeyFactor(xxModifierData* data, float time, T*& A, T*& B, f
         return false;
     data->time = time;
 
+    if (data->start == 0.0f)
+        data->start = time;
+    time -= data->start;
+
     auto key = (T*)Data.data();
     auto count = Data.size() / sizeof(T);
 
@@ -70,6 +74,10 @@ bool Modifier::UpdateBakedFactor(xxModifierData* data, float time, D* baked, T*&
     if (data->time == time)
         return false;
     data->time = time;
+
+    if (data->start == 0.0f)
+        data->start = time;
+    time -= data->start;
 
     time = std::fmodf(time, baked->duration);
     size_t index = data->index = size_t(time * baked->inverseFrequency);

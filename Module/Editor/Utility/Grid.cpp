@@ -14,8 +14,18 @@
 //------------------------------------------------------------------------------
 xxNodePtr Grid::Create(xxVector3 const& translate, xxVector2 const& size)
 {
+    xxMaterialPtr material = xxMaterial::Create();
     xxMeshPtr mesh = xxMesh::Create(false, 0, 1, 1);
+    xxNodePtr node = xxNode::Create();
+    xxTexturePtr texture = CreateTexture();
+
+    if (material == nullptr)
+        return nullptr;
     if (mesh == nullptr)
+        return nullptr;
+    if (node == nullptr)
+        return nullptr;
+    if (texture == nullptr)
         return nullptr;
 
     int vertex_count = 4;
@@ -46,9 +56,6 @@ xxNodePtr Grid::Create(xxVector3 const& translate, xxVector2 const& size)
     (*it_index++) = 1;
     (*it_index++) = 2;
 
-    xxTexturePtr texture = CreateTexture();
-    if (texture == nullptr)
-        return nullptr;
     texture->ClampU = false;
     texture->ClampV = false;
     texture->ClampW = false;
@@ -57,17 +64,11 @@ xxNodePtr Grid::Create(xxVector3 const& translate, xxVector2 const& size)
     texture->FilterMip = true;
     texture->Anisotropic = 16;
 
-    xxMaterialPtr material = xxMaterial::Create();
-    if (material == nullptr)
-        return nullptr;
     material->Blending = true;
     material->DepthTest = "LessEqual";
     material->DepthWrite = false;
     material->SetTexture(0, texture);
 
-    xxNodePtr node = xxNode::Create();
-    if (node == nullptr)
-        return nullptr;
     node->Mesh = mesh;
     node->Material = material;
     node->SetTranslate(translate);

@@ -172,6 +172,14 @@
 		F5054E272D34FF2900D62FC6 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5054E252D34FF2700D62FC6 /* Material.cpp */; };
 		F5054E282D34FF2900D62FC6 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5054E252D34FF2700D62FC6 /* Material.cpp */; };
 		F5054E292D34FF2900D62FC6 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5054E252D34FF2700D62FC6 /* Material.cpp */; };
+		F5927B412F2C557800AD8F1C /* RainParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* RainParticleModifier.cpp */; };
+		F5927B422F2C557800AD8F1C /* RainParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* RainParticleModifier.cpp */; };
+		F5927B432F2C557800AD8F1C /* RainParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* RainParticleModifier.cpp */; };
+		F5927B442F2C557800AD8F1C /* RainParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* RainParticleModifier.cpp */; };
+		F5927B512F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */; };
+		F5927B522F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */; };
+		F5927B532F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */; };
+		F5927B542F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */; };
 		F5B5D38B2D7ADB140019E2B1 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5D38A2D7ADB140019E2B1 /* Node.cpp */; };
 		F5B5D38C2D7ADB140019E2B1 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5D38A2D7ADB140019E2B1 /* Node.cpp */; };
 		F5B5D38D2D7ADB140019E2B1 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B5D38A2D7ADB140019E2B1 /* Node.cpp */; };
@@ -314,6 +322,10 @@
 		D6FEF4232C0D9315003272C2 /* ArrayModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ArrayModifier.cpp; path = ../Modifier/ArrayModifier.cpp; sourceTree = "<group>"; };
 		F5054E242D34FF2000D62FC6 /* Material.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Material.h; sourceTree = "<group>"; };
 		F5054E252D34FF2700D62FC6 /* Material.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
+		F5927B3F2F2C556400AD8F1C /* RainParticleModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RainParticleModifier.h; sourceTree = "<group>"; };
+		F5927B402F2C557500AD8F1C /* RainParticleModifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RainParticleModifier.cpp; sourceTree = "<group>"; };
+		F5927B4F2F2D1FB500AD8F1C /* ParticleModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleModifier.h; sourceTree = "<group>"; };
+		F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleModifier.cpp; sourceTree = "<group>"; };
 		F5B5D3892D7ADB140019E2B1 /* Node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Node.h; sourceTree = "<group>"; };
 		F5B5D38A2D7ADB140019E2B1 /* Node.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Node.cpp; sourceTree = "<group>"; };
 		F5E4C8302D219C4700111AC3 /* DrawTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DrawTools.h; sourceTree = "<group>"; };
@@ -506,6 +518,7 @@
 		D645C4C32BD143BB00A89E16 /* Modifier */ = {
 			isa = PBXGroup;
 			children = (
+				F5927B3E2F2C555B00AD8F1C /* Particle */,
 				D6FEF4232C0D9315003272C2 /* ArrayModifier.cpp */,
 				D6FEF4222C0D9315003272C2 /* ArrayModifier.h */,
 				D62286D92BD7A2C200440C24 /* BakedQuaternion16Modifier.cpp */,
@@ -571,6 +584,17 @@
 			);
 			name = MiniGUI;
 			path = ../MiniGUI;
+			sourceTree = "<group>";
+		};
+		F5927B3E2F2C555B00AD8F1C /* Particle */ = {
+			isa = PBXGroup;
+			children = (
+				F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */,
+				F5927B4F2F2D1FB500AD8F1C /* ParticleModifier.h */,
+				F5927B402F2C557500AD8F1C /* RainParticleModifier.cpp */,
+				F5927B3F2F2C556400AD8F1C /* RainParticleModifier.h */,
+			);
+			path = Particle;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -690,6 +714,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5927B542F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */,
 				D6386A652BDBE0AC0008C9D1 /* Shader.cpp in Sources */,
 				D6FEF4182C09DCE3003272C2 /* Window.cpp in Sources */,
 				D62286C12BD559B000440C24 /* ConstantQuaternionModifier.cpp in Sources */,
@@ -723,6 +748,7 @@
 				D68CADF52D1323CE00ACE81B /* Buffer.cpp in Sources */,
 				D6FEF41E2C0B4B0E003272C2 /* Font.cpp in Sources */,
 				D6FEF4092C09C56E003272C2 /* Float2Modifier.cpp in Sources */,
+				F5927B442F2C557800AD8F1C /* RainParticleModifier.cpp in Sources */,
 				D6FEF3FF2C09BFBF003272C2 /* FloatModifier.cpp in Sources */,
 				D645C4D52BD145E700A89E16 /* QuaternionModifier.cpp in Sources */,
 				D6346EE22BFA06520075D7F1 /* QuickJS.cpp in Sources */,
@@ -754,6 +780,7 @@
 				F5054E282D34FF2900D62FC6 /* Material.cpp in Sources */,
 				D6D26F9B2BDE11D900D57772 /* Pipeline.cpp in Sources */,
 				D62286C42BD559B000440C24 /* ConstantQuaternionModifier.cpp in Sources */,
+				F5927B422F2C557800AD8F1C /* RainParticleModifier.cpp in Sources */,
 				D62286D82BD7936300440C24 /* BakedQuaternionModifier.cpp in Sources */,
 				D6FEF4022C09BFBF003272C2 /* FloatModifier.cpp in Sources */,
 				D6D26F8F2BDDFAC400D57772 /* RenderPass.cpp in Sources */,
@@ -774,6 +801,7 @@
 				D6FEF41B2C09DCE3003272C2 /* Window.cpp in Sources */,
 				D6F564082BEA004F006D32D9 /* NodeTools.cpp in Sources */,
 				D6FEF4212C0B4B0E003272C2 /* Font.cpp in Sources */,
+				F5927B512F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */,
 				D62FEBE52BE50F77004E9FDF /* dllmain.cpp in Sources */,
 				D6169D162BB17FE200E5490C /* new.cpp in Sources */,
 				D6169D1C2BB1802100E5490C /* tls.cpp in Sources */,
@@ -784,6 +812,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5927B532F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */,
 				D6386A662BDBE0AC0008C9D1 /* Shader.cpp in Sources */,
 				D6FEF4192C09DCE3003272C2 /* Window.cpp in Sources */,
 				D62286C22BD559B000440C24 /* ConstantQuaternionModifier.cpp in Sources */,
@@ -817,6 +846,7 @@
 				D68CADF62D1323CE00ACE81B /* Buffer.cpp in Sources */,
 				D6FEF41F2C0B4B0E003272C2 /* Font.cpp in Sources */,
 				D6FEF40A2C09C56E003272C2 /* Float2Modifier.cpp in Sources */,
+				F5927B432F2C557800AD8F1C /* RainParticleModifier.cpp in Sources */,
 				D6FEF4002C09BFBF003272C2 /* FloatModifier.cpp in Sources */,
 				D645C4D62BD145E700A89E16 /* QuaternionModifier.cpp in Sources */,
 				D6346EE32BFA06520075D7F1 /* QuickJS.cpp in Sources */,
@@ -829,6 +859,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5927B522F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */,
 				D6386A672BDBE0AC0008C9D1 /* Shader.cpp in Sources */,
 				D6FEF41A2C09DCE3003272C2 /* Window.cpp in Sources */,
 				D62286C32BD559B000440C24 /* ConstantQuaternionModifier.cpp in Sources */,
@@ -862,6 +893,7 @@
 				D68CADF42D1323CE00ACE81B /* Buffer.cpp in Sources */,
 				D6FEF4202C0B4B0E003272C2 /* Font.cpp in Sources */,
 				D6FEF40B2C09C56E003272C2 /* Float2Modifier.cpp in Sources */,
+				F5927B412F2C557800AD8F1C /* RainParticleModifier.cpp in Sources */,
 				D6FEF4012C09BFBF003272C2 /* FloatModifier.cpp in Sources */,
 				D645C4D72BD145E700A89E16 /* QuaternionModifier.cpp in Sources */,
 				D6346EE42BFA06520075D7F1 /* QuickJS.cpp in Sources */,

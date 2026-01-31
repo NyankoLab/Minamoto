@@ -40,7 +40,11 @@ double ImportEvent::Execute()
         {
             if (root->GetParent())
             {
-                Import::MergeNode(root, output, root);
+                if (finished)
+                {
+                    Import::MergeNode(root, output, root);
+                    output = nullptr;
+                }
             }
             else
             {
@@ -253,6 +257,7 @@ void ImportEvent::ThreadedExecute()
     if (strcasestr(name, ".xxb"))
         output = Binary::Load(name);
     thiz->output = output;
+    thiz->finished = true;
 
     xxLog("Hierarchy", "Import : %s (%0.fus)", xxFile::GetName(name).c_str(), (xxGetCurrentTime() - begin) * 1000000);
 
@@ -294,7 +299,7 @@ void ImportEvent::Statistic()
         }
         return true;
     });
-    nodeCount = (int)output->GetChildCount();
+    nodeCount = output ? (int)output->GetChildCount() : 0;
     for (auto [size, count] : meshReferenceCounts)
     {
         meshCount += count / size;

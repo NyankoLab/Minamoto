@@ -17,6 +17,7 @@
 #include "Import/ImportFilmbox.h"
 #include "Import/ImportPolygon.h"
 #include "Import/ImportWavefront.h"
+#include "Utility/ParticleTools.h"
 #include "Utility/Tools.h"
 #include "Hierarchy.h"
 #include "Log.h"
@@ -50,6 +51,12 @@ static void AddCamera(xxNodePtr const& root)
 static void AddNode(xxNodePtr const& root)
 {
     auto node = xxNode::Create();
+    root->AttachChild(node);
+}
+//------------------------------------------------------------------------------
+static void AddParticle(xxNodePtr const& root)
+{
+    auto node = ParticleTools::CreateParticle(0);
     root->AttachChild(node);
 }
 //------------------------------------------------------------------------------
@@ -391,7 +398,11 @@ bool Hierarchy::Update(const UpdateData& updateData, bool& show, xxNodePtr const
             else
                 ImGui::Text("%s", selectedRight->Name.c_str());
             ImGui::Separator();
+#if HAVE_MINIGUI
             if (selectedRight && (selectedRight == root || MiniGUI::Window::Cast(selectedRight) != nullptr) && ImGui::Button("Add Camera"))
+#else
+            if (selectedRight && ImGui::Button("Add Camera"))
+#endif
             {
                 update = true;
                 AddCamera(selectedRight);
@@ -406,6 +417,17 @@ bool Hierarchy::Update(const UpdateData& updateData, bool& show, xxNodePtr const
             {
                 update = true;
                 AddNode(selectedRight);
+                selectedRight->Flags |= TEST_OPEN_FLAG;
+                selectedRight = nullptr;
+            }
+#if HAVE_MINIGUI
+            if (selectedRight && (selectedRight == root || MiniGUI::Window::Cast(selectedRight) != nullptr) && ImGui::Button("Add Particle"))
+#else
+            if (selectedRight && ImGui::Button("Add Particle"))
+#endif
+            {
+                update = true;
+                AddParticle(selectedRight);
                 selectedRight->Flags |= TEST_OPEN_FLAG;
                 selectedRight = nullptr;
             }

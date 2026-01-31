@@ -25,6 +25,7 @@ class ImportEvent : public Event
     std::vector<std::tuple<void*, void*, xxNodePtr, std::function<void(xxNodePtr const&)>>> nodes;
     std::map<void*, xxNodePtr> mappedNodes;
     xxNodePtr output;
+    bool finished = false;
 
     std::set<xxTexturePtr> mipmapTextures;
 

@@ -16,7 +16,9 @@ public:
     void                        Setup(uint64_t device);
     void                        Draw(uint64_t commandEncoder, int instanceCount = 1, int firstIndex = 0, int vertexOffset = 0, int firstInstance = 0);
 
+    void                        SetIndexCount(int count);
     void                        SetVertexCount(int count);
+    void                        SetStorageCount(int index, int count, int stride);
 
     xxStrideIterator<uint32_t>  GetNormal(int index = 0) const;
     xxStrideIterator<uint32_t>  GetColor(int index = 0) const;
@@ -29,6 +31,9 @@ public:
 protected:
     Mesh(bool skinning, char normal, char color, char texture);
     virtual ~Mesh();
+
+public:
+    int                         ActiveCount[MAX];
 
 public:
     static void                 Initialize();

@@ -12,6 +12,12 @@
 struct RuntimeAPI Node : public xxNode
 {
 public:
+    enum
+    {
+        PARTICLE    = 0b00000001'00000000,
+    };
+
+public:
     bool        AttachChild(xxNodePtr const& child);
     bool        DetachChild(xxNodePtr const& child);
 
