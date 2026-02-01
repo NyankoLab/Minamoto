@@ -32,7 +32,7 @@ public:
         BAKED_TRANSLATE     = 0x31,
         BAKED_SCALE         = 0x32,
         BAKED_QUATERNION16  = 0x3F,
-        RAIN_PARTICLE       = 0x40,
+        SNOW_PARTICLE       = 0x40,
     };
 
 public:

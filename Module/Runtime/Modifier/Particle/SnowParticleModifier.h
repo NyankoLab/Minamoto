@@ -1,5 +1,5 @@
 //==============================================================================
-// Minamoto : RainParticleModifier Header
+// Minamoto : SnowParticleModifier Header
 //
 // Copyright (c) 2023-2026 TAiGA
 // https://github.com/NyankoLab/Minamoto
@@ -8,7 +8,7 @@
 
 #include "ParticleModifier.h"
 
-class RuntimeAPI RainParticleModifier : public ParticleModifier
+class RuntimeAPI SnowParticleModifier : public ParticleModifier
 {
 public:
     struct Parameter
@@ -23,18 +23,19 @@ public:
         float size;
         float speed;
         float variation;
+        xxVector4 bound;
+
+        void CalculateBound();
     };
-    static_assert(sizeof(Parameter) == 40);
+    static_assert(sizeof(Parameter) == 56);
 
     struct Header
     {
-        xxVector4 bound;
         int seed;
     };
 
 public:
     void                    Update(void* target, xxModifierData* data, float time);
-    void                    CalculateBound(xxModifierData* data);
 
     static xxModifierPtr    Create();
 };

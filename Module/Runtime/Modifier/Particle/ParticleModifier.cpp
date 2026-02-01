@@ -71,11 +71,16 @@ int ParticleModifier::SetParticleData(Mesh* mesh, Particle* particles, int count
         Particle& particle = particles[i];
         if (particle.age == 0.0f)
             continue;
-        auto& point = particle.point;
-        (*positions++) = point + xxVector3{ -size, -size, 0.0f };
-        (*positions++) = point + xxVector3{ -size,  size, 0.0f };
-        (*positions++) = point + xxVector3{  size,  size, 0.0f };
-        (*positions++) = point + xxVector3{  size, -size, 0.0f };
+        auto point = particle.point;
+        auto p0 = positions;
+        auto p1 = positions + 1;
+        auto p2 = positions + 2;
+        auto p3 = positions + 3;
+        positions = positions + 4;
+        (*p0) = point + xxVector3{ -size, -size, 0.0f };
+        (*p1) = point + xxVector3{ -size,  size, 0.0f };
+        (*p2) = point + xxVector3{  size,  size, 0.0f };
+        (*p3) = point + xxVector3{  size, -size, 0.0f };
         now++;
     }
 

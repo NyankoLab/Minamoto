@@ -12,7 +12,7 @@
 #include <Runtime/Graphic/Node.h>
 #include <Runtime/MiniGUI/Window.h>
 #include <Runtime/Modifier/Modifier.h>
-#include <Runtime/Modifier/Particle/RainParticleModifier.h>
+#include <Runtime/Modifier/Particle/SnowParticleModifier.h>
 #include <Runtime/Tools/NodeTools.h>
 #include "Utility/Tools.h"
 #include "Log.h"
@@ -368,11 +368,10 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
             {
                 switch (data.modifier->DataType)
                 {
-                case Modifier::RAIN_PARTICLE:
+                case Modifier::SNOW_PARTICLE:
                 {
-                    RainParticleModifier* modifier = (RainParticleModifier*)data.modifier.get();
                     bool update = false;
-                    auto parameter = (RainParticleModifier::Parameter*)modifier->Data.data();
+                    auto parameter = (SnowParticleModifier::Parameter*)data.modifier->Data.data();
                     update |= ImGui::InputInt("Now" Q, &parameter->now, 0, 0, ImGuiInputTextFlags_ReadOnly);
                     update |= ImGui::InputInt("Count" Q, &parameter->count, 1, 100);
                     update |= ImGui::InputFloat("Start" Q, &parameter->start, 1, 100);
@@ -385,7 +384,7 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
                     update |= ImGui::InputFloat("Variation" Q, &parameter->variation, 1, 100);
                     if (update)
                     {
-                        modifier->CalculateBound((xxModifierData*)&data);
+                        parameter->CalculateBound();
                     }
                     break;
                 }

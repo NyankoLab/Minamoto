@@ -75,12 +75,11 @@ xxNodePtr const& NodeTools::Intersect(xxNodePtr const& node, xxVector3 const& po
         float distance = worldBound.Intersect(position, direction);
         if (distance < 0.0f)
             return 0;
-        distance += worldBound.w;
-        if (nearDistance > distance)
-        {
-            nearDistance = distance;
-            output = &node;
-        }
+        distance += worldBound.radius;
+        if (nearDistance < distance)
+            return 1;
+        nearDistance = distance;
+        output = &node;
         return 1;
     });
 

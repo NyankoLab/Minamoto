@@ -1,5 +1,5 @@
 //==============================================================================
-// Minamoto : RainParticleModifier Source
+// Minamoto : SnowParticleModifier Source
 //
 // Copyright (c) 2023-2026 TAiGA
 // https://github.com/NyankoLab/Minamoto
@@ -7,13 +7,13 @@
 #include "Runtime.h"
 #include "Graphic/Mesh.h"
 #include "Graphic/Node.h"
-#include "RainParticleModifier.h"
+#include "SnowParticleModifier.h"
 #include "Modifier/Modifier.inl"
 
 //==============================================================================
-//  RainParticleModifier
+//  SnowParticleModifier
 //==============================================================================
-void RainParticleModifier::Update(void* target, xxModifierData* data, float time)
+void SnowParticleModifier::Update(void* target, xxModifierData* data, float time)
 {
     if (data->time == time)
         return;
@@ -50,12 +50,10 @@ void RainParticleModifier::Update(void* target, xxModifierData* data, float time
         data->temp.resize(tempSize);
 
     Header* header = (Header*)data->temp.data();
-    if (header->bound.w == 0.0f)
-        CalculateBound(data);
     if (header->seed == 0)
         header->seed = (int)(size_t)mesh;
 
-    Particle* particles = (Particle*)&header[1];
+    Particle* particles = (Particle*)(header + 1);
     for (int i = 0; i < particleCount; ++i)
     {
         Particle& particle = particles[i];
@@ -85,34 +83,33 @@ void RainParticleModifier::Update(void* target, xxModifierData* data, float time
         particle.point += particle.velocity * delta;
     }
 
-    const_cast<xxVector4&>(mesh->Bound) = header->bound;
+    const_cast<xxVector4&>(mesh->Bound) = parameter->bound;
     parameter->now = SetParticleData(mesh, particles, particleCount, parameter->size);
 }
 //------------------------------------------------------------------------------
-void RainParticleModifier::CalculateBound(xxModifierData* data)
+void SnowParticleModifier::Parameter::CalculateBound()
 {
-    Parameter* parameter = (Parameter*)Data.data();
-    Header* header = (Header*)data->temp.data();
     xxVector4 p0;
     xxVector4 p1;
-    p0.x = parameter->width * -0.5f;
-    p1.x = parameter->width *  0.5f;
-    p0.y = parameter->height * -0.5f;
-    p1.y = parameter->height *  0.5f;
-    p0.z = parameter->speed > 0.0f ? 0.0f : -parameter->speed * parameter->life;
-    p1.z = parameter->speed < 0.0f ? 0.0f : -parameter->speed * parameter->life;
-    p0.w = parameter->size;
-    p1.w = parameter->size;
-    header->bound = p0.BoundMerge(p1);
+    float velocity = speed + copysignf(variation, speed);
+    p0.x = width * -0.5f;
+    p1.x = width *  0.5f;
+    p0.y = height * -0.5f;
+    p1.y = height *  0.5f;
+    p0.z = speed > 0.0f ? 0.0f : -velocity * life;
+    p1.z = speed < 0.0f ? 0.0f : -velocity * life;
+    p0.radius = size;
+    p1.radius = size;
+    bound = p0.BoundMerge(p1);
 }
 //------------------------------------------------------------------------------
-xxModifierPtr RainParticleModifier::Create()
+xxModifierPtr SnowParticleModifier::Create()
 {
     xxModifierPtr modifier = xxModifier::Create(sizeof(Parameter));
     if (modifier == nullptr)
         return nullptr;
 
-    Loader(*modifier, RAIN_PARTICLE);
+    Loader(*modifier, SNOW_PARTICLE);
     return modifier;
 }
 //==============================================================================

@@ -9,7 +9,7 @@
 #include <Runtime/Graphic/Node.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
-#include <Runtime/Modifier/Particle/RainParticleModifier.h>
+#include <Runtime/Modifier/Particle/SnowParticleModifier.h>
 #include "ParticleTools.h"
 
 #define TAG "ParticleTools"
@@ -19,7 +19,7 @@ xxNodePtr ParticleTools::CreateParticle(int type)
 {
     xxMaterialPtr material = Material::Create();
     xxMeshPtr mesh = Mesh::Create(false, 0, 1, 1);
-    xxModifierPtr modifier = RainParticleModifier::Create();
+    xxModifierPtr modifier = SnowParticleModifier::Create();
     xxNodePtr node = Node::Create();
     xxTexturePtr texture = CreateTexture();
 
@@ -53,17 +53,18 @@ xxNodePtr ParticleTools::CreateParticle(int type)
     node->Material = material;
     node->Modifiers.emplace_back(modifier);
 
-    auto parameter = (RainParticleModifier::Parameter*)modifier->Data.data();
+    auto parameter = (SnowParticleModifier::Parameter*)modifier->Data.data();
     parameter->now = 0;
     parameter->count = 100;
     parameter->start = 0.0f;
     parameter->birth = 1.0f;
-    parameter->life = 10.0f;
-    parameter->width = 10.0f;
-    parameter->height = 10.0f;
+    parameter->life = 30.0f;
+    parameter->width = 0.0f;
+    parameter->height = 0.0f;
     parameter->size = 2.0f;
     parameter->speed = 10.0f;
-    parameter->variation = 0.005f;
+    parameter->variation = 2.0f;
+    parameter->CalculateBound();
 
     return node;
 }
