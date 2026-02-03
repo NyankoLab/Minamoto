@@ -19,7 +19,9 @@
 #include "BakedQuaternionModifier.h"
 #include "Quaternion16Modifier.h"
 #include "BakedQuaternion16Modifier.h"
+#if HAVE_PARTICLE
 #include "Particle/SnowParticleModifier.h"
+#endif
 #include "Modifier.h"
 
 #define UPDATE(class)   reinterpret_cast<void(xxModifier::*)(void*, xxModifierData*, float)>(&class::Update)
@@ -46,9 +48,11 @@ static struct { std::string name; xxModifier::UpdateDeclaration function; size_t
     { "BAKED_QUATERNION",     UPDATE(BakedQuaternionModifier),    sizeof(BakedQuaternionModifier::Baked),   sizeof(xxVector4) },
         {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
     { "BAKED_QUATERNION16",   UPDATE(BakedQuaternion16Modifier),  sizeof(BakedQuaternion16Modifier::Baked), sizeof(v4hi) },
+#if HAVE_PARTICLE
     { "SNOW_PARTICLE",        UPDATE(SnowParticleModifier),       sizeof(SnowParticleModifier::Parameter),  1 },
+#endif
 };
-static_assert(xxCountOf(loaders) == Modifier::SNOW_PARTICLE + 1);
+static_assert(xxCountOf(loaders) == Modifier::MAX);
 //==============================================================================
 void Modifier::Initialize()
 {

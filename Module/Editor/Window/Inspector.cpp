@@ -368,6 +368,7 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
             {
                 switch (data.modifier->DataType)
                 {
+#if HAVE_PARTICLE
                 case Modifier::SNOW_PARTICLE:
                 {
                     bool update = false;
@@ -388,6 +389,7 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
                     }
                     break;
                 }
+#endif
                 default:
                     int sizeCount[2];
                     sizeCount[0] = (int)data.modifier->Data.size();

@@ -6,6 +6,8 @@
 //==============================================================================
 #pragma once
 
+#if HAVE_PARTICLE
+
 #include "ParticleModifier.h"
 
 class RuntimeAPI SnowParticleModifier : public ParticleModifier
@@ -23,19 +25,26 @@ public:
         float size;
         float speed;
         float variation;
+        float tumble;
+        float scale;
         xxVector4 bound;
 
+    public:
         void CalculateBound();
     };
-    static_assert(sizeof(Parameter) == 56);
+    static_assert(sizeof(Parameter) == 64);
 
     struct Header
     {
         int seed;
+        Particle particles[];
     };
+    static_assert(sizeof(Header) == 4);
 
 public:
     void                    Update(void* target, xxModifierData* data, float time);
 
     static xxModifierPtr    Create();
 };
+
+#endif

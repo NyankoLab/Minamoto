@@ -22,7 +22,9 @@ typedef std::shared_ptr<void> xxUnknownPtr;
 typedef std::weak_ptr<struct Node> xxNodeWeakPtr;
 typedef std::weak_ptr<class xxTexture> xxTextureWeakPtr;
 
-#define HAVE_MINIGUI 1
+#define HAVE_PARTICLE   1
+#define HAVE_MINIGUI    1
+
 #if HAVE_MINIGUI
 namespace MiniGUI { typedef std::shared_ptr<class Window> WindowPtr; }
 #endif

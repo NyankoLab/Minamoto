@@ -10,6 +10,8 @@
 #include "SnowParticleModifier.h"
 #include "Modifier/Modifier.inl"
 
+#if HAVE_PARTICLE
+
 //==============================================================================
 //  SnowParticleModifier
 //==============================================================================
@@ -53,7 +55,7 @@ void SnowParticleModifier::Update(void* target, xxModifierData* data, float time
     if (header->seed == 0)
         header->seed = (int)(size_t)mesh;
 
-    Particle* particles = (Particle*)(header + 1);
+    Particle* particles = header->particles;
     for (int i = 0; i < particleCount; ++i)
     {
         Particle& particle = particles[i];
@@ -113,3 +115,5 @@ xxModifierPtr SnowParticleModifier::Create()
     return modifier;
 }
 //==============================================================================
+
+#endif

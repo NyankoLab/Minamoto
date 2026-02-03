@@ -6,6 +6,8 @@
 //==============================================================================
 #pragma once
 
+#if HAVE_PARTICLE
+
 #include "Modifier/Modifier.h"
 
 class RuntimeAPI ParticleModifier : public Modifier
@@ -24,3 +26,5 @@ public:
     static void SetParticleCount(Mesh* mesh, int count);
     static int SetParticleData(Mesh* mesh, Particle* particles, int count, float size);
 };
+
+#endif

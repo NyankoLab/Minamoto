@@ -9,6 +9,8 @@
 #include "Graphic/Node.h"
 #include "ParticleModifier.h"
 
+#if HAVE_PARTICLE
+
 //==============================================================================
 //  ParticleModifier
 //==============================================================================
@@ -90,3 +92,5 @@ int ParticleModifier::SetParticleData(Mesh* mesh, Particle* particles, int count
     return now;
 }
 //==============================================================================
+
+#endif

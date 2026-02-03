@@ -17,6 +17,7 @@
 //==============================================================================
 xxNodePtr ParticleTools::CreateParticle(int type)
 {
+#if HAVE_PARTICLE
     xxMaterialPtr material = Material::Create();
     xxMeshPtr mesh = Mesh::Create(false, 0, 1, 1);
     xxModifierPtr modifier = SnowParticleModifier::Create();
@@ -67,6 +68,9 @@ xxNodePtr ParticleTools::CreateParticle(int type)
     parameter->CalculateBound();
 
     return node;
+#else
+    return nullptr;
+#endif
 }
 //------------------------------------------------------------------------------
 xxTexturePtr ParticleTools::CreateTexture()

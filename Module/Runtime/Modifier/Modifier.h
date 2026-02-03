@@ -32,7 +32,10 @@ public:
         BAKED_TRANSLATE     = 0x31,
         BAKED_SCALE         = 0x32,
         BAKED_QUATERNION16  = 0x3F,
+#if HAVE_PARTICLE
         SNOW_PARTICLE       = 0x40,
+#endif
+        MAX
     };
 
 public:
