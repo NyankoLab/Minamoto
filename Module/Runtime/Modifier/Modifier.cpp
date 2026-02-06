@@ -20,7 +20,7 @@
 #include "Quaternion16Modifier.h"
 #include "BakedQuaternion16Modifier.h"
 #if HAVE_PARTICLE
-#include "Particle/SnowParticleModifier.h"
+#include "Particle/SprayParticleModifier.h"
 #endif
 #include "Modifier.h"
 
@@ -49,7 +49,7 @@ static struct { std::string name; xxModifier::UpdateDeclaration function; size_t
         {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
     { "BAKED_QUATERNION16",   UPDATE(BakedQuaternion16Modifier),  sizeof(BakedQuaternion16Modifier::Baked), sizeof(v4hi) },
 #if HAVE_PARTICLE
-    { "SNOW_PARTICLE",        UPDATE(SnowParticleModifier),       sizeof(SnowParticleModifier::Parameter),  1 },
+    { "SPRAY_PARTICLE",       UPDATE(SprayParticleModifier),      sizeof(SprayParticleModifier::Parameter), 1 },
 #endif
 };
 static_assert(xxCountOf(loaders) == Modifier::MAX);

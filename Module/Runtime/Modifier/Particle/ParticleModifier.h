@@ -17,8 +17,12 @@ public:
     {
         xxVector3 point;
         xxVector3 velocity;
+        float size;
         float age;
     };
+
+public:
+    void UpdateValues(float* values, size_t count, xxModifierData* data, float time);
 
 public:
     static unsigned int Random(int& seed);

@@ -172,10 +172,10 @@
 		F5054E272D34FF2900D62FC6 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5054E252D34FF2700D62FC6 /* Material.cpp */; };
 		F5054E282D34FF2900D62FC6 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5054E252D34FF2700D62FC6 /* Material.cpp */; };
 		F5054E292D34FF2900D62FC6 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5054E252D34FF2700D62FC6 /* Material.cpp */; };
-		F5927B412F2C557800AD8F1C /* SnowParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* SnowParticleModifier.cpp */; };
-		F5927B422F2C557800AD8F1C /* SnowParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* SnowParticleModifier.cpp */; };
-		F5927B432F2C557800AD8F1C /* SnowParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* SnowParticleModifier.cpp */; };
-		F5927B442F2C557800AD8F1C /* SnowParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* SnowParticleModifier.cpp */; };
+		F5927B412F2C557800AD8F1C /* SprayParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* SprayParticleModifier.cpp */; };
+		F5927B422F2C557800AD8F1C /* SprayParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* SprayParticleModifier.cpp */; };
+		F5927B432F2C557800AD8F1C /* SprayParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* SprayParticleModifier.cpp */; };
+		F5927B442F2C557800AD8F1C /* SprayParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B402F2C557500AD8F1C /* SprayParticleModifier.cpp */; };
 		F5927B512F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */; };
 		F5927B522F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */; };
 		F5927B532F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */; };
@@ -322,8 +322,8 @@
 		D6FEF4232C0D9315003272C2 /* ArrayModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ArrayModifier.cpp; path = ../Modifier/ArrayModifier.cpp; sourceTree = "<group>"; };
 		F5054E242D34FF2000D62FC6 /* Material.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Material.h; sourceTree = "<group>"; };
 		F5054E252D34FF2700D62FC6 /* Material.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
-		F5927B3F2F2C556400AD8F1C /* SnowParticleModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SnowParticleModifier.h; sourceTree = "<group>"; };
-		F5927B402F2C557500AD8F1C /* SnowParticleModifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SnowParticleModifier.cpp; sourceTree = "<group>"; };
+		F5927B3F2F2C556400AD8F1C /* SprayParticleModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SprayParticleModifier.h; sourceTree = "<group>"; };
+		F5927B402F2C557500AD8F1C /* SprayParticleModifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SprayParticleModifier.cpp; sourceTree = "<group>"; };
 		F5927B4F2F2D1FB500AD8F1C /* ParticleModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleModifier.h; sourceTree = "<group>"; };
 		F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleModifier.cpp; sourceTree = "<group>"; };
 		F5B5D3892D7ADB140019E2B1 /* Node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Node.h; sourceTree = "<group>"; };
@@ -591,8 +591,8 @@
 			children = (
 				F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */,
 				F5927B4F2F2D1FB500AD8F1C /* ParticleModifier.h */,
-				F5927B402F2C557500AD8F1C /* SnowParticleModifier.cpp */,
-				F5927B3F2F2C556400AD8F1C /* SnowParticleModifier.h */,
+				F5927B402F2C557500AD8F1C /* SprayParticleModifier.cpp */,
+				F5927B3F2F2C556400AD8F1C /* SprayParticleModifier.h */,
 			);
 			path = Particle;
 			sourceTree = "<group>";
@@ -748,7 +748,7 @@
 				D68CADF52D1323CE00ACE81B /* Buffer.cpp in Sources */,
 				D6FEF41E2C0B4B0E003272C2 /* Font.cpp in Sources */,
 				D6FEF4092C09C56E003272C2 /* Float2Modifier.cpp in Sources */,
-				F5927B442F2C557800AD8F1C /* SnowParticleModifier.cpp in Sources */,
+				F5927B442F2C557800AD8F1C /* SprayParticleModifier.cpp in Sources */,
 				D6FEF3FF2C09BFBF003272C2 /* FloatModifier.cpp in Sources */,
 				D645C4D52BD145E700A89E16 /* QuaternionModifier.cpp in Sources */,
 				D6346EE22BFA06520075D7F1 /* QuickJS.cpp in Sources */,
@@ -780,7 +780,7 @@
 				F5054E282D34FF2900D62FC6 /* Material.cpp in Sources */,
 				D6D26F9B2BDE11D900D57772 /* Pipeline.cpp in Sources */,
 				D62286C42BD559B000440C24 /* ConstantQuaternionModifier.cpp in Sources */,
-				F5927B422F2C557800AD8F1C /* SnowParticleModifier.cpp in Sources */,
+				F5927B422F2C557800AD8F1C /* SprayParticleModifier.cpp in Sources */,
 				D62286D82BD7936300440C24 /* BakedQuaternionModifier.cpp in Sources */,
 				D6FEF4022C09BFBF003272C2 /* FloatModifier.cpp in Sources */,
 				D6D26F8F2BDDFAC400D57772 /* RenderPass.cpp in Sources */,
@@ -846,7 +846,7 @@
 				D68CADF62D1323CE00ACE81B /* Buffer.cpp in Sources */,
 				D6FEF41F2C0B4B0E003272C2 /* Font.cpp in Sources */,
 				D6FEF40A2C09C56E003272C2 /* Float2Modifier.cpp in Sources */,
-				F5927B432F2C557800AD8F1C /* SnowParticleModifier.cpp in Sources */,
+				F5927B432F2C557800AD8F1C /* SprayParticleModifier.cpp in Sources */,
 				D6FEF4002C09BFBF003272C2 /* FloatModifier.cpp in Sources */,
 				D645C4D62BD145E700A89E16 /* QuaternionModifier.cpp in Sources */,
 				D6346EE32BFA06520075D7F1 /* QuickJS.cpp in Sources */,
@@ -893,7 +893,7 @@
 				D68CADF42D1323CE00ACE81B /* Buffer.cpp in Sources */,
 				D6FEF4202C0B4B0E003272C2 /* Font.cpp in Sources */,
 				D6FEF40B2C09C56E003272C2 /* Float2Modifier.cpp in Sources */,
-				F5927B412F2C557800AD8F1C /* SnowParticleModifier.cpp in Sources */,
+				F5927B412F2C557800AD8F1C /* SprayParticleModifier.cpp in Sources */,
 				D6FEF4012C09BFBF003272C2 /* FloatModifier.cpp in Sources */,
 				D645C4D72BD145E700A89E16 /* QuaternionModifier.cpp in Sources */,
 				D6346EE42BFA06520075D7F1 /* QuickJS.cpp in Sources */,

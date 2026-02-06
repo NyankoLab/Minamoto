@@ -10,36 +10,33 @@
 
 #include "ParticleModifier.h"
 
-class RuntimeAPI SnowParticleModifier : public ParticleModifier
+class RuntimeAPI SprayParticleModifier : public ParticleModifier
 {
 public:
     struct Parameter
     {
         int now;
         int count;
-        float start;
-        float birth;
-        float life;
-        float width;
-        float height;
         float size;
         float speed;
         float variation;
-        float tumble;
-        float scale;
+        float start;
+        float life;
+        float birth;
+        xxVector2 range;
         xxVector4 bound;
 
     public:
         void CalculateBound();
     };
-    static_assert(sizeof(Parameter) == 64);
+    static_assert(sizeof(Parameter) == 56);
 
     struct Header
     {
         int seed;
+        xxModifierData modifiers[8];
         Particle particles[];
     };
-    static_assert(sizeof(Header) == 4);
 
 public:
     void                    Update(void* target, xxModifierData* data, float time);

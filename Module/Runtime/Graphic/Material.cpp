@@ -317,7 +317,20 @@ void Material::CreatePipeline(xxDrawData const& data)
         }
         if (data.materialIndex == SELECT)
         {
-            uint64_t blendState = xxCreateBlendState(m_device, "1", "+", "1", "1", "+", "0");
+            uint64_t blendState;
+            if (Blending)
+            {
+                blendState = xxCreateBlendState(m_device, BlendSourceColor.c_str(),
+                                                          BlendOperationColor.c_str(),
+                                                          BlendDestinationColor.c_str(),
+                                                          BlendSourceAlpha.c_str(),
+                                                          BlendOperationAlpha.c_str(),
+                                                          BlendDestinationAlpha.c_str());
+            }
+            else
+            {
+                blendState = xxCreateBlendState(m_device, "1", "+", "1", "1", "+", "0");
+            }
             uint64_t rasterizerState = xxCreateRasterizerState(m_device, Cull, (DebugWireframe == false), Scissor);
             constantData->pipeline = xxCreatePipeline(m_device, m_renderPass, blendState, m_depthStencilState, rasterizerState, vertexAttribute, constantData->meshShader, constantData->vertexShader, constantData->fragmentShader);
             xxDestroyBlendState(blendState);

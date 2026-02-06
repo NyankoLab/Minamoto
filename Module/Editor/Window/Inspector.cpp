@@ -12,7 +12,7 @@
 #include <Runtime/Graphic/Node.h>
 #include <Runtime/MiniGUI/Window.h>
 #include <Runtime/Modifier/Modifier.h>
-#include <Runtime/Modifier/Particle/SnowParticleModifier.h>
+#include <Runtime/Modifier/Particle/SprayParticleModifier.h>
 #include <Runtime/Tools/NodeTools.h>
 #include "Utility/Tools.h"
 #include "Log.h"
@@ -369,20 +369,20 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
                 switch (data.modifier->DataType)
                 {
 #if HAVE_PARTICLE
-                case Modifier::SNOW_PARTICLE:
+                case Modifier::SPRAY_PARTICLE:
                 {
                     bool update = false;
-                    auto parameter = (SnowParticleModifier::Parameter*)data.modifier->Data.data();
+                    auto parameter = (SprayParticleModifier::Parameter*)data.modifier->Data.data();
                     update |= ImGui::InputInt("Now" Q, &parameter->now, 0, 0, ImGuiInputTextFlags_ReadOnly);
                     update |= ImGui::InputInt("Count" Q, &parameter->count, 1, 100);
-                    update |= ImGui::InputFloat("Start" Q, &parameter->start, 1, 100);
-                    update |= ImGui::InputFloat("Birth" Q, &parameter->birth, 1, 100);
-                    update |= ImGui::InputFloat("Life" Q, &parameter->life, 1, 100);
-                    update |= ImGui::InputFloat("Width" Q, &parameter->width, 1, 100);
-                    update |= ImGui::InputFloat("Height" Q, &parameter->height, 1, 100);
                     update |= ImGui::InputFloat("Size" Q, &parameter->size, 1, 100);
                     update |= ImGui::InputFloat("Speed" Q, &parameter->speed, 1, 100);
                     update |= ImGui::InputFloat("Variation" Q, &parameter->variation, 1, 100);
+                    update |= ImGui::InputFloat("Start" Q, &parameter->start, 1, 100);
+                    update |= ImGui::InputFloat("Life" Q, &parameter->life, 1, 100);
+                    update |= ImGui::InputFloat("Birth" Q, &parameter->birth, 1, 100);
+                    update |= ImGui::InputFloat("Width" Q, &parameter->range.x, 1, 100);
+                    update |= ImGui::InputFloat("Height" Q, &parameter->range.y, 1, 100);
                     if (update)
                     {
                         parameter->CalculateBound();

@@ -9,7 +9,7 @@
 #include <Runtime/Graphic/Node.h>
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
-#include <Runtime/Modifier/Particle/SnowParticleModifier.h>
+#include <Runtime/Modifier/Particle/SprayParticleModifier.h>
 #include "ParticleTools.h"
 
 #define TAG "ParticleTools"
@@ -20,7 +20,7 @@ xxNodePtr ParticleTools::CreateParticle(int type)
 #if HAVE_PARTICLE
     xxMaterialPtr material = Material::Create();
     xxMeshPtr mesh = Mesh::Create(false, 0, 1, 1);
-    xxModifierPtr modifier = SnowParticleModifier::Create();
+    xxModifierPtr modifier = SprayParticleModifier::Create();
     xxNodePtr node = Node::Create();
     xxTexturePtr texture = CreateTexture();
 
@@ -54,14 +54,14 @@ xxNodePtr ParticleTools::CreateParticle(int type)
     node->Material = material;
     node->Modifiers.emplace_back(modifier);
 
-    auto parameter = (SnowParticleModifier::Parameter*)modifier->Data.data();
+    auto parameter = (SprayParticleModifier::Parameter*)modifier->Data.data();
     parameter->now = 0;
     parameter->count = 100;
     parameter->start = 0.0f;
     parameter->birth = 1.0f;
     parameter->life = 30.0f;
-    parameter->width = 0.0f;
-    parameter->height = 0.0f;
+    parameter->range.x = 0.0f;
+    parameter->range.y = 0.0f;
     parameter->size = 2.0f;
     parameter->speed = 10.0f;
     parameter->variation = 2.0f;

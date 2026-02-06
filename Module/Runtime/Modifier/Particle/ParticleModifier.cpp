@@ -14,6 +14,21 @@
 //==============================================================================
 //  ParticleModifier
 //==============================================================================
+void ParticleModifier::UpdateValues(float* values, size_t count, xxModifierData* data, float time)
+{
+    count = std::min(count, Modifiers.size());
+    for (size_t i = 0; i < count; ++i)
+    {
+        xxModifierPtr const& modifier = Modifiers[i];
+        if (modifier)
+        {
+            modifier->Update(values, data, time);
+        }
+        values++;
+        data++;
+    }
+}
+//------------------------------------------------------------------------------
 unsigned int ParticleModifier::Random(int& seed)
 {
     return seed = (seed * 214013) + 2531011;
@@ -71,9 +86,10 @@ int ParticleModifier::SetParticleData(Mesh* mesh, Particle* particles, int count
     for (int i = 0; i < count; ++i)
     {
         Particle& particle = particles[i];
-        if (particle.age == 0.0f)
+        if (particle.age <= 0.0f)
             continue;
         auto point = particle.point;
+        auto size = particle.size;
         auto p0 = positions;
         auto p1 = positions + 1;
         auto p2 = positions + 2;
