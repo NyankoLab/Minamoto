@@ -6,7 +6,7 @@
 //==============================================================================
 #pragma once
 
-#include "Modifier.h"
+#include "Modifier/Modifier.h"
 
 class RuntimeAPI BakedQuaternionModifier : public Modifier
 {
@@ -25,7 +25,7 @@ public:
     static_assert(sizeof(Baked) == 12);
 
 public:
-    void                    Update(void* target, xxModifierData* data, float time);
+    void                    Update(void* target, float time, xxModifierData* data) override;
 
     static xxModifierPtr    Create(size_t count = 0, float duration = 0.0f, std::function<void(size_t index, xxVector4& quaternion)> fill = nullptr);
 };

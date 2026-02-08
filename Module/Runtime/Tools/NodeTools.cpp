@@ -224,9 +224,8 @@ void NodeTools::ResetBoneMatrix(xxNodePtr const& node)
             return true;
 
         xxVector3 totalWorldTranslate = xxVector3::ZERO;
-        for (int i = 0; i < node->GetChildCount(); ++i)
+        for (xxNodePtr const& child : (*node))
         {
-            xxNodePtr const& child = node->GetChild(i);
             totalWorldTranslate += child->GetWorldTranslate();
         }
         if (node->GetChildCount())

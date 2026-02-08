@@ -1,29 +1,29 @@
 //==============================================================================
-// Minamoto : Quaternion16Modifier Header
+// Minamoto : QuaternionModifier Header
 //
 // Copyright (c) 2023-2026 TAiGA
 // https://github.com/NyankoLab/Minamoto
 //==============================================================================
 #pragma once
 
-#include "Modifier.h"
+#include "Modifier/Modifier.h"
 
-class RuntimeAPI Quaternion16Modifier : public Modifier
+class RuntimeAPI InterpolatedQuaternionModifier : public Modifier
 {
 public:
     struct Key
     {
         float time;
 #if defined(_M_ARM) || defined(_M_ARM64) || defined(_M_IX86) || defined(_M_AMD64) 
-        int16_t quaternion[4];
+        float quaternion[4];
 #else
-        v4hi quaternion;
+        xxVector4 quaternion;
 #endif
     };
-    static_assert(sizeof(Key) == 12);
+    static_assert(sizeof(Key) == 20);
 
 public:
-    void                    Update(void* target, xxModifierData* data, float time);
+    void                    Update(void* target, float time, xxModifierData* data) override;
 
     static xxModifierPtr    Create(size_t count = 0, std::function<void(size_t index, float& time, xxVector4& quaternion)> fill = nullptr);
 };

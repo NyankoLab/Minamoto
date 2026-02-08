@@ -39,7 +39,7 @@ public:
     };
 
 public:
-    void                    Update(void* target, xxModifierData* data, float time);
+    void                    Update(void* target, float time, xxModifierData* data);
 
     static xxModifierPtr    Create();
 };

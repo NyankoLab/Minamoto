@@ -320,14 +320,14 @@ bool Hierarchy::Update(const UpdateData& updateData, bool& show, xxNodePtr const
             if (opened)
             {
                 ImGui::Indent();
-                for (xxNodePtr const& child : *node)
+                for (xxNodePtr const& child : (*node))
                     traversal(traversal, child);
                 ImGui::Unindent();
             }
         };
         if (root)
         {
-            for (xxNodePtr const& child : *root)
+            for (xxNodePtr const& child : (*root))
                 traversal(traversal, child);
 
             // Drag

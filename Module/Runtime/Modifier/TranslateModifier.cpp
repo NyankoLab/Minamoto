@@ -7,38 +7,30 @@
 #include "Runtime.h"
 #include "Graphic/Node.h"
 #include "TranslateModifier.h"
-#include "Modifier.inl"
 
 //==============================================================================
 //  TranslateModifier
 //==============================================================================
-void TranslateModifier::Update(void* target, xxModifierData* data, float time)
+void TranslateModifier::Update(void* target, float time, xxModifierData* data)
 {
-    Key* A;
-    Key* B;
-    float F;
-    if (UpdateKeyFactor(data, time, A, B, F) == false)
+    if (data->time == time)
         return;
+    data->time = time;
 
     auto node = (Node*)target;
-    node->SetTranslate(Lerp(A->translate, B->translate, F));
+    auto* constant = (Constant*)Data.data();
+    node->SetTranslate(constant->translate);
 }
 //------------------------------------------------------------------------------
-xxModifierPtr TranslateModifier::Create(size_t count, std::function<void(size_t index, float& time, xxVector3& translate)> fill)
+xxModifierPtr TranslateModifier::Create(xxVector3 const& translate)
 {
-    xxModifierPtr modifier = xxModifier::Create(sizeof(Key) * count);
+    xxModifierPtr modifier = xxModifier::Create(sizeof(Constant));
     if (modifier == nullptr)
         return nullptr;
 
     Loader(*modifier, TRANSLATE);
-    if (fill)
-    {
-        auto* key = (Key*)modifier->Data.data();
-        for (size_t i = 0; i < count; ++i)
-        {
-            fill(i, key[i].time, key[i].translate);
-        }
-    }
+    auto* constant = (Constant*)modifier->Data.data();
+    constant->translate = translate;
     return modifier;
 }
 //==============================================================================

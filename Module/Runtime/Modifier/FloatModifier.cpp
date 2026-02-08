@@ -22,6 +22,16 @@ float FloatModifier::Get() const
     return value;
 }
 //------------------------------------------------------------------------------
+void FloatModifier::Assign(void* source, float time)
+{
+    Set(*(float*)source);
+}
+//------------------------------------------------------------------------------
+void FloatModifier::Update(void* target, float time, xxModifierData* data)
+{
+    *(float*)target = Get();
+}
+//------------------------------------------------------------------------------
 xxModifierPtr FloatModifier::Create(float value)
 {
     xxModifierPtr modifier = xxModifier::Create();

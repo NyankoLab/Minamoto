@@ -44,14 +44,18 @@ void MeshTools::SetIndexToMesh(xxMeshPtr const& mesh, std::vector<uint32_t> cons
     if (mesh->Count[xxMesh::VERTEX] < 65536)
     {
         auto outputIndices = (uint16_t*)mesh->Index;
-        for (size_t i = 0; i < indices.size(); ++i)
-            (*outputIndices++) = indices[i];
+        for (uint32_t index : indices)
+        {
+            (*outputIndices++) = index;
+        }
     }
     else
     {
         auto outputIndices = (uint32_t*)mesh->Index;
-        for (size_t i = 0; i < indices.size(); ++i)
-            (*outputIndices++) = indices[i];
+        for (uint32_t index : indices)
+        {
+            (*outputIndices++) = index;
+        }
     }
 }
 //------------------------------------------------------------------------------
@@ -259,10 +263,8 @@ xxMeshPtr MeshTools::CreateMeshlet(xxMeshPtr const& mesh)
     uint32_t triangle_count = 0;
     std::vector<MeshletStorage> storages;
     std::vector<uint32_t> meshlet_triangles32(max_meshlets * max_triangles);
-    for (size_t i = 0; i < meshlet_count; ++i)
+    for (meshopt_Meshlet const& meshlet : std::span(meshlets.data(), meshlet_count))
     {
-        meshopt_Meshlet const& meshlet = meshlets[i];
-
         vertex_count = std::max(vertex_count, meshlet.vertex_offset + meshlet.vertex_count);
         triangle_count = std::max(triangle_count, meshlet.triangle_offset / 3 + meshlet.triangle_count);
 

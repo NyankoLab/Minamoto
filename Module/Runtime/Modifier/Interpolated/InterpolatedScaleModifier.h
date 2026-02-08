@@ -1,23 +1,25 @@
 //==============================================================================
-// Minamoto : QuaternionModifier Header
+// Minamoto : InterpolatedScaleModifier Header
 //
 // Copyright (c) 2023-2026 TAiGA
 // https://github.com/NyankoLab/Minamoto
 //==============================================================================
 #pragma once
 
-#include "Modifier.h"
+#include "Modifier/Modifier.h"
 
-class RuntimeAPI QuaternionModifier : public Modifier
+class RuntimeAPI InterpolatedScaleModifier : public Modifier
 {
 public:
-    struct Constant
+    struct Key
     {
-        xxVector4 quaternion;
+        float time;
+        float scale;
     };
+    static_assert(sizeof(Key) == 8);
 
 public:
     void                    Update(void* target, float time, xxModifierData* data) override;
 
-    static xxModifierPtr    Create(xxVector4 const& quaternion = xxVector4::W);
+    static xxModifierPtr    Create(size_t count = 0, std::function<void(size_t index, float& time, float& scale)> fill = nullptr);
 };

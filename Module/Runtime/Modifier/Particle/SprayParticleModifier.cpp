@@ -15,7 +15,7 @@
 //==============================================================================
 //  SprayParticleModifier
 //==============================================================================
-void SprayParticleModifier::Update(void* target, xxModifierData* data, float time)
+void SprayParticleModifier::Update(void* target, float time, xxModifierData* data)
 {
     if (data->time == time)
         return;
@@ -41,12 +41,12 @@ void SprayParticleModifier::Update(void* target, xxModifierData* data, float tim
     if (header->seed == 0)
         header->seed = (int)(size_t)mesh;
 
-    UpdateValues(&parameter->size, xxCountOf(header->modifiers), header->modifiers, time);
+    UpdateValues(&parameter->size, xxCountOf(header->modifiers), time, header->modifiers);
 
     int particleBorn = 0;
     int particleBirth = 0;
 
-    if (parameter->now < parameter->count)
+    if (parameter->now < parameter->count && parameter->life > 0.0f)
     {
         float rate = parameter->count / parameter->life;
         float during = time - parameter->start;
@@ -55,9 +55,8 @@ void SprayParticleModifier::Update(void* target, xxModifierData* data, float tim
     }
 
     Particle* particles = header->particles;
-    for (int i = 0; i < parameter->count; ++i)
+    for (Particle& particle : std::span(particles, parameter->count))
     {
-        Particle& particle = particles[i];
         if (particle.age <= 0.0f)
         {
             if (particleBorn >= particleBirth)
@@ -89,9 +88,9 @@ void SprayParticleModifier::Update(void* target, xxModifierData* data, float tim
 //------------------------------------------------------------------------------
 void SprayParticleModifier::Parameter::CalculateBound()
 {
+    float velocity = speed + copysignf(variation, speed);
     xxVector4 p0;
     xxVector4 p1;
-    float velocity = speed + copysignf(variation, speed);
     p0.x = range.x * -0.5f;
     p1.x = range.x *  0.5f;
     p0.y = range.y * -0.5f;

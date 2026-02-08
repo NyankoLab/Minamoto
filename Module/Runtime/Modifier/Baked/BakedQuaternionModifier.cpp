@@ -1,41 +1,39 @@
 //==============================================================================
-// Minamoto : BakedQuaternion16Modifier Source
+// Minamoto : BakedQuaternionModifier Source
 //
 // Copyright (c) 2023-2026 TAiGA
 // https://github.com/NyankoLab/Minamoto
 //==============================================================================
 #include "Runtime.h"
 #include "Graphic/Node.h"
-#include "BakedQuaternion16Modifier.h"
-#include "Modifier.inl"
+#include "BakedQuaternionModifier.h"
+#include "Modifier/Modifier.inl"
 
 //==============================================================================
-//  BakedQuaternion16Modifier
+//  BakedQuaternionModifier
 //==============================================================================
-void BakedQuaternion16Modifier::Update(void* target, xxModifierData* data, float time)
+void BakedQuaternionModifier::Update(void* target, float time, xxModifierData* data)
 {
-    v4hi* A;
-    v4hi* B;
+    xxVector4* A;
+    xxVector4* B;
     float F;
     if (UpdateBakedFactor(data, time, (Baked*)Data.data(), A, B, F) == false)
         return;
 
     auto node = (Node*)target;
-    xxVector4 L = { __builtin_convertvector(*A, v4sf) };
-    xxVector4 R = { __builtin_convertvector(*B, v4sf) };
-    node->SetRotate(xxMatrix3::Quaternion(Lerp(L, R, F) / INT16_MAX));
+    node->SetRotate(xxMatrix3::Quaternion(Lerp(*A, *B, F)));
 }
 //------------------------------------------------------------------------------
-xxModifierPtr BakedQuaternion16Modifier::Create(size_t count, float duration, std::function<void(size_t index, xxVector4& quaternion)> fill)
+xxModifierPtr BakedQuaternionModifier::Create(size_t count, float duration, std::function<void(size_t index, xxVector4& quaternion)> fill)
 {
     if (count <= 1)
         return nullptr;
 
-    xxModifierPtr modifier = xxModifier::Create(sizeof(Baked) + sizeof(v4hi) * count);
+    xxModifierPtr modifier = xxModifier::Create(sizeof(Baked) + sizeof(xxVector4) * count);
     if (modifier == nullptr)
         return nullptr;
 
-    Loader(*modifier, BAKED_QUATERNION16);
+    Loader(*modifier, BAKED_QUATERNION);
     if (fill)
     {
         auto* baked = (Baked*)modifier->Data.data();
@@ -44,10 +42,7 @@ xxModifierPtr BakedQuaternion16Modifier::Create(size_t count, float duration, st
         baked->inverseFrequency = 1.0f / baked->frequency;
         for (size_t i = 0; i < count; ++i)
         {
-            xxVector4 quaternion;
-            fill(i, quaternion);
-            quaternion *= INT16_MAX;
-            (v4hi&)baked->values[i] = __builtin_convertvector(quaternion.v, v4hi);
+            fill(i, (xxVector4&)baked->values[i]);
         }
     }
     return modifier;

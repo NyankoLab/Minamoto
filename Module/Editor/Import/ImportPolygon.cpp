@@ -177,14 +177,18 @@ xxNodePtr ImportPolygon::Create(char const* ply)
                     size_t count = ToInt(strsep(&lasts, " "));
                     size_t pos = faces16.size();
                     for (size_t i = 0; i < count; ++i)
+                    {
                         faces16.insert(faces16.begin() + pos, ToInt(strsep(&lasts, " ")));
+                    }
                 }
                 else if (faces32.size() < faceCount * 3)
                 {
                     size_t count = ToInt(strsep(&lasts, " "));
                     size_t pos = faces32.size();
                     for (size_t i = 0; i < count; ++i)
+                    {
                         faces32.insert(faces32.begin() + pos, ToInt(strsep(&lasts, " ")));
+                    }
                 }
             }
             break;

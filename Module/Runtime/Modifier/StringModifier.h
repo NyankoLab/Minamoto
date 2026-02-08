@@ -14,5 +14,6 @@ public:
     void                    Set(std::string_view const& string);
     std::string_view        Get() const;
 
+public:
     static xxModifierPtr    Create(std::string_view const& string = "");
 };

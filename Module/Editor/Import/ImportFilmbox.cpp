@@ -10,15 +10,15 @@
 #include <Runtime/Graphic/Material.h>
 #include <Runtime/Graphic/Mesh.h>
 #include <Runtime/Graphic/Node.h>
-#include <Runtime/Modifier/ConstantQuaternionModifier.h>
-#include <Runtime/Modifier/ConstantScaleModifier.h>
-#include <Runtime/Modifier/ConstantTranslateModifier.h>
 #include <Runtime/Modifier/QuaternionModifier.h>
 #include <Runtime/Modifier/ScaleModifier.h>
 #include <Runtime/Modifier/TranslateModifier.h>
-#include <Runtime/Modifier/BakedQuaternionModifier.h>
-#include <Runtime/Modifier/Quaternion16Modifier.h>
-#include <Runtime/Modifier/BakedQuaternion16Modifier.h>
+#include <Runtime/Modifier/Interpolated/InterpolatedQuaternionModifier.h>
+#include <Runtime/Modifier/Interpolated/InterpolatedScaleModifier.h>
+#include <Runtime/Modifier/Interpolated/InterpolatedTranslateModifier.h>
+#include <Runtime/Modifier/Interpolated/InterpolatedQuaternion16Modifier.h>
+#include <Runtime/Modifier/Baked/BakedQuaternionModifier.h>
+#include <Runtime/Modifier/Baked/BakedQuaternion16Modifier.h>
 #include <Runtime/Tools/NodeTools.h>
 #include "Utility/MeshTools.h"
 #include "ImportFilmbox.h"
@@ -131,12 +131,12 @@ static void CreateAnimation(ufbx_scene* scene, xxNodePtr const& root, Import::Im
             xxModifierPtr modifier;
             if (reduction_node.constant_rotation)
             {
-                modifier = ConstantQuaternionModifier::Create(quat(reduction_node.rotation_keys[0].value));
+                modifier = QuaternionModifier::Create(quat(reduction_node.rotation_keys[0].value));
                 rotation = 1;
             }
-            else if (Modifier::CalculateSize(Modifier::QUATERNION16, reduction_node.rotation_keys.count) < Modifier::CalculateSize(Modifier::BAKED_QUATERNION16, baked_node.rotation_keys.count))
+            else if (Modifier::CalculateSize(Modifier::INTERPOLATED_QUATERNION16, reduction_node.rotation_keys.count) < Modifier::CalculateSize(Modifier::BAKED_QUATERNION16, baked_node.rotation_keys.count))
             {
-                modifier = Quaternion16Modifier::Create(reduction_node.rotation_keys.count, [&](size_t index, float& time, xxVector4& quaternion)
+                modifier = InterpolatedQuaternion16Modifier::Create(reduction_node.rotation_keys.count, [&](size_t index, float& time, xxVector4& quaternion)
                 {
                     time = float(reduction_node.rotation_keys.data[index].time - reduction->key_time_min);
                     quaternion = quat(reduction_node.rotation_keys.data[index].value);
@@ -171,12 +171,12 @@ static void CreateAnimation(ufbx_scene* scene, xxNodePtr const& root, Import::Im
             xxModifierPtr modifier;
             if (reduction_node.constant_translation)
             {
-                modifier = ConstantTranslateModifier::Create(vec3(reduction_node.translation_keys[0].value));
+                modifier = TranslateModifier::Create(vec3(reduction_node.translation_keys[0].value));
                 translate = 1;
             }
             else
             {
-                modifier = TranslateModifier::Create(reduction_node.translation_keys.count, [&](size_t index, float& time, xxVector3& translate)
+                modifier = InterpolatedTranslateModifier::Create(reduction_node.translation_keys.count, [&](size_t index, float& time, xxVector3& translate)
                 {
                     time = float(reduction_node.translation_keys.data[index].time - reduction->key_time_min);
                     translate = vec3(reduction_node.translation_keys.data[index].value);
@@ -203,12 +203,12 @@ static void CreateAnimation(ufbx_scene* scene, xxNodePtr const& root, Import::Im
             xxModifierPtr modifier;
             if (reduction_node.constant_scale)
             {
-                modifier = ConstantScaleModifier::Create(reduction_node.scale_keys[0].value.x);
+                modifier = ScaleModifier::Create(reduction_node.scale_keys[0].value.x);
                 scale = 1;
             }
             else
             {
-                modifier = ScaleModifier::Create(reduction_node.scale_keys.count, [&](size_t index, float& time, float& scale)
+                modifier = InterpolatedScaleModifier::Create(reduction_node.scale_keys.count, [&](size_t index, float& time, float& scale)
                 {
                     time = float(reduction_node.scale_keys.data[index].time - reduction->key_time_min);
                     scale = float(reduction_node.scale_keys.data[index].value.x);
@@ -371,17 +371,17 @@ static xxMeshPtr CreateMesh(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr co
         if (mesh->vertex_position.values.count < 65536)
         {
             uint16_t* indices = reinterpret_cast<uint16_t*>(output->Index);
-            for (size_t i = 0; i < mesh->num_indices; ++i)
+            for (uint32_t index : std::span(mesh->vertex_position.indices.data, mesh->num_indices))
             {
-                (*indices++) = mesh->vertex_position.indices.data[i];
+                (*indices++) = index;
             }
         }
         else
         {
             uint32_t* indices = reinterpret_cast<uint32_t*>(output->Index);
-            for (size_t i = 0; i < mesh->num_indices; ++i)
+            for (uint32_t index : std::span(mesh->vertex_position.indices.data, mesh->num_indices))
             {
-                (*indices++) = mesh->vertex_position.indices.data[i];
+                (*indices++) = index;
             }
         }
     }
@@ -432,18 +432,15 @@ static void CreateSkinning(ufbx_mesh* mesh, xxNodePtr const& node, xxNodePtr con
 
     if (skin_deformer)
     {
-        for (size_t i = 0; i < skin_deformer->clusters.count; ++i)
+        for (ufbx_skin_cluster* cluster : std::span(skin_deformer->clusters.data, skin_deformer->clusters.count))
         {
-            ufbx_skin_cluster* cluster = skin_deformer->clusters.data[i];
-
             // SkinMatrix
             xxMatrix4x4 skinMatrix = mat4(cluster->geometry_to_bone);
 
             // Bound
             xxVector4 bound = xxVector4::ZERO;
-            for (size_t j = 0; j < cluster->vertices.count; ++j)
+            for (uint32_t index : std::span(cluster->vertices.data, cluster->vertices.count))
             {
-                uint32_t index = cluster->vertices.data[j];
                 xxVector3 vertex = vec3(mesh->vertices[index]);
                 bound.BoundMerge(vertex);
             }
@@ -524,20 +521,20 @@ static xxNodePtr CreateNode(ufbx_node* node, xxNodePtr root, Import::ImportCallb
         {
             callback(node->parent, node, xxNodePtr(output), nullptr);
         }
-        for (size_t i = 0; i < node->children.count; ++i)
+        for (ufbx_node* child : std::span(node->children.data, node->children.count))
         {
-            CreateNode(node->children.data[i], root, callback);
+            CreateNode(child, root, callback);
         }
     }
     else
     {
-        for (size_t i = 0; i < node->children.count; ++i)
+        for (ufbx_node* child : std::span(node->children.data, node->children.count))
         {
-            xxNodePtr child = CreateNode(node->children.data[i], root, callback);
-            if (child)
+            xxNodePtr newNode = CreateNode(child, root, callback);
+            if (newNode)
             {
-                output->AttachChild(child);
-                child->UpdateMatrix();
+                output->AttachChild(newNode);
+                newNode->UpdateMatrix();
             }
         }
     }

@@ -9,7 +9,28 @@
 #include "Modifier.h"
 
 template<class T>
-bool Modifier::UpdateKeyFactor(xxModifierData* data, float time, T*& A, T*& B, float& F)
+void Modifier::AssignInterpolated(T& K)
+{
+    auto& keys = *(std::vector<T>*)&Data;
+    for (auto it = keys.begin(); it != keys.end(); ++it)
+    {
+        T& key = (*it);
+        if (key.time == K.time)
+        {
+            key.value = K.value;
+            return;
+        }
+        if (key.time > K.time)
+        {
+            keys.insert(it, K);
+            return;
+        }
+    }
+    keys.insert(keys.end(), K);
+}
+
+template<class T>
+bool Modifier::UpdateInterpolatedFactor(xxModifierData* data, float time, T*& A, T*& B, float& F)
 {
     if (data->time == time)
         return false;

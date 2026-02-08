@@ -22,6 +22,16 @@ xxVector4 Float4Modifier::Get() const
     return value;
 }
 //------------------------------------------------------------------------------
+void Float4Modifier::Assign(void* source, float time)
+{
+    Set(*(xxVector4*)source);
+}
+//------------------------------------------------------------------------------
+void Float4Modifier::Update(void* target, float time, xxModifierData* data)
+{
+    *(xxVector4*)target = Get();
+}
+//------------------------------------------------------------------------------
 xxModifierPtr Float4Modifier::Create(xxVector4 const& value)
 {
     xxModifierPtr modifier = xxModifier::Create();

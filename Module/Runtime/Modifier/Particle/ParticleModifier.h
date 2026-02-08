@@ -22,7 +22,7 @@ public:
     };
 
 public:
-    void UpdateValues(float* values, size_t count, xxModifierData* data, float time);
+    void UpdateValues(float* values, size_t count, float time, xxModifierData* data);
 
 public:
     static unsigned int Random(int& seed);

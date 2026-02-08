@@ -226,9 +226,8 @@ static void fbx_material(xxFile* file, char* line, xxNodePtr const& node, Connec
 #endif
     }
 
-    for (size_t i = 0; i < material->Textures.size(); ++i)
+    for (xxTexturePtr const& texture : material->Textures)
     {
-        xxTexturePtr const& texture = material->Textures[i];
         if (texture == nullptr)
             continue;
         std::string textureName = "Texture::" + xxFile::GetName(texture->Name.c_str());
@@ -275,9 +274,8 @@ static void fbx_skinning(xxFile* file, char* line, xxNodePtr const& node, Connec
 
 #if (FBXVersion >= 7000)
     // NodeAttribute
-    for (size_t bone = 0; bone < node->Bones.size(); ++bone)
+    for (auto const& boneData : node->Bones)
     {
-        auto const& boneData = node->Bones[bone];
         xxNodePtr boneNode = boneData.bone.lock();
         while (boneNode)
         {

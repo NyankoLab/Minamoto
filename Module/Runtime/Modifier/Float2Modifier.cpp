@@ -22,6 +22,16 @@ xxVector2 Float2Modifier::Get() const
     return value;
 }
 //------------------------------------------------------------------------------
+void Float2Modifier::Assign(void* source, float time)
+{
+    Set(*(xxVector2*)source);
+}
+//------------------------------------------------------------------------------
+void Float2Modifier::Update(void* target, float time, xxModifierData* data)
+{
+    *(xxVector2*)target = Get();
+}
+//------------------------------------------------------------------------------
 xxModifierPtr Float2Modifier::Create(xxVector2 const& value)
 {
     xxModifierPtr modifier = xxModifier::Create();

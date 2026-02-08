@@ -40,11 +40,7 @@ double ImportEvent::Execute()
         {
             if (root->GetParent())
             {
-                if (finished)
-                {
-                    Import::MergeNode(root, output, root);
-                    output = nullptr;
-                }
+                Import::MergeNode(root, output, root);
             }
             else
             {
@@ -257,7 +253,6 @@ void ImportEvent::ThreadedExecute()
     if (strcasestr(name, ".xxb"))
         output = Binary::Load(name);
     thiz->output = output;
-    thiz->finished = true;
 
     xxLog("Hierarchy", "Import : %s (%0.fus)", xxFile::GetName(name).c_str(), (xxGetCurrentTime() - begin) * 1000000);
 

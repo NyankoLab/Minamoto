@@ -90,10 +90,10 @@ void Import::MergeNode(xxNodePtr const& target, xxNodePtr const& source, xxNodeP
     std::vector<std::pair<xxNodePtr, xxNodePtr>> merge;
     std::vector<xxNodePtr> append;
 
-    for (xxNodePtr const& right : *source)
+    for (xxNodePtr const& right : (*source))
     {
         bool found = false;
-        for (xxNodePtr const& left : *target)
+        for (xxNodePtr const& left : (*target))
         {
             if (left->Name == right->Name)
             {
@@ -111,6 +111,23 @@ void Import::MergeNode(xxNodePtr const& target, xxNodePtr const& source, xxNodeP
     for (auto [left, right] : merge)
     {
         MergeNode(left, right, root);
+        if (left->Modifiers.size() == right->Modifiers.size())
+        {
+            bool equal = true;
+            size_t count = right->Modifiers.size();
+            for (size_t i = 0; i < count; ++i)
+            {
+                if (left->Modifiers[i].modifier != right->Modifiers[i].modifier)
+                {
+                    equal = false;
+                    break;
+                }
+            }
+            if (equal)
+            {
+                continue;
+            }
+        }
         left->Modifiers = right->Modifiers;
     }
 

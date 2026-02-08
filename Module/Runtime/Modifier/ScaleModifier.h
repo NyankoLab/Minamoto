@@ -1,5 +1,5 @@
 //==============================================================================
-// Minamoto : ScaleModifier Header
+// Minamoto : ConstantScaleModifier Header
 //
 // Copyright (c) 2023-2026 TAiGA
 // https://github.com/NyankoLab/Minamoto
@@ -11,15 +11,13 @@
 class RuntimeAPI ScaleModifier : public Modifier
 {
 public:
-    struct Key
+    struct Constant
     {
-        float time;
         float scale;
     };
-    static_assert(sizeof(Key) == 8);
 
 public:
-    void                    Update(void* target, xxModifierData* data, float time);
+    void                    Update(void* target, float time, xxModifierData* data) override;
 
-    static xxModifierPtr    Create(size_t count = 0, std::function<void(size_t index, float& time, float& scale)> fill = nullptr);
+    static xxModifierPtr    Create(float scale = 1.0f);
 };

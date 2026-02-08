@@ -14,15 +14,13 @@
 //==============================================================================
 //  ParticleModifier
 //==============================================================================
-void ParticleModifier::UpdateValues(float* values, size_t count, xxModifierData* data, float time)
+void ParticleModifier::UpdateValues(float* values, size_t count, float time, xxModifierData* data)
 {
-    count = std::min(count, Modifiers.size());
-    for (size_t i = 0; i < count; ++i)
+    for (xxModifierPtr const& modifier : std::span(Modifiers.data(), std::min(count, Modifiers.size())))
     {
-        xxModifierPtr const& modifier = Modifiers[i];
         if (modifier)
         {
-            modifier->Update(values, data, time);
+            modifier->Update(values, time, data);
         }
         values++;
         data++;

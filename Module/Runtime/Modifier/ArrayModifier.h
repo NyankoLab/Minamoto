@@ -14,5 +14,6 @@ public:
     void                    Set(std::span<char> span);
     std::span<char>         Get() const;
 
+public:
     static xxModifierPtr    Create(std::span<char> span = {});
 };

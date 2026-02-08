@@ -7,38 +7,30 @@
 #include "Runtime.h"
 #include "Graphic/Node.h"
 #include "QuaternionModifier.h"
-#include "Modifier.inl"
 
 //==============================================================================
 //  QuaternionModifier
 //==============================================================================
-void QuaternionModifier::Update(void* target, xxModifierData* data, float time)
+void QuaternionModifier::Update(void* target, float time, xxModifierData* data)
 {
-    Key* A;
-    Key* B;
-    float F;
-    if (UpdateKeyFactor(data, time, A, B, F) == false)
+    if (data->time == time)
         return;
+    data->time = time;
 
     auto node = (Node*)target;
-    node->SetRotate(xxMatrix3::Quaternion(Lerp((xxVector4&)A->quaternion, (xxVector4&)B->quaternion, F)));
+    auto* constant = (Constant*)Data.data();
+    node->SetRotate(xxMatrix3::Quaternion(constant->quaternion));
 }
 //------------------------------------------------------------------------------
-xxModifierPtr QuaternionModifier::Create(size_t count, std::function<void(size_t index, float& time, xxVector4& quaternion)> fill)
+xxModifierPtr QuaternionModifier::Create(xxVector4 const& quaternion)
 {
-    xxModifierPtr modifier = xxModifier::Create(sizeof(Key) * count);
+    xxModifierPtr modifier = xxModifier::Create(sizeof(Constant));
     if (modifier == nullptr)
         return nullptr;
 
     Loader(*modifier, QUATERNION);
-    if (fill)
-    {
-        auto* key = (Key*)modifier->Data.data();
-        for (size_t i = 0; i < count; ++i)
-        {
-            fill(i, key[i].time, (xxVector4&)key[i].quaternion);
-        }
-    }
+    auto* constant = (Constant*)modifier->Data.data();
+    constant->quaternion = quaternion;
     return modifier;
 }
 //==============================================================================
