@@ -101,11 +101,12 @@ bool Modifier::UpdateBakedFactor(xxModifierData* data, float time, D* baked, T*&
     time -= data->start;
 
     time = std::fmodf(time, baked->duration);
-    size_t index = data->index = size_t(time * baked->inverseFrequency);
+    float sample = time * baked->frequency;
+    size_t index = data->index = size_t(sample);
 
     A = (T*)&baked->values[index];
     B = (T*)&baked->values[index + 1];
-    F = time - index * baked->frequency;
+    F = sample - index;
     return true;
 }
 

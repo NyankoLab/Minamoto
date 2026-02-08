@@ -45,6 +45,44 @@ extern void* _ZTV21SprayParticleModifier;
 #endif
 }
 
+#if defined(_M_IX86)
+#pragma comment(linker, "/alternatename:__ZTV13FloatModifier=??_7FloatModifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV14Float2Modifier=??_7Float2Modifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV14Float3Modifier=??_7Float3Modifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV14Float4Modifier=??_7Float4Modifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV18QuaternionModifier=??_7QuaternionModifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV17TranslateModifier=??_7TranslateModifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV13ScaleModifier=??_7ScaleModifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV25InterpolatedFloatModifier=??_7InterpolatedFloatModifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV30InterpolatedQuaternionModifier=??_7InterpolatedQuaternionModifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV29InterpolatedTranslateModifier=??_7InterpolatedTranslateModifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV25InterpolatedScaleModifier=??_7InterpolatedScaleModifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV32InterpolatedQuaternion16Modifier=??_7InterpolatedQuaternion16Modifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV23BakedQuaternionModifier=??_7BakedQuaternionModifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV25BakedQuaternion16Modifier=??_7BakedQuaternion16Modifier@@6B@")
+#if HAVE_PARTICLE
+#pragma comment(linker, "/alternatename:__ZTV21SprayParticleModifier=??_7SprayParticleModifier@@6B@")
+#endif
+#elif defined(_M_AMD64)
+#pragma comment(linker, "/alternatename:_ZTV13FloatModifier=??_7FloatModifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV14Float2Modifier=??_7Float2Modifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV14Float3Modifier=??_7Float3Modifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV14Float4Modifier=??_7Float4Modifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV18QuaternionModifier=??_7QuaternionModifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV17TranslateModifier=??_7TranslateModifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV13ScaleModifier=??_7ScaleModifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV25InterpolatedFloatModifier=??_7InterpolatedFloatModifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV30InterpolatedQuaternionModifier=??_7InterpolatedQuaternionModifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV29InterpolatedTranslateModifier=??_7InterpolatedTranslateModifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV25InterpolatedScaleModifier=??_7InterpolatedScaleModifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV32InterpolatedQuaternion16Modifier=??_7InterpolatedQuaternion16Modifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV23BakedQuaternionModifier=??_7BakedQuaternionModifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV25BakedQuaternion16Modifier=??_7BakedQuaternion16Modifier@@6B@")
+#if HAVE_PARTICLE
+#pragma comment(linker, "/alternatename:_ZTV21SprayParticleModifier=??_7SprayParticleModifier@@6B@")
+#endif
+#endif
+
 static struct { std::string name; void** vtable; size_t header; size_t size; } const loaders[] =
 {
     { "UNKNOWN",                    nullptr,                                    0,  1 },
@@ -73,6 +111,7 @@ static struct { std::string name; void** vtable; size_t header; size_t size; } c
     { "BAKED_QUATERNION16",         &_ZTV25BakedQuaternion16Modifier,   sizeof(BakedQuaternion16Modifier::Baked),   sizeof(v4hi) },
 #if HAVE_PARTICLE
     { "SPRAY_PARTICLE",             &_ZTV21SprayParticleModifier,       sizeof(SprayParticleModifier::Parameter),   1 },
+        {}, {}, {}, {},
 #endif
 };
 static_assert(xxCountOf(loaders) == Modifier::MAX);

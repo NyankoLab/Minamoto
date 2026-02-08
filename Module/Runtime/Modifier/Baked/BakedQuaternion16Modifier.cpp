@@ -40,8 +40,7 @@ xxModifierPtr BakedQuaternion16Modifier::Create(size_t count, float duration, st
     {
         auto* baked = (Baked*)modifier->Data.data();
         baked->duration = duration;
-        baked->frequency = duration / (count - 1);
-        baked->inverseFrequency = 1.0f / baked->frequency;
+        baked->frequency = (count - 1) / duration;
         for (size_t i = 0; i < count; ++i)
         {
             xxVector4 quaternion;

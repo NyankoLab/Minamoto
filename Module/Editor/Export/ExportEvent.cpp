@@ -23,7 +23,7 @@ ExportEvent::ExportEvent(xxNodePtr const& root)
     static unsigned int accum = 0;
     this->title = "Export " + root->Name + " (" + std::to_string(accum++) + ")";
     this->root = root;
-#if defined(_WIN32)
+#if defined(xxWINDOWS)
     this->path = std::string(xxGetDocumentPath()) + '\\';
 #else
     this->path = std::string(xxGetDocumentPath()) + '/';

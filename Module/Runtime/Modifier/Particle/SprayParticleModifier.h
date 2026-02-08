@@ -23,13 +23,15 @@ public:
         float start;
         float life;
         float birth;
+        float tumble;
+        float scale;
         xxVector2 range;
         xxVector4 bound;
 
     public:
-        void CalculateBound();
+        void RuntimeAPI CalculateBound();
     };
-    static_assert(sizeof(Parameter) == 56);
+    static_assert(sizeof(Parameter) == 64);
 
     struct Header
     {
