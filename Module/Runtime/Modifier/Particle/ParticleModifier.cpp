@@ -37,6 +37,23 @@ float ParticleModifier::RandomFloat(int& seed)
     return Random(seed) / (float)UINT32_MAX;
 }
 //------------------------------------------------------------------------------
+xxVector2 ParticleModifier::RandomFloat2(int& seed)
+{
+    xxVector2 output;
+    output.x = Random(seed);
+    output.y = Random(seed);
+    return output / (float)UINT32_MAX;
+}
+//------------------------------------------------------------------------------
+xxVector3 ParticleModifier::RandomFloat3(int& seed)
+{
+    xxVector3 output;
+    output.x = Random(seed);
+    output.y = Random(seed);
+    output.z = Random(seed);
+    return output / (float)UINT32_MAX;
+}
+//------------------------------------------------------------------------------
 void ParticleModifier::SetParticleCount(Mesh* mesh, int count)
 {
     mesh->SetIndexCount(count * 6);

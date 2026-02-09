@@ -110,10 +110,10 @@ void NodeTools::ConvertQuadTree(xxNodePtr const& node)
         quads[1].radius = half;
         quads[2].radius = half;
         quads[3].radius = half;
-        quads[0].xy = nodeBound.xy + xxVector2{  1,  1 } * half;
-        quads[1].xy = nodeBound.xy + xxVector2{  1, -1 } * half;
-        quads[2].xy = nodeBound.xy + xxVector2{ -1, -1 } * half;
-        quads[3].xy = nodeBound.xy + xxVector2{ -1,  1 } * half;
+        quads[0].xy = nodeBound.xy + xxVector2{  half,  half };
+        quads[1].xy = nodeBound.xy + xxVector2{  half, -half };
+        quads[2].xy = nodeBound.xy + xxVector2{ -half, -half };
+        quads[3].xy = nodeBound.xy + xxVector2{ -half,  half };
 
         if (half >= 1.0f)
         {

@@ -22,6 +22,7 @@
 #include "BakedQuaternion16Modifier.h"
 #if HAVE_PARTICLE
 #include "Particle/SprayParticleModifier.h"
+#include "Particle/SuperSprayParticleModifier.h"
 #endif
 #include "Modifier.h"
 
@@ -42,6 +43,7 @@ extern void* _ZTV23BakedQuaternionModifier;
 extern void* _ZTV25BakedQuaternion16Modifier;
 #if HAVE_PARTICLE
 extern void* _ZTV21SprayParticleModifier;
+extern void* _ZTV26SuperSprayParticleModifier;
 #endif
 }
 
@@ -62,6 +64,7 @@ extern void* _ZTV21SprayParticleModifier;
 #pragma comment(linker, "/alternatename:__ZTV25BakedQuaternion16Modifier=??_7BakedQuaternion16Modifier@@6B@")
 #if HAVE_PARTICLE
 #pragma comment(linker, "/alternatename:__ZTV21SprayParticleModifier=??_7SprayParticleModifier@@6B@")
+#pragma comment(linker, "/alternatename:__ZTV26SuperSprayParticleModifier=??_7SuperSprayParticleModifier@@6B@")
 #endif
 #elif defined(_M_AMD64)
 #pragma comment(linker, "/alternatename:_ZTV13FloatModifier=??_7FloatModifier@@6B@")
@@ -80,6 +83,7 @@ extern void* _ZTV21SprayParticleModifier;
 #pragma comment(linker, "/alternatename:_ZTV25BakedQuaternion16Modifier=??_7BakedQuaternion16Modifier@@6B@")
 #if HAVE_PARTICLE
 #pragma comment(linker, "/alternatename:_ZTV21SprayParticleModifier=??_7SprayParticleModifier@@6B@")
+#pragma comment(linker, "/alternatename:_ZTV26SuperSprayParticleModifier=??_7SuperSprayParticleModifier@@6B@")
 #endif
 #endif
 
@@ -106,12 +110,13 @@ static struct { std::string name; void** vtable; size_t header; size_t size; } c
                                                         {}, {},
     { "INTERPOLATED_QUATERNION16",  &_ZTV32InterpolatedQuaternion16Modifier,    0,  sizeof(InterpolatedQuaternion16Modifier::Key) },
     {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-    { "BAKED_QUATERNION",           &_ZTV23BakedQuaternionModifier,     sizeof(BakedQuaternionModifier::Baked),     sizeof(xxVector4) },
+    { "BAKED_QUATERNION",           &_ZTV23BakedQuaternionModifier,     sizeof(BakedQuaternionModifier::Baked),         sizeof(xxVector4) },
                                                 {}, {}, {}, {},
-    { "BAKED_QUATERNION16",         &_ZTV25BakedQuaternion16Modifier,   sizeof(BakedQuaternion16Modifier::Baked),   sizeof(v4hi) },
+    { "BAKED_QUATERNION16",         &_ZTV25BakedQuaternion16Modifier,   sizeof(BakedQuaternion16Modifier::Baked),       sizeof(v4hi) },
 #if HAVE_PARTICLE
-    { "SPRAY_PARTICLE",             &_ZTV21SprayParticleModifier,       sizeof(SprayParticleModifier::Parameter),   1 },
-        {}, {}, {}, {},
+    { "SPRAY_PARTICLE",             &_ZTV21SprayParticleModifier,       sizeof(SprayParticleModifier::Parameter),       1 },
+    { "SUPERSPRAY_PARTICLE",        &_ZTV26SuperSprayParticleModifier,  sizeof(SuperSprayParticleModifier::Parameter),  1 },
+            {}, {}, {},
 #endif
 };
 static_assert(xxCountOf(loaders) == Modifier::MAX);

@@ -156,6 +156,10 @@
 		F5927B522F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */; };
 		F5927B532F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */; };
 		F5927B542F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */; };
+		F5927B572F35BE2A00AD8F1C /* SuperSprayParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B562F35BE2800AD8F1C /* SuperSprayParticleModifier.cpp */; };
+		F5927B582F35BE2A00AD8F1C /* SuperSprayParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B562F35BE2800AD8F1C /* SuperSprayParticleModifier.cpp */; };
+		F5927B592F35BE2A00AD8F1C /* SuperSprayParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B562F35BE2800AD8F1C /* SuperSprayParticleModifier.cpp */; };
+		F5927B5A2F35BE2A00AD8F1C /* SuperSprayParticleModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B562F35BE2800AD8F1C /* SuperSprayParticleModifier.cpp */; };
 		F5927B6B2F38807400AD8F1C /* BakedQuaternion16Modifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B672F38807400AD8F1C /* BakedQuaternion16Modifier.cpp */; };
 		F5927B6C2F38807400AD8F1C /* BakedQuaternionModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B692F38807400AD8F1C /* BakedQuaternionModifier.cpp */; };
 		F5927B6D2F38807400AD8F1C /* BakedQuaternion16Modifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B672F38807400AD8F1C /* BakedQuaternion16Modifier.cpp */; };
@@ -318,6 +322,8 @@
 		F5927B402F2C557500AD8F1C /* SprayParticleModifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SprayParticleModifier.cpp; sourceTree = "<group>"; };
 		F5927B4F2F2D1FB500AD8F1C /* ParticleModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleModifier.h; sourceTree = "<group>"; };
 		F5927B502F2D1FC600AD8F1C /* ParticleModifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleModifier.cpp; sourceTree = "<group>"; };
+		F5927B552F35BE0900AD8F1C /* SuperSprayParticleModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SuperSprayParticleModifier.h; sourceTree = "<group>"; };
+		F5927B562F35BE2800AD8F1C /* SuperSprayParticleModifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SuperSprayParticleModifier.cpp; sourceTree = "<group>"; };
 		F5927B662F38807400AD8F1C /* BakedQuaternion16Modifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BakedQuaternion16Modifier.h; sourceTree = "<group>"; };
 		F5927B672F38807400AD8F1C /* BakedQuaternion16Modifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BakedQuaternion16Modifier.cpp; sourceTree = "<group>"; };
 		F5927B682F38807400AD8F1C /* BakedQuaternionModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BakedQuaternionModifier.h; sourceTree = "<group>"; };
@@ -589,6 +595,8 @@
 				F5927B4F2F2D1FB500AD8F1C /* ParticleModifier.h */,
 				F5927B402F2C557500AD8F1C /* SprayParticleModifier.cpp */,
 				F5927B3F2F2C556400AD8F1C /* SprayParticleModifier.h */,
+				F5927B562F35BE2800AD8F1C /* SuperSprayParticleModifier.cpp */,
+				F5927B552F35BE0900AD8F1C /* SuperSprayParticleModifier.h */,
 			);
 			path = Particle;
 			sourceTree = "<group>";
@@ -756,6 +764,7 @@
 				F5927B8D2F3880B000AD8F1C /* InterpolatedTranslateModifier.cpp in Sources */,
 				F5B5D38C2D7ADB140019E2B1 /* Node.cpp in Sources */,
 				D6386A742BDC09EA0008C9D1 /* Binary.cpp in Sources */,
+				F5927B592F35BE2A00AD8F1C /* SuperSprayParticleModifier.cpp in Sources */,
 				D62286C52BD559B000440C24 /* TranslateModifier.cpp in Sources */,
 				D6FEF40D2C09C56E003272C2 /* Float3Modifier.cpp in Sources */,
 				F5927B6F2F38807400AD8F1C /* BakedQuaternion16Modifier.cpp in Sources */,
@@ -829,6 +838,7 @@
 				D6FEF4212C0B4B0E003272C2 /* Font.cpp in Sources */,
 				F5927B512F2D1FC800AD8F1C /* ParticleModifier.cpp in Sources */,
 				D62FEBE52BE50F77004E9FDF /* dllmain.cpp in Sources */,
+				F5927B572F35BE2A00AD8F1C /* SuperSprayParticleModifier.cpp in Sources */,
 				D6169D162BB17FE200E5490C /* new.cpp in Sources */,
 				D6169D1C2BB1802100E5490C /* tls.cpp in Sources */,
 			);
@@ -856,6 +866,7 @@
 				F5927B882F3880B000AD8F1C /* InterpolatedTranslateModifier.cpp in Sources */,
 				F5B5D38E2D7ADB140019E2B1 /* Node.cpp in Sources */,
 				D6386A752BDC09EA0008C9D1 /* Binary.cpp in Sources */,
+				F5927B582F35BE2A00AD8F1C /* SuperSprayParticleModifier.cpp in Sources */,
 				D62286C62BD559B000440C24 /* TranslateModifier.cpp in Sources */,
 				D6FEF40E2C09C56E003272C2 /* Float3Modifier.cpp in Sources */,
 				F5927B6D2F38807400AD8F1C /* BakedQuaternion16Modifier.cpp in Sources */,
@@ -904,6 +915,7 @@
 				F5927B922F3880B000AD8F1C /* InterpolatedTranslateModifier.cpp in Sources */,
 				F5B5D38B2D7ADB140019E2B1 /* Node.cpp in Sources */,
 				D6386A762BDC09EA0008C9D1 /* Binary.cpp in Sources */,
+				F5927B5A2F35BE2A00AD8F1C /* SuperSprayParticleModifier.cpp in Sources */,
 				D62286C72BD559B000440C24 /* TranslateModifier.cpp in Sources */,
 				D6FEF40F2C09C56E003272C2 /* Float3Modifier.cpp in Sources */,
 				F5927B712F38807400AD8F1C /* BakedQuaternion16Modifier.cpp in Sources */,

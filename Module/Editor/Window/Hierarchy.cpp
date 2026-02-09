@@ -54,9 +54,9 @@ static void AddNode(xxNodePtr const& root)
     root->AttachChild(node);
 }
 //------------------------------------------------------------------------------
-static void AddParticle(xxNodePtr const& root)
+static void AddParticle(xxNodePtr const& root, uint64_t type)
 {
-    auto node = ParticleTools::CreateParticle(0);
+    auto node = ParticleTools::CreateParticle(type);
     root->AttachChild(node);
 }
 //------------------------------------------------------------------------------
@@ -427,7 +427,7 @@ bool Hierarchy::Update(const UpdateData& updateData, bool& show, xxNodePtr const
 #endif
             {
                 update = true;
-                AddParticle(selectedRight);
+                AddParticle(selectedRight, "Spray"_CC);
                 selectedRight->Flags |= TEST_OPEN_FLAG;
                 selectedRight = nullptr;
             }

@@ -1,5 +1,5 @@
 //==============================================================================
-// Minamoto : SprayParticleModifier Header
+// Minamoto : SuperSprayParticleModifier Header
 //
 // Copyright (c) 2023-2026 TAiGA
 // https://github.com/NyankoLab/Minamoto
@@ -10,35 +10,41 @@
 
 #include "ParticleModifier.h"
 
-class RuntimeAPI SprayParticleModifier : public ParticleModifier
+class RuntimeAPI SuperSprayParticleModifier : public ParticleModifier
 {
 public:
     struct Parameter
     {
         int now;
         int count;
-        float size;
+        xxVector2 offset;
+        xxVector2 spread;
         float speed;
-        float variation;
-        float start;
-        float life;
-        float birth;
+        float speedVariation;
         float tumble;
         float scale;
+        float start;
+        float stop;
+        float life;
+        float lifeVariation;
+        float size;
+        float sizeVariation;
+        float grow;
+        float fade;
         xxVector2 range;
         xxVector4 bound;
 
     public:
         void RuntimeAPI CalculateBound();
     };
-    static_assert(sizeof(Parameter) == 64);
+//  static_assert(sizeof(Parameter) == 64);
 
     struct Header
     {
         int seed;
-        xxModifierData modifiers[8];
         Particle particles[];
     };
+    static_assert(sizeof(Header) == 4);
 
 public:
     void                    Update(void* target, float time, xxModifierData* data);

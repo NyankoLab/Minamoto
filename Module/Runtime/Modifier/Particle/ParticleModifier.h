@@ -27,6 +27,8 @@ public:
 public:
     static unsigned int Random(int& seed);
     static float RandomFloat(int& seed);
+    static xxVector2 RandomFloat2(int& seed);
+    static xxVector3 RandomFloat3(int& seed);
     static void SetParticleCount(Mesh* mesh, int count);
     static int SetParticleData(Mesh* mesh, Particle* particles, int count, float size);
 };

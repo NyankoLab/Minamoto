@@ -13,7 +13,9 @@
 #include <Runtime/MiniGUI/Window.h>
 #include <Runtime/Modifier/Modifier.h>
 #include <Runtime/Modifier/Particle/SprayParticleModifier.h>
+#include <Runtime/Modifier/Particle/SuperSprayParticleModifier.h>
 #include <Runtime/Tools/NodeTools.h>
+#include "Utility/ParticleTools.h"
 #include "Utility/Tools.h"
 #include "Log.h"
 #include "Inspector.h"
@@ -361,18 +363,33 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
     {
         for (auto const& data : modifierData)
         {
+            xxModifier& modifier = *(data.modifier);
             ImGui::PushStyleColor(ImGuiCol_Header, 0);
-            bool open = ImGui::CollapsingHeader(Modifier::Name(*data.modifier).c_str(), nullptr, ImGuiTreeNodeFlags_None);
+            bool open = ImGui::CollapsingHeader(Modifier::Name(modifier).c_str(), nullptr, ImGuiTreeNodeFlags_None);
             ImGui::PopStyleColor();
             if (open)
             {
-                switch (data.modifier->DataType)
+#if HAVE_PARTICLE
+                switch (modifier.DataType)
+                {
+                case Modifier::SPRAY_PARTICLE:
+                case Modifier::SUPERSPRAY_PARTICLE:
+                    if (ImGui::Button("Spray") && modifier.DataType != Modifier::SPRAY_PARTICLE)
+                        ParticleTools::ConvertParticle(modifier, "Spray"_CC);
+                    ImGui::SameLine();
+                    if (ImGui::Button("SuperSpray") && modifier.DataType != Modifier::SUPERSPRAY_PARTICLE)
+                        ParticleTools::ConvertParticle(modifier, "SuperSpray"_CC);
+                default:
+                    break;
+                }
+#endif
+                switch (modifier.DataType)
                 {
 #if HAVE_PARTICLE
                 case Modifier::SPRAY_PARTICLE:
                 {
                     bool update = false;
-                    auto parameter = (SprayParticleModifier::Parameter*)data.modifier->Data.data();
+                    auto parameter = (SprayParticleModifier::Parameter*)modifier.Data.data();
                     update |= ImGui::InputInt("Now" Q, &parameter->now, 0, 0, ImGuiInputTextFlags_ReadOnly);
                     update |= ImGui::InputInt("Count" Q, &parameter->count, 1, 100);
                     update |= ImGui::InputFloat("Size" Q, &parameter->size, 1, 100);
@@ -389,11 +406,41 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
                     }
                     break;
                 }
+                case Modifier::SUPERSPRAY_PARTICLE:
+                {
+                    bool update = false;
+                    auto parameter = (SuperSprayParticleModifier::Parameter*)modifier.Data.data();
+                    xxVector2 offset = parameter->offset * 180.0f / float(M_PI);
+                    xxVector2 spread = parameter->spread * 180.0f / float(M_PI);
+                    update |= ImGui::InputInt("Now" Q, &parameter->now, 0, 0, ImGuiInputTextFlags_ReadOnly);
+                    update |= ImGui::InputInt("Count" Q, &parameter->count, 1, 100);
+                    update |= ImGui::InputFloat("Offset" Q, &offset.x, 1, 100);
+                    update |= ImGui::InputFloat("Spread" Q, &spread.x, 1, 100);
+                    update |= ImGui::InputFloat("Offset" Q, &offset.y, 1, 100);
+                    update |= ImGui::InputFloat("Spread" Q, &spread.y, 1, 100);
+                    update |= ImGui::InputFloat("Speed" Q, &parameter->speed, 1, 100);
+                    update |= ImGui::InputFloat("Variation" Q, &parameter->speedVariation, 1, 100);
+                    update |= ImGui::InputFloat("Start" Q, &parameter->start, 1, 100);
+                    update |= ImGui::InputFloat("Stop" Q, &parameter->stop, 1, 100);
+                    update |= ImGui::InputFloat("Life" Q, &parameter->life, 1, 100);
+                    update |= ImGui::InputFloat("Variation" Q, &parameter->lifeVariation, 1, 100);
+                    update |= ImGui::InputFloat("Size" Q, &parameter->size, 1, 100);
+                    update |= ImGui::InputFloat("Variation" Q, &parameter->sizeVariation, 1, 100);
+                    update |= ImGui::InputFloat("Width" Q, &parameter->range.x, 1, 100);
+                    update |= ImGui::InputFloat("Height" Q, &parameter->range.y, 1, 100);
+                    if (update)
+                    {
+                        parameter->offset = offset * float(M_PI) / 180.0f;
+                        parameter->spread = spread * float(M_PI) / 180.0f;
+                        parameter->CalculateBound();
+                    }
+                    break;
+                }
 #endif
                 default:
-                    int sizeCount[2];
-                    sizeCount[0] = (int)data.modifier->Data.size();
-                    sizeCount[1] = (int)Modifier::Count(*data.modifier);
+                    int sizeCount[3];
+                    sizeCount[0] = (int)modifier.Data.size();
+                    sizeCount[1] = (int)Modifier::Count(modifier);
                     float time[2];
                     time[0] = data.start;
                     time[1] = data.time;
