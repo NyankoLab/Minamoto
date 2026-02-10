@@ -738,6 +738,7 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
     s(normal > 1,   "float3 tangent = attrTangent / 127.5 - 1.0;"                                                                        );
     s(normal > 2,   "float3 binormal = attrBinormal / 127.5 - 1.0;"                                                                      );
     s(color,        "color = attrColor;"                                                                                                 );
+    s(texture > 0,  "float2 UV0 = attrUV0;"                                                                                              );
     s(DebugMeshlet, "uint hash = gid * -16777619;"                                                                                       );
     s(DebugMeshlet, "color.rgb = float3(uint3(hash & 0xFF, (hash >> 8) & 0xFF, (hash >> 16) & 0xFF)) / 255.0;"                           );
 
@@ -749,7 +750,7 @@ void Material::ShaderMesh(xxDrawData const& data, struct MaterialSelector& s) co
     s.HM(true,                 "",                                              "Varying vary;"                           );
     s.HM(true,                 "vary[gtid].Position = screenPosition;",         "vary.Position = screenPosition;"         );
     s.HM(Lighting || color,    "vary[gtid].Color = color;",                     "vary.Color = color;"                     );
-    s.HM(texture > 0,          "vary[gtid].UV0 = attrUV0;",                     "vary.UV0 = attrUV0;"                     );
+    s.HM(texture > 0,          "vary[gtid].UV0 = UV0;",                         "vary.UV0 = UV0;"                         );
     s.HM(Lighting && Specular, "vary[gtid].WorldPosition = worldPosition.xyz;", "vary.WorldPosition = worldPosition.xyz;" );
     s.HM(fragNormal > 0,       "vary[gtid].WorldNormal = worldNormal;",         "vary.WorldNormal = worldNormal;"         );
     s.HM(fragNormal > 1,       "vary[gtid].WorldTangent = worldTangent;",       "vary.WorldTangent = worldTangent;"       );
@@ -789,11 +790,12 @@ void Material::ShaderVertex(xxDrawData const& data, struct MaterialSelector& s) 
     s.GH(normal > 1,  "",                        "uint4 attrTangent = attr.Tangent;"         );
     s.GH(normal > 2,  "",                        "uint4 attrBinormal = attr.Binormal;"       );
 
-    //            GLSL / HLSL / MSL
-    s(normal > 0, "float3 normal = float3(attrNormal.x, attrNormal.y, attrNormal.z) / 127.5 - 1.0;"         );
-    s(normal > 1, "float3 tangent = float3(attrTangent.x, attrTangent.y, attrTangent.z) / 127.5 - 1.0;"     );
-    s(normal > 2, "float3 binormal = float3(attrBinormal.x, attrBinormal.y, attrBinormal.z) / 127.5 - 1.0;" );
-    s(color,      "color = attrColor;"                                                                      );
+    //              GLSL / HLSL / MSL
+    s(normal > 0,   "float3 normal = float3(attrNormal.x, attrNormal.y, attrNormal.z) / 127.5 - 1.0;"         );
+    s(normal > 1,   "float3 tangent = float3(attrTangent.x, attrTangent.y, attrTangent.z) / 127.5 - 1.0;"     );
+    s(normal > 2,   "float3 binormal = float3(attrBinormal.x, attrBinormal.y, attrBinormal.z) / 127.5 - 1.0;" );
+    s(color,        "color = attrColor;"                                                                      );
+    s(texture > 0,  "float2 UV0 = attrUV0;"                                                                   );
 
     int size = 0;
     UpdateWorldViewProjectionConstant(data, size, nullptr, &s);
@@ -806,7 +808,7 @@ void Material::ShaderVertex(xxDrawData const& data, struct MaterialSelector& s) 
     s.GH(true,                 "",                                       "Varying vary;"                           );
     s.GH(true,                 "gl_Position = screenPosition;",          "vary.Position = screenPosition;"         );
     s.GH(Lighting || color,    "varyColor = color;",                     "vary.Color = color;"                     );
-    s.GH(texture > 0,          "varyUV0 = attrUV0;",                     "vary.UV0 = attrUV0;"                     );
+    s.GH(texture > 0,          "varyUV0 = UV0;",                         "vary.UV0 = UV0;"                         );
     s.GH(Lighting && Specular, "varyWorldPosition = worldPosition.xyz;", "vary.WorldPosition = worldPosition.xyz;" );
     s.GH(fragNormal > 0,       "varyWorldNormal = worldNormal;",         "vary.WorldNormal = worldNormal;"         );
     s.GH(fragNormal > 1,       "varyWorldTangent = worldTangent;",       "vary.WorldTangent = worldTangent;"       );
@@ -1122,9 +1124,17 @@ void Material::UpdateTransformConstant(xxDrawData const& data, int& size, xxVect
             (*s)(true, "float3 cameraRight = float3(view[0][0], view[0][1], view[0][2]);"           );
             (*s)(true, "float3 cameraUp = float3(view[1][0], view[1][1], view[1][2]);"              );
             (*s)(true, "float4 worldPosition = float4(world[0][3], world[1][3], world[2][3], 1.0);" );
-            (*s)(true, "worldPosition.xyz += cameraRight * attrPosition.x;"                         );
-            (*s)(true, "worldPosition.xyz += cameraUp * attrPosition.y;"                            );
-            (*s)(true, "worldPosition.z += attrPosition.z;"                                         );
+            (*s)(true, "float2 offset = float2(sign(UV0.x), sign(UV0.y));"                          );
+            (*s)(true, "float size = abs(UV0.x);"                                                   );
+            (*s)(true, "float radian = abs(UV0.y);"                                                 );
+            (*s)(true, "float s = sin(radian);"                                                     );
+            (*s)(true, "float c = cos(radian);"                                                     );
+            (*s)(true, "offset = float2(c * offset.x - s * offset.y, s * offset.x + c * offset.y);" );
+            (*s)(true, "worldPosition.xyz += attrPosition;"                                         );
+            (*s)(true, "worldPosition.xyz += cameraRight * offset.x * size;"                        );
+            (*s)(true, "worldPosition.xyz += cameraUp * offset.y * size;"                           );
+            (*s)(true, "UV0.x = UV0.x < 0.0 ? 0.0 : 1.0;"                                           );
+            (*s)(true, "UV0.y = UV0.y < 0.0 ? 0.0 : 1.0;"                                           );
         }
         else
         {

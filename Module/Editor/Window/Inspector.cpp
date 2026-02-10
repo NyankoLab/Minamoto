@@ -426,6 +426,8 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
                     update |= ImGui::InputFloat("Variation" Q, &parameter->lifeVariation, 1, 100);
                     update |= ImGui::InputFloat("Size" Q, &parameter->size, 1, 100);
                     update |= ImGui::InputFloat("Variation" Q, &parameter->sizeVariation, 1, 100);
+                    update |= ImGui::InputFloat("Grow" Q, &parameter->grow, 1, 100);
+                    update |= ImGui::InputFloat("Fade" Q, &parameter->fade, 1, 100);
                     update |= ImGui::InputFloat("Width" Q, &parameter->range.x, 1, 100);
                     update |= ImGui::InputFloat("Height" Q, &parameter->range.y, 1, 100);
                     if (update)

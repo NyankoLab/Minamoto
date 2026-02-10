@@ -62,16 +62,17 @@ void SprayParticleModifier::Update(void* target, float time, xxModifierData* dat
             if (particleBorn >= particleBirth)
                 continue;
             particleBorn++;
-            particle.point.xy = (RandomFloat2(header->seed) - 0.5f) * parameter->range;
+            particle.point.xy = (RandomFloat2(header->seed) * 0.5f) * parameter->range;
             particle.point.z = 0.0f;
             particle.velocity.x = 0.0f;
             particle.velocity.y = 0.0f;
             particle.velocity.z = -parameter->speed;
             if (parameter->variation != 0.0f)
             {
-                particle.velocity += (RandomFloat3(header->seed) * 2.0f - 1.0f) * parameter->variation;
+                particle.velocity += RandomFloat3(header->seed) * parameter->variation;
             }
             particle.size = parameter->size;
+            particle.spin = 2.0f * M_PI;
             particle.age = parameter->life;
             continue;
         }

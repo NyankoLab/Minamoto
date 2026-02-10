@@ -27,14 +27,14 @@ void ParticleModifier::UpdateValues(float* values, size_t count, float time, xxM
     }
 }
 //------------------------------------------------------------------------------
-unsigned int ParticleModifier::Random(int& seed)
+int ParticleModifier::Random(int& seed)
 {
     return seed = (seed * 214013) + 2531011;
 }
 //------------------------------------------------------------------------------
 float ParticleModifier::RandomFloat(int& seed)
 {
-    return Random(seed) / (float)UINT32_MAX;
+    return Random(seed) / (float)INT_MAX;
 }
 //------------------------------------------------------------------------------
 xxVector2 ParticleModifier::RandomFloat2(int& seed)
@@ -42,7 +42,7 @@ xxVector2 ParticleModifier::RandomFloat2(int& seed)
     xxVector2 output;
     output.x = Random(seed);
     output.y = Random(seed);
-    return output / (float)UINT32_MAX;
+    return output / (float)INT_MAX;
 }
 //------------------------------------------------------------------------------
 xxVector3 ParticleModifier::RandomFloat3(int& seed)
@@ -51,7 +51,7 @@ xxVector3 ParticleModifier::RandomFloat3(int& seed)
     output.x = Random(seed);
     output.y = Random(seed);
     output.z = Random(seed);
-    return output / (float)UINT32_MAX;
+    return output / (float)INT_MAX;
 }
 //------------------------------------------------------------------------------
 void ParticleModifier::SetParticleCount(Mesh* mesh, int count)
@@ -98,6 +98,7 @@ int ParticleModifier::SetParticleData(Mesh* mesh, Particle* particles, int count
     int now = 0;
 
     auto positions = mesh->GetPosition();
+    auto textures = mesh->GetTexture();
     for (int i = 0; i < count; ++i)
     {
         Particle& particle = particles[i];
@@ -105,15 +106,25 @@ int ParticleModifier::SetParticleData(Mesh* mesh, Particle* particles, int count
             continue;
         auto point = particle.point;
         auto size = particle.size;
+        auto spin = particle.spin;
         auto p0 = positions;
         auto p1 = positions + 1;
         auto p2 = positions + 2;
         auto p3 = positions + 3;
         positions = positions + 4;
-        (*p0) = point + xxVector3{ -size, -size, 0.0f };
-        (*p1) = point + xxVector3{ -size,  size, 0.0f };
-        (*p2) = point + xxVector3{  size,  size, 0.0f };
-        (*p3) = point + xxVector3{  size, -size, 0.0f };
+        auto t0 = textures;
+        auto t1 = textures + 1;
+        auto t2 = textures + 2;
+        auto t3 = textures + 3;
+        textures = textures + 4;
+        (*p0) = point;
+        (*p1) = point;
+        (*p2) = point;
+        (*p3) = point;
+        (*t0) = xxVector2{ -size, -spin };
+        (*t1) = xxVector2{ -size,  spin };
+        (*t2) = xxVector2{  size,  spin };
+        (*t3) = xxVector2{  size, -spin };
         now++;
     }
 

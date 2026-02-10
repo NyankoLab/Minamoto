@@ -18,14 +18,17 @@ public:
         xxVector3 point;
         xxVector3 velocity;
         float size;
+        float spin;
         float age;
+        float fade;
+        float grow;
     };
 
 public:
     void UpdateValues(float* values, size_t count, float time, xxModifierData* data);
 
 public:
-    static unsigned int Random(int& seed);
+    static int Random(int& seed);
     static float RandomFloat(int& seed);
     static xxVector2 RandomFloat2(int& seed);
     static xxVector3 RandomFloat3(int& seed);
