@@ -33,7 +33,11 @@ void SuperSprayParticleModifier::Update(void* target, float time, xxModifierData
 
     Parameter* parameter = (Parameter*)Data.data();
 
-    size_t tempSize = sizeof(Header) + sizeof(Particle) * parameter->count;
+    int particleCount = parameter->count;
+    if (particleCount < 0)
+        particleCount = (int)ceilf(parameter->life * -particleCount);
+
+    size_t tempSize = sizeof(Header) + sizeof(Particle) * particleCount;
     if (data->temp.size() < tempSize)
         data->temp.resize(tempSize);
 
@@ -44,16 +48,16 @@ void SuperSprayParticleModifier::Update(void* target, float time, xxModifierData
     int particleBorn = 0;
     int particleBirth = 0;
 
-    if (parameter->now < parameter->count)
+    if (parameter->now < particleCount)
     {
-        float rate = parameter->count / parameter->life;
+        float rate = particleCount / parameter->life;
         float during = time - parameter->start;
         float birthRate = rate;
         particleBirth = std::min<int>(truncf(during * birthRate) - truncf((during - delta) * birthRate), during * rate);
     }
 
     Particle* particles = header->particles;
-    for (Particle& particle : std::span(particles, parameter->count))
+    for (Particle& particle : std::span(particles, particleCount))
     {
         if (particle.age <= 0.0f)
         {
@@ -62,6 +66,21 @@ void SuperSprayParticleModifier::Update(void* target, float time, xxModifierData
             particleBorn++;
             particle.point.xy = (RandomFloat2(header->seed) * 0.5f) * parameter->range;
             particle.point.z = 0.0f;
+            particle.radian = float(M_PI * 2.0f) + parameter->phase;
+            if (parameter->phaseVariation != 0.0f)
+            {
+                particle.radian += RandomFloat(header->seed) * particle.radian * parameter->phaseVariation;
+            }
+            particle.size = parameter->size;
+            if (parameter->sizeVariation != 0.0f)
+            {
+                particle.size += RandomFloat(header->seed) * particle.size * parameter->sizeVariation;
+            }
+            particle.age = parameter->life;
+            if (parameter->lifeVariation != 0.0f)
+            {
+                particle.age += RandomFloat(header->seed) * particle.age * parameter->lifeVariation;
+            }
             xxVector2 theta = parameter->offset + RandomFloat2(header->seed) * parameter->spread;
             particle.velocity.x = sinf(theta.x) * sinf(theta.y);
             particle.velocity.y = sinf(theta.x) * cosf(theta.y);
@@ -69,18 +88,16 @@ void SuperSprayParticleModifier::Update(void* target, float time, xxModifierData
             particle.velocity = particle.velocity * parameter->speed;
             if (parameter->speedVariation != 0.0f)
             {
-                particle.velocity += RandomFloat3(header->seed) * parameter->speedVariation;
+                particle.velocity += RandomFloat3(header->seed) * particle.velocity * parameter->speedVariation;
             }
-            particle.size = parameter->size;
-            if (parameter->sizeVariation != 0.0f)
+            particle.spin = 0.0f;
+            if (parameter->spin != 0.0f)
             {
-                particle.size += RandomFloat(header->seed) * parameter->sizeVariation;
-            }
-            particle.spin = 2.0f * M_PI;
-            particle.age = parameter->life;
-            if (parameter->lifeVariation != 0.0f)
-            {
-                particle.age += RandomFloat(header->seed) * parameter->lifeVariation;
+                particle.spin = float(M_PI * 2.0f) / parameter->spin;
+                if (parameter->spinVariation != 0.0f)
+                {
+                    particle.spin += RandomFloat(header->seed) * particle.spin * parameter->spinVariation;
+                }
             }
             if (parameter->fade != 0.0f)
             {
@@ -95,18 +112,19 @@ void SuperSprayParticleModifier::Update(void* target, float time, xxModifierData
         }
         particle.age -= delta;
         particle.point += particle.velocity * delta;
-        if (particle.fade != 0.0f && parameter->fade > particle.age)
+        particle.radian += particle.spin * delta;
+        if (parameter->fade > particle.age)
         {
             particle.size -= particle.fade * delta;
         }
-        else if (particle.grow != 0.0f && parameter->grow > parameter->life - particle.age)
+        else if (parameter->grow > parameter->life - particle.age)
         {
             particle.size += particle.grow * delta;
         }
     }
 
     const_cast<xxVector4&>(mesh->Bound) = parameter->bound;
-    parameter->now = SetParticleData(mesh, particles, parameter->count, parameter->size);
+    parameter->now = SetParticleData(mesh, particles, particleCount, parameter->size);
 }
 //------------------------------------------------------------------------------
 void SuperSprayParticleModifier::Parameter::CalculateBound()

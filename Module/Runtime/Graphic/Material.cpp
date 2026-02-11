@@ -1125,8 +1125,8 @@ void Material::UpdateTransformConstant(xxDrawData const& data, int& size, xxVect
             (*s)(true, "float3 cameraUp = float3(view[1][0], view[1][1], view[1][2]);"              );
             (*s)(true, "float4 worldPosition = float4(world[0][3], world[1][3], world[2][3], 1.0);" );
             (*s)(true, "float2 offset = float2(sign(UV0.x), sign(UV0.y));"                          );
-            (*s)(true, "float size = abs(UV0.x);"                                                   );
-            (*s)(true, "float radian = abs(UV0.y);"                                                 );
+            (*s)(true, "float radian = abs(UV0.x);"                                                 );
+            (*s)(true, "float size = abs(UV0.y);"                                                   );
             (*s)(true, "float s = sin(radian);"                                                     );
             (*s)(true, "float c = cos(radian);"                                                     );
             (*s)(true, "offset = float2(c * offset.x - s * offset.y, s * offset.x + c * offset.y);" );
@@ -1134,7 +1134,7 @@ void Material::UpdateTransformConstant(xxDrawData const& data, int& size, xxVect
             (*s)(true, "worldPosition.xyz += cameraRight * offset.x * size;"                        );
             (*s)(true, "worldPosition.xyz += cameraUp * offset.y * size;"                           );
             (*s)(true, "UV0.x = UV0.x < 0.0 ? 0.0 : 1.0;"                                           );
-            (*s)(true, "UV0.y = UV0.y < 0.0 ? 0.0 : 1.0;"                                           );
+            (*s)(true, "UV0.y = UV0.y > 0.0 ? 0.0 : 1.0;"                                           );
         }
         else
         {

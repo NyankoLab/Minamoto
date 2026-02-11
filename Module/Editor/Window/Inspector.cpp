@@ -390,11 +390,12 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
                 {
                     bool update = false;
                     auto parameter = (SprayParticleModifier::Parameter*)modifier.Data.data();
+                    float variation = parameter->variation * 100.0f;
                     update |= ImGui::InputInt("Now" Q, &parameter->now, 0, 0, ImGuiInputTextFlags_ReadOnly);
                     update |= ImGui::InputInt("Count" Q, &parameter->count, 1, 100);
                     update |= ImGui::InputFloat("Size" Q, &parameter->size, 1, 100);
                     update |= ImGui::InputFloat("Speed" Q, &parameter->speed, 1, 100);
-                    update |= ImGui::InputFloat("Variation" Q, &parameter->variation, 1, 100);
+                    update |= ImGui::SliderFloat("Variation" Q, &variation, 0, 100);
                     update |= ImGui::InputFloat("Start" Q, &parameter->start, 1, 100);
                     update |= ImGui::InputFloat("Life" Q, &parameter->life, 1, 100);
                     update |= ImGui::InputFloat("Birth" Q, &parameter->birth, 1, 100);
@@ -402,6 +403,7 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
                     update |= ImGui::InputFloat("Height" Q, &parameter->range.y, 1, 100);
                     if (update)
                     {
+                        parameter->variation = variation / 100.0f;
                         parameter->CalculateBound();
                     }
                     break;
@@ -411,29 +413,45 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
                     bool update = false;
                     auto parameter = (SuperSprayParticleModifier::Parameter*)modifier.Data.data();
                     xxVector2 offset = parameter->offset * 180.0f / float(M_PI);
-                    xxVector2 spread = parameter->spread * 180.0f / float(M_PI);
+                    xxVector2 spread = parameter->spread * 360.0f / float(M_PI);
+                    float speedVariation = parameter->speedVariation * 100.0f;
+                    float lifeVariation = parameter->lifeVariation * 100.0f;
+                    float sizeVariation = parameter->sizeVariation * 100.0f;
+                    float spinVariation = parameter->spinVariation * 100.0f;
+                    float phase = parameter->phase * 180.0f / float(M_PI);
+                    float phaseVariation = parameter->phaseVariation * 100.0f;
                     update |= ImGui::InputInt("Now" Q, &parameter->now, 0, 0, ImGuiInputTextFlags_ReadOnly);
                     update |= ImGui::InputInt("Count" Q, &parameter->count, 1, 100);
-                    update |= ImGui::InputFloat("Offset" Q, &offset.x, 1, 100);
-                    update |= ImGui::InputFloat("Spread" Q, &spread.x, 1, 100);
-                    update |= ImGui::InputFloat("Offset" Q, &offset.y, 1, 100);
-                    update |= ImGui::InputFloat("Spread" Q, &spread.y, 1, 100);
+                    update |= ImGui::SliderFloat("Offset" Q, &offset.x, 0, 360);
+                    update |= ImGui::SliderFloat("Spread" Q, &spread.x, 0, 360);
+                    update |= ImGui::SliderFloat("Offset" Q, &offset.y, 0, 360);
+                    update |= ImGui::SliderFloat("Spread" Q, &spread.y, 0, 360);
                     update |= ImGui::InputFloat("Speed" Q, &parameter->speed, 1, 100);
-                    update |= ImGui::InputFloat("Variation" Q, &parameter->speedVariation, 1, 100);
+                    update |= ImGui::SliderFloat("Variation" Q, &speedVariation, 0, 100);
                     update |= ImGui::InputFloat("Start" Q, &parameter->start, 1, 100);
                     update |= ImGui::InputFloat("Stop" Q, &parameter->stop, 1, 100);
                     update |= ImGui::InputFloat("Life" Q, &parameter->life, 1, 100);
-                    update |= ImGui::InputFloat("Variation" Q, &parameter->lifeVariation, 1, 100);
+                    update |= ImGui::SliderFloat("Variation" Q, &lifeVariation, 0, 100);
                     update |= ImGui::InputFloat("Size" Q, &parameter->size, 1, 100);
-                    update |= ImGui::InputFloat("Variation" Q, &parameter->sizeVariation, 1, 100);
+                    update |= ImGui::SliderFloat("Variation" Q, &sizeVariation, 0, 100);
                     update |= ImGui::InputFloat("Grow" Q, &parameter->grow, 1, 100);
                     update |= ImGui::InputFloat("Fade" Q, &parameter->fade, 1, 100);
+                    update |= ImGui::InputFloat("Spin" Q, &parameter->spin, 1, 100);
+                    update |= ImGui::SliderFloat("Variation" Q, &spinVariation, 0, 100);
+                    update |= ImGui::SliderFloat("Phase" Q, &phase, 0, 360);
+                    update |= ImGui::SliderFloat("Variation" Q, &phaseVariation, 0, 100);
                     update |= ImGui::InputFloat("Width" Q, &parameter->range.x, 1, 100);
                     update |= ImGui::InputFloat("Height" Q, &parameter->range.y, 1, 100);
                     if (update)
                     {
                         parameter->offset = offset * float(M_PI) / 180.0f;
-                        parameter->spread = spread * float(M_PI) / 180.0f;
+                        parameter->spread = spread * float(M_PI) / 360.0f;
+                        parameter->speedVariation = speedVariation / 100.0f;
+                        parameter->lifeVariation = lifeVariation / 100.0f;
+                        parameter->sizeVariation = sizeVariation / 100.0f;
+                        parameter->spinVariation = spinVariation / 100.0f;
+                        parameter->phase = phase * float(M_PI) / 180.0f;
+                        parameter->phaseVariation = phaseVariation / 100.0f;
                         parameter->CalculateBound();
                     }
                     break;

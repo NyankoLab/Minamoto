@@ -31,6 +31,10 @@ public:
         float sizeVariation;
         float grow;
         float fade;
+        float spin;
+        float spinVariation;
+        float phase;
+        float phaseVariation;
         xxVector2 range;
         xxVector4 bound;
 

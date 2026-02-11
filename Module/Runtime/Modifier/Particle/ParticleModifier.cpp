@@ -105,8 +105,8 @@ int ParticleModifier::SetParticleData(Mesh* mesh, Particle* particles, int count
         if (particle.age <= 0.0f)
             continue;
         auto point = particle.point;
+        auto radian = particle.radian;
         auto size = particle.size;
-        auto spin = particle.spin;
         auto p0 = positions;
         auto p1 = positions + 1;
         auto p2 = positions + 2;
@@ -121,10 +121,10 @@ int ParticleModifier::SetParticleData(Mesh* mesh, Particle* particles, int count
         (*p1) = point;
         (*p2) = point;
         (*p3) = point;
-        (*t0) = xxVector2{ -size, -spin };
-        (*t1) = xxVector2{ -size,  spin };
-        (*t2) = xxVector2{  size,  spin };
-        (*t3) = xxVector2{  size, -spin };
+        (*t0) = xxVector2{ -radian, -size };
+        (*t1) = xxVector2{ -radian,  size };
+        (*t2) = xxVector2{  radian,  size };
+        (*t3) = xxVector2{  radian, -size };
         now++;
     }
 

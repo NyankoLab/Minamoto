@@ -258,4 +258,84 @@ void TextureTools::MipmapTextures(xxNodePtr const& node)
         return true;
     });
 }
+//------------------------------------------------------------------------------
+xxTexturePtr TextureTools::CreateGlowTexture()
+{
+#if defined(xxWINDOWS)
+    uint64_t format = "BGRA8888"_CC;
+#else
+    uint64_t format = "RGBA8888"_CC;
+#endif
+    xxTexturePtr texture = xxTexture::Create2D(format, 256, 256, 1);
+    if (texture == nullptr)
+        return nullptr;
+
+    char* pixel = (char*)(*texture)(0, 0, 0, 0, 0);
+    for (int y = 0; y < 256; ++y)
+    {
+        for (int x = 0; x < 256; ++x)
+        {
+            float dx = (x + 0.5f) - 128;
+            float dy = (y + 0.5f) - 128;
+            float dist = sqrtf(dx * dx + dy * dy) / 96;
+            float alpha = std::clamp(expf(-dist * 4.0f), 0.0f, 1.0f);
+
+            (*pixel++) = -1;
+            (*pixel++) = -1;
+            (*pixel++) = -1;
+            (*pixel++) = (char)(alpha * 255.0f);
+        }
+    }
+
+    return texture;
+}
+//------------------------------------------------------------------------------
+xxTexturePtr TextureTools::CreateStarTexture()
+{
+#if defined(xxWINDOWS)
+    uint64_t format = "BGRA8888"_CC;
+#else
+    uint64_t format = "RGBA8888"_CC;
+#endif
+    xxTexturePtr texture = xxTexture::Create2D(format, 256, 256, 1);
+    if (texture == nullptr)
+        return nullptr;
+
+    xxVector2 vertices[10];
+    for (int i = 0; i < 5; ++i)
+    {
+        float outerAngle = float(M_PI / 2.0f) + i * 2.0f * float(M_PI / 5.0f);
+        float innerAngle = outerAngle + float(M_PI / 5.0f);
+        vertices[i * 2 + 0].x = 128 + cosf(outerAngle) * 90.0f;
+        vertices[i * 2 + 0].y = 128 - sinf(outerAngle) * 90.0f;
+        vertices[i * 2 + 1].x = 128 + cosf(innerAngle) * 35.0f;
+        vertices[i * 2 + 1].y = 128 - sinf(innerAngle) * 35.0f;
+    }
+
+    auto pointInPolygon = [](float px, float py, xxVector2* v, int n)
+    {
+        bool inside = false;
+        for (int i = 0, j = n - 1; i < n; j = i++)
+        {
+            bool intersect = ((v[i].y > py) != (v[j].y > py)) && (px < (v[j].x - v[i].x) * (py - v[i].y) / (v[j].y - v[i].y) + v[i].x);
+            if (intersect)
+                inside = !inside;
+        }
+        return inside;
+    };
+
+    char* pixel = (char*)(*texture)(0, 0, 0, 0, 0);
+    for (int y = 0; y < 256; ++y)
+    {
+        for (int x = 0; x < 256; ++x)
+        {
+            (*pixel++) = -1;
+            (*pixel++) = -1;
+            (*pixel++) = -1;
+            (*pixel++) = pointInPolygon(x, y, vertices, 10) ? -1 : 0;
+        }
+    }
+
+    return texture;
+}
 //==============================================================================

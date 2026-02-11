@@ -12,6 +12,7 @@
 #include <Runtime/Modifier/Particle/SprayParticleModifier.h>
 #include <Runtime/Modifier/Particle/SuperSprayParticleModifier.h>
 #include "ParticleTools.h"
+#include "TextureTools.h"
 
 #define TAG "ParticleTools"
 
@@ -23,7 +24,7 @@ xxNodePtr ParticleTools::CreateParticle(uint64_t type)
     xxMeshPtr mesh = Mesh::Create(false, 0, 1, 1);
     xxModifierPtr modifier;
     xxNodePtr node = Node::Create();
-    xxTexturePtr texture = CreateTexture();
+    xxTexturePtr texture = TextureTools::CreateStarTexture();
 
     switch (type)
     {
@@ -75,7 +76,7 @@ xxNodePtr ParticleTools::CreateParticle(uint64_t type)
         parameter->range.y = 0.0f;
         parameter->size = 2.0f;
         parameter->speed = 10.0f;
-        parameter->variation = 2.0f;
+        parameter->variation = 0.02f;
         parameter->CalculateBound();
         break;
     }
@@ -96,8 +97,12 @@ xxNodePtr ParticleTools::CreateParticle(uint64_t type)
         parameter->lifeVariation = 0.0f;
         parameter->size = 1.0f;
         parameter->sizeVariation = 0.0f;
-        parameter->grow = 10.0f;
-        parameter->fade = 10.0f;
+        parameter->grow = 0.0f;
+        parameter->fade = 0.0f;
+        parameter->spin = 0.0f;
+        parameter->spinVariation = 0.0f;
+        parameter->phase = 0.0f;
+        parameter->phaseVariation = 0.0f;
         parameter->range.x = 0.0f;
         parameter->range.y = 0.0f;
         parameter->CalculateBound();
@@ -145,7 +150,7 @@ void ParticleTools::ConvertParticle(xxModifier& modifier, uint64_t type)
         parameter->range.y = 0.0f;
         parameter->size = 2.0f;
         parameter->speed = 10.0f;
-        parameter->variation = 2.0f;
+        parameter->variation = 0.02f;
         parameter->CalculateBound();
         break;
     }
@@ -168,8 +173,12 @@ void ParticleTools::ConvertParticle(xxModifier& modifier, uint64_t type)
         parameter->lifeVariation = 0.0f;
         parameter->size = 1.0f;
         parameter->sizeVariation = 0.0f;
-        parameter->grow = 10.0f;
-        parameter->fade = 10.0f;
+        parameter->grow = 0.0f;
+        parameter->fade = 0.0f;
+        parameter->spin = 0.0f;
+        parameter->spinVariation = 0.0f;
+        parameter->phase = 0.0f;
+        parameter->phaseVariation = 0.0f;
         parameter->range.x = 0.0f;
         parameter->range.y = 0.0f;
         parameter->CalculateBound();
@@ -179,36 +188,5 @@ void ParticleTools::ConvertParticle(xxModifier& modifier, uint64_t type)
         break;
     }
 #endif
-}
-//------------------------------------------------------------------------------
-xxTexturePtr ParticleTools::CreateTexture()
-{
-#if defined(xxWINDOWS)
-    uint64_t format = "BGRA8888"_CC;
-#else
-    uint64_t format = "RGBA8888"_CC;
-#endif
-    xxTexturePtr texture = xxTexture::Create2D(format, 256, 256, 1);
-    if (texture == nullptr)
-        return nullptr;
-
-    char* pixel = (char*)(*texture)(0, 0, 0, 0, 0);
-    for (int y = 0; y < 256; ++y)
-    {
-        for (int x = 0; x < 256; ++x)
-        {
-            float dx = (x + 0.5f) - 128;
-            float dy = (y + 0.5f) - 128;
-            float dist = sqrtf(dx * dx + dy * dy) / 96;
-            float alpha = std::clamp(expf(-dist * 4.0f), 0.0f, 1.0f);
-
-            (*pixel++) = -1;
-            (*pixel++) = -1;
-            (*pixel++) = -1;
-            (*pixel++) = (char)(alpha * 255.0f);
-        }
-    }
-
-    return texture;
 }
 //==============================================================================

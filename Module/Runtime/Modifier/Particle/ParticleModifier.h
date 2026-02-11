@@ -16,10 +16,12 @@ public:
     struct Particle
     {
         xxVector3 point;
-        xxVector3 velocity;
+        float radian;
         float size;
-        float spin;
         float age;
+
+        xxVector3 velocity;
+        float spin;
         float fade;
         float grow;
     };

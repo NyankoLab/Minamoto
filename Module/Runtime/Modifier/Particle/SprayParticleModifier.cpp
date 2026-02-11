@@ -33,7 +33,11 @@ void SprayParticleModifier::Update(void* target, float time, xxModifierData* dat
 
     Parameter* parameter = (Parameter*)Data.data();
 
-    size_t tempSize = sizeof(Header) + sizeof(Particle) * parameter->count;
+    int particleCount = parameter->count;
+    if (particleCount < 0)
+        particleCount = 1;
+
+    size_t tempSize = sizeof(Header) + sizeof(Particle) * particleCount;
     if (data->temp.size() < tempSize)
         data->temp.resize(tempSize);
 
@@ -46,16 +50,16 @@ void SprayParticleModifier::Update(void* target, float time, xxModifierData* dat
     int particleBorn = 0;
     int particleBirth = 0;
 
-    if (parameter->now < parameter->count && parameter->life > 0.0f)
+    if (parameter->now < particleCount && parameter->life > 0.0f)
     {
-        float rate = parameter->count / parameter->life;
+        float rate = particleCount / parameter->life;
         float during = time - parameter->start;
         float birthRate = parameter->birth * rate;
         particleBirth = std::min<int>(truncf(during * birthRate) - truncf((during - delta) * birthRate), during * rate);
     }
 
     Particle* particles = header->particles;
-    for (Particle& particle : std::span(particles, parameter->count))
+    for (Particle& particle : std::span(particles, particleCount))
     {
         if (particle.age <= 0.0f)
         {
@@ -64,16 +68,16 @@ void SprayParticleModifier::Update(void* target, float time, xxModifierData* dat
             particleBorn++;
             particle.point.xy = (RandomFloat2(header->seed) * 0.5f) * parameter->range;
             particle.point.z = 0.0f;
+            particle.radian = float(M_PI * 2.0f);
+            particle.size = parameter->size;
+            particle.age = parameter->life;
             particle.velocity.x = 0.0f;
             particle.velocity.y = 0.0f;
             particle.velocity.z = -parameter->speed;
             if (parameter->variation != 0.0f)
             {
-                particle.velocity += RandomFloat3(header->seed) * parameter->variation;
+                particle.velocity += RandomFloat3(header->seed) * particle.velocity * parameter->variation;
             }
-            particle.size = parameter->size;
-            particle.spin = 2.0f * M_PI;
-            particle.age = parameter->life;
             continue;
         }
         particle.age -= delta;
@@ -81,7 +85,7 @@ void SprayParticleModifier::Update(void* target, float time, xxModifierData* dat
     }
 
     const_cast<xxVector4&>(mesh->Bound) = parameter->bound;
-    parameter->now = SetParticleData(mesh, particles, parameter->count, parameter->size);
+    parameter->now = SetParticleData(mesh, particles, particleCount, parameter->size);
 }
 //------------------------------------------------------------------------------
 void SprayParticleModifier::Parameter::CalculateBound()

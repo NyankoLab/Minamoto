@@ -10,5 +10,4 @@ struct ParticleTools
 {
     static xxNodePtr CreateParticle(uint64_t type);
     static void ConvertParticle(xxModifier& modifier, uint64_t type);
-    static xxTexturePtr CreateTexture();
 };
