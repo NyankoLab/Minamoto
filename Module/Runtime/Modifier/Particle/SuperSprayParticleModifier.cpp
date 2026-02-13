@@ -69,17 +69,17 @@ void SuperSprayParticleModifier::Update(void* target, float time, xxModifierData
             particle.radian = float(M_PI * 2.0f) + parameter->phase;
             if (parameter->phaseVariation != 0.0f)
             {
-                particle.radian += RandomFloat(header->seed) * particle.radian * parameter->phaseVariation;
+                particle.radian += RandomFloat(header->seed) * parameter->phaseVariation;
             }
             particle.size = parameter->size;
             if (parameter->sizeVariation != 0.0f)
             {
-                particle.size += RandomFloat(header->seed) * particle.size * parameter->sizeVariation;
+                particle.size += RandomFloat(header->seed) * parameter->sizeVariation;
             }
             particle.age = parameter->life;
             if (parameter->lifeVariation != 0.0f)
             {
-                particle.age += RandomFloat(header->seed) * particle.age * parameter->lifeVariation;
+                particle.age += RandomFloat(header->seed) * parameter->lifeVariation;
             }
             xxVector2 theta = parameter->offset + RandomFloat2(header->seed) * parameter->spread;
             particle.velocity.x = sinf(theta.x) * sinf(theta.y);
@@ -88,7 +88,7 @@ void SuperSprayParticleModifier::Update(void* target, float time, xxModifierData
             particle.velocity = particle.velocity * parameter->speed;
             if (parameter->speedVariation != 0.0f)
             {
-                particle.velocity += RandomFloat3(header->seed) * particle.velocity * parameter->speedVariation;
+                particle.velocity += RandomFloat3(header->seed) * parameter->speedVariation;
             }
             particle.spin = 0.0f;
             if (parameter->spin != 0.0f)
@@ -96,7 +96,7 @@ void SuperSprayParticleModifier::Update(void* target, float time, xxModifierData
                 particle.spin = float(M_PI * 2.0f) / parameter->spin;
                 if (parameter->spinVariation != 0.0f)
                 {
-                    particle.spin += RandomFloat(header->seed) * particle.spin * parameter->spinVariation;
+                    particle.spin += RandomFloat(header->seed) * parameter->spinVariation;
                 }
             }
             if (parameter->fade != 0.0f)

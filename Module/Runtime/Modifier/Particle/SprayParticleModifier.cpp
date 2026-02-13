@@ -76,7 +76,7 @@ void SprayParticleModifier::Update(void* target, float time, xxModifierData* dat
             particle.velocity.z = -parameter->speed;
             if (parameter->variation != 0.0f)
             {
-                particle.velocity += RandomFloat3(header->seed) * particle.velocity * parameter->variation;
+                particle.velocity += RandomFloat3(header->seed) * parameter->variation;
             }
             continue;
         }

@@ -12,11 +12,8 @@
 //==============================================================================
 void CameraTools::MoveArcball(xxVector3& offset, xxVector3& arcball, float x, float y)
 {
-    float PI = float(M_PI);
-    float PI_2 = float(M_PI_2);
-
-    arcball.x = std::clamp(arcball.x + y, -PI_2 * 0.8f, PI_2 * 0.8f);
-    arcball.y = std::fmodf(arcball.y - x + PI, PI * 2.0f) - PI;
+    arcball.x = std::clamp(arcball.x + y, float(M_PI_2 * -0.8f), float(M_PI_2 * 0.8f));
+    arcball.y = std::fmodf(arcball.y - x + float(M_PI), float(M_PI * 2.0f)) - float(M_PI);
     arcball.z = std::clamp(arcball.z, 5.0f, 50.0f);
 
     float xsin = std::sinf(arcball.x);

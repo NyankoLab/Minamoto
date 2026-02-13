@@ -34,7 +34,7 @@ int ParticleModifier::Random(int& seed)
 //------------------------------------------------------------------------------
 float ParticleModifier::RandomFloat(int& seed)
 {
-    return Random(seed) / (float)INT_MAX;
+    return Random(seed) / float(INT_MAX);
 }
 //------------------------------------------------------------------------------
 xxVector2 ParticleModifier::RandomFloat2(int& seed)
@@ -42,7 +42,7 @@ xxVector2 ParticleModifier::RandomFloat2(int& seed)
     xxVector2 output;
     output.x = Random(seed);
     output.y = Random(seed);
-    return output / (float)INT_MAX;
+    return output / float(INT_MAX);
 }
 //------------------------------------------------------------------------------
 xxVector3 ParticleModifier::RandomFloat3(int& seed)
@@ -51,7 +51,7 @@ xxVector3 ParticleModifier::RandomFloat3(int& seed)
     output.x = Random(seed);
     output.y = Random(seed);
     output.z = Random(seed);
-    return output / (float)INT_MAX;
+    return output / float(INT_MAX);
 }
 //------------------------------------------------------------------------------
 void ParticleModifier::SetParticleCount(Mesh* mesh, int count)

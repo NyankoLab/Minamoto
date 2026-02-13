@@ -16,6 +16,7 @@
 #include <Runtime/Modifier/Particle/SuperSprayParticleModifier.h>
 #include <Runtime/Tools/NodeTools.h>
 #include "Utility/ParticleTools.h"
+#include "Utility/TextureTools.h"
 #include "Utility/Tools.h"
 #include "Log.h"
 #include "Inspector.h"
@@ -78,7 +79,7 @@ bool Inspector::Update(const UpdateData& updateData, bool& show, xxCameraPtr con
                 {
                     UpdateMesh(updateData, selected->Mesh);
                 }
-                UpdateModifier(updateData, selected->Modifiers);
+                UpdateModifier(updateData, selected->Modifiers, selected);
             }
         }
     }
@@ -113,75 +114,74 @@ void Inspector::UpdateCamera(const UpdateData& updateData, xxCameraPtr const& ca
 //------------------------------------------------------------------------------
 void Inspector::UpdateNode(const UpdateData& updateData, xxNodePtr const& node)
 {
-    if (ImGui::CollapsingHeader(ICON_FA_CUBE "Node" Q, nullptr, ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader(ICON_FA_CUBE "Node" Q, nullptr, ImGuiTreeNodeFlags_DefaultOpen) == false)
+        return;
+
+    ImGui::InputTextEx("Name" Q, nullptr, node->Name);
+    ImGui::SliderFloat3("Local" Q, node->LocalMatrix[0], -1.0f, 1.0f);
+    ImGui::SliderFloat3("" Q, node->LocalMatrix[1], -1.0f, 1.0f);
+    ImGui::SliderFloat3("" Q, node->LocalMatrix[2], -1.0f, 1.0f);
+    ImGui::InputFloat3("" Q, node->LocalMatrix[3]);
+    ImGui::SliderFloat3("World" Q, node->WorldMatrix[0], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+    ImGui::SliderFloat3("" Q, node->WorldMatrix[1], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+    ImGui::SliderFloat3("" Q, node->WorldMatrix[2], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+    ImGui::InputFloat3("" Q, node->WorldMatrix[3], "%.3f", ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputFloat3("Bound" Q, node->WorldBound, "%.3f", ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputFloat("" Q, &node->WorldBound.radius, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputScalar("Flags" Q, ImGuiDataType_U32, &node->Flags, nullptr, nullptr, "%08X", ImGuiInputTextFlags_ReadOnly);
+    if (node->Bones.empty())
+        return;
+
+    ImGui::PushStyleColor(ImGuiCol_Header, 0);
+    bool open = ImGui::CollapsingHeader(ICON_FA_STREET_VIEW "Bones" Q, nullptr, ImGuiTreeNodeFlags_Framed);
+    ImGui::PopStyleColor();
+    if (open == false)
+        return;
+
+    static int current = 0;
+    static unsigned int hovered = 0; hovered = UINT_MAX;
+
+    ImGui::ListBox("Bones" Q, &current, [](void* user_data, int idx)
     {
-        ImGui::InputTextEx("Name" Q, nullptr, node->Name);
-        ImGui::SliderFloat3("Local" Q, node->LocalMatrix[0], -1.0f, 1.0f);
-        ImGui::SliderFloat3("" Q, node->LocalMatrix[1], -1.0f, 1.0f);
-        ImGui::SliderFloat3("" Q, node->LocalMatrix[2], -1.0f, 1.0f);
-        ImGui::InputFloat3("" Q, node->LocalMatrix[3]);
-        ImGui::SliderFloat3("World" Q, node->WorldMatrix[0], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-        ImGui::SliderFloat3("" Q, node->WorldMatrix[1], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-        ImGui::SliderFloat3("" Q, node->WorldMatrix[2], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-        ImGui::InputFloat3("" Q, node->WorldMatrix[3], "%.3f", ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputFloat3("Bound" Q, node->WorldBound, "%.3f", ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputFloat("" Q, &node->WorldBound.radius, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputScalar("Flags" Q, ImGuiDataType_U32, &node->Flags, nullptr, nullptr, "%08X", ImGuiInputTextFlags_ReadOnly);
-        if (node->Bones.empty() == false)
-        {
-            ImGui::PushStyleColor(ImGuiCol_Header, 0);
-            bool open = ImGui::CollapsingHeader(ICON_FA_STREET_VIEW "Bones" Q, nullptr, ImGuiTreeNodeFlags_Framed);
-            ImGui::PopStyleColor();
-            if (open)
-            {
-                static int current = 0;
-                static unsigned int hovered = 0; hovered = UINT_MAX;
+        if (hovered == UINT_MAX && ImGui::IsItemHovered())
+            hovered = idx - 1;
+        auto& bones = *(std::vector<xxNode::BoneData>*)user_data;
+        xxNodePtr bone = bones[idx].bone.lock();
+        return bone ? bone->Name.c_str() : "(nullptr)";
+    }, &node->Bones, (int)node->Bones.size());
 
-                ImGui::ListBox("Bones" Q, &current, [](void* user_data, int idx)
-                {
-                    if (hovered == UINT_MAX && ImGui::IsItemHovered())
-                        hovered = idx - 1;
-                    auto& bones = *(std::vector<xxNode::BoneData>*)user_data;
-                    xxNodePtr bone = bones[idx].bone.lock();
-                    return bone ? bone->Name.c_str() : "(nullptr)";
-                }, &node->Bones, (int)node->Bones.size());
-                if (hovered == UINT_MAX && ImGui::IsItemHovered())
-                    hovered = (int)node->Bones.size() - 1;
+    if (hovered == UINT_MAX && ImGui::IsItemHovered())
+        hovered = (int)node->Bones.size() - 1;
+    if (hovered >= node->Bones.size())
+        return;
+    auto& data = node->Bones[hovered];
+    if (data.bone.use_count() == 0)
+        return;
+    auto const& bone = (xxNodePtr&)data.bone;
 
-                if (hovered < node->Bones.size())
-                {
-                    auto& data = node->Bones[hovered];
-                    if (data.bone.use_count())
-                    {
-                        auto const& bone = (xxNodePtr&)data.bone;
-                        if (ImGui::BeginTooltip())
-                        {
-                            ImGui::InputText("Name" Q, bone->Name.data(), 64, ImGuiInputTextFlags_ReadOnly);
-                            ImGui::SliderFloat3("World" Q, bone->WorldMatrix[0], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-                            ImGui::SliderFloat3("" Q, bone->WorldMatrix[1], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-                            ImGui::SliderFloat3("" Q, bone->WorldMatrix[2], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-                            ImGui::InputFloat3("" Q, bone->WorldMatrix[3], "%.3f", ImGuiInputTextFlags_ReadOnly);
-                            ImGui::SliderFloat3("Skin" Q, data.skinMatrix[0], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-                            ImGui::SliderFloat3("" Q, data.skinMatrix[1], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-                            ImGui::SliderFloat3("" Q, data.skinMatrix[2], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-                            ImGui::InputFloat3("" Q, data.skinMatrix[3], "%.3f", ImGuiInputTextFlags_ReadOnly);
-                            ImGui::SliderFloat3("Bone" Q, data.boneMatrix[0], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-                            ImGui::SliderFloat3("" Q, data.boneMatrix[1], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-                            ImGui::SliderFloat3("" Q, data.boneMatrix[2], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
-                            ImGui::InputFloat3("" Q, data.boneMatrix[3], "%.3f", ImGuiInputTextFlags_ReadOnly);
-                            ImGui::InputFloat3("Bound" Q, data.bound, "%.3f", ImGuiInputTextFlags_ReadOnly);
-                            ImGui::InputFloat("" Q, &data.bound.radius, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
-                            ImGui::EndTooltip();
-                        }
-                        xxNodePtr const& parent = bone->GetParent();
-                        if (parent)
-                        {
-                            Tools::Line(parent->GetWorldTranslate(), bone->GetWorldTranslate());
-                        }
-                    }
-                }
-            }
-        }
+    if (ImGui::BeginTooltip())
+    {
+        ImGui::InputText("Name" Q, bone->Name.data(), 64, ImGuiInputTextFlags_ReadOnly);
+        ImGui::SliderFloat3("World" Q, bone->WorldMatrix[0], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+        ImGui::SliderFloat3("" Q, bone->WorldMatrix[1], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+        ImGui::SliderFloat3("" Q, bone->WorldMatrix[2], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+        ImGui::InputFloat3("" Q, bone->WorldMatrix[3], "%.3f", ImGuiInputTextFlags_ReadOnly);
+        ImGui::SliderFloat3("Skin" Q, data.skinMatrix[0], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+        ImGui::SliderFloat3("" Q, data.skinMatrix[1], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+        ImGui::SliderFloat3("" Q, data.skinMatrix[2], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+        ImGui::InputFloat3("" Q, data.skinMatrix[3], "%.3f", ImGuiInputTextFlags_ReadOnly);
+        ImGui::SliderFloat3("Bone" Q, data.boneMatrix[0], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+        ImGui::SliderFloat3("" Q, data.boneMatrix[1], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+        ImGui::SliderFloat3("" Q, data.boneMatrix[2], -1.0f, 1.0f, "%.3f", ImGuiSliderFlags_NoInput);
+        ImGui::InputFloat3("" Q, data.boneMatrix[3], "%.3f", ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputFloat3("Bound" Q, data.bound, "%.3f", ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputFloat("" Q, &data.bound.radius, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
+        ImGui::EndTooltip();
+    }
+    xxNodePtr const& parent = bone->GetParent();
+    if (parent)
+    {
+        Tools::Line(parent->GetWorldTranslate(), bone->GetWorldTranslate());
     }
 }
 //------------------------------------------------------------------------------
@@ -314,7 +314,7 @@ void Inspector::UpdateMaterial(const UpdateData& updateData, xxMaterialPtr const
                 ImGui::SliderChar("Anisotropic" Q, &texture->Anisotropic, 1, 16);
             }
         }
-        UpdateModifier(updateData, material->Modifiers);
+        UpdateModifier(updateData, material->Modifiers, nullptr);
     }
 
     // Material Invalidate
@@ -335,141 +335,142 @@ void Inspector::UpdateMaterial(const UpdateData& updateData, xxMaterialPtr const
 void Inspector::UpdateMesh(const UpdateData& updateData, xxMeshPtr const& mesh)
 {
     ImGui::Separator();
-    if (ImGui::CollapsingHeader(ICON_FA_CUBES "Mesh" Q, nullptr, ImGuiTreeNodeFlags_None))
-    {
-        int a[3] = { mesh->NormalCount, mesh->ColorCount, mesh->TextureCount };
-        int i[2] = { mesh->IndexCount, mesh->VertexCount < 65536 ? 16 : 32 };
-        int v[2] = { mesh->VertexCount, mesh->VertexStride };
-        int s[2] = { mesh->Count[xxMesh::STORAGE0], mesh->Stride[xxMesh::STORAGE0] };
-        ImGui::InputTextEx("Name" Q, nullptr, mesh->Name);
-        ImGui::InputInt3("Attribute" Q, a, ImGuiInputTextFlags_ReadOnly);
-        if (ImGui::IsItemHovered()) ImGui::SetTooltip("Normal Count : %d\nColor Count : %d\nTexture Count : %d", a[0], a[1], a[2]);
-        ImGui::InputInt2("Index" Q, i, ImGuiInputTextFlags_ReadOnly);
-        if (ImGui::IsItemHovered()) ImGui::SetTooltip("Index Count : %d (%d Bits)", i[0], i[1]);
-        ImGui::InputInt2("Vertex" Q, v, ImGuiInputTextFlags_ReadOnly);
-        if (ImGui::IsItemHovered()) ImGui::SetTooltip("Vertex Count : %d\nVertex Stride : %d", v[0], v[1]);
-        ImGui::InputInt2("Storage" Q, s,  ImGuiInputTextFlags_ReadOnly);
-        if (ImGui::IsItemHovered()) ImGui::SetTooltip("Storage Count : %d\nStorage Stride : %d", s[0], s[1]);
-        ImGui::InputFloat3("Bound" Q, (float*)&mesh->Bound, "%.3f", ImGuiInputTextFlags_ReadOnly);
-        ImGui::InputFloat("" Q, (float*)&mesh->Bound.radius, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
-    }
+    if (ImGui::CollapsingHeader(ICON_FA_CUBES "Mesh" Q, nullptr, ImGuiTreeNodeFlags_None) == false)
+        return;
+
+    int a[3] = { mesh->NormalCount, mesh->ColorCount, mesh->TextureCount };
+    int i[2] = { mesh->IndexCount, mesh->VertexCount < 65536 ? 16 : 32 };
+    int v[2] = { mesh->VertexCount, mesh->VertexStride };
+    int s[2] = { mesh->Count[xxMesh::STORAGE0], mesh->Stride[xxMesh::STORAGE0] };
+    ImGui::InputTextEx("Name" Q, nullptr, mesh->Name);
+    ImGui::InputInt3("Attribute" Q, a, ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::IsItemHovered()) ImGui::SetTooltip("Normal Count : %d\nColor Count : %d\nTexture Count : %d", a[0], a[1], a[2]);
+    ImGui::InputInt2("Index" Q, i, ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::IsItemHovered()) ImGui::SetTooltip("Index Count : %d (%d Bits)", i[0], i[1]);
+    ImGui::InputInt2("Vertex" Q, v, ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::IsItemHovered()) ImGui::SetTooltip("Vertex Count : %d\nVertex Stride : %d", v[0], v[1]);
+    ImGui::InputInt2("Storage" Q, s,  ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::IsItemHovered()) ImGui::SetTooltip("Storage Count : %d\nStorage Stride : %d", s[0], s[1]);
+    ImGui::InputFloat3("Bound" Q, (float*)&mesh->Bound, "%.3f", ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputFloat("" Q, (float*)&mesh->Bound.radius, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
 }
 //------------------------------------------------------------------------------
-void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModifierData> const& modifierData)
+void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModifierData> const& modifierData, xxNodePtr const& node)
 {
     if (modifierData.empty())
         return;
-    if (ImGui::CollapsingHeader(ICON_FA_FILM "Modifier" Q, nullptr, ImGuiTreeNodeFlags_None))
+    if (ImGui::CollapsingHeader(ICON_FA_FILM "Modifier" Q, nullptr, ImGuiTreeNodeFlags_None) == false)
+        return;
+
+    for (auto const& data : modifierData)
     {
-        for (auto const& data : modifierData)
+        xxModifier& modifier = *(data.modifier);
+        ImGui::PushStyleColor(ImGuiCol_Header, 0);
+        bool open = ImGui::CollapsingHeader(Modifier::Name(modifier).c_str(), nullptr, ImGuiTreeNodeFlags_None);
+        ImGui::PopStyleColor();
+        if (open == false)
+            continue;
+#if HAVE_PARTICLE
+        switch (modifier.DataType)
         {
-            xxModifier& modifier = *(data.modifier);
-            ImGui::PushStyleColor(ImGuiCol_Header, 0);
-            bool open = ImGui::CollapsingHeader(Modifier::Name(modifier).c_str(), nullptr, ImGuiTreeNodeFlags_None);
-            ImGui::PopStyleColor();
-            if (open)
+        case Modifier::SPRAY_PARTICLE:
+        case Modifier::SUPERSPRAY_PARTICLE:
+            if (ImGui::Button("Spray" Q) && modifier.DataType != Modifier::SPRAY_PARTICLE)
+                ParticleTools::ConvertParticle(modifier, "Spray"_CC);
+            ImGui::SameLine();
+            if (ImGui::Button("SuperSpray" Q) && modifier.DataType != Modifier::SUPERSPRAY_PARTICLE)
+                ParticleTools::ConvertParticle(modifier, "SuperSpray"_CC);
+
+            if (ImGui::Button("Glow" Q) && node && node->Material)
+                node->Material->SetTexture(0, TextureTools::CreateGlowTexture());
+            ImGui::SameLine();
+            if (ImGui::Button("Star" Q) && node && node->Material)
+                node->Material->SetTexture(0, TextureTools::CreateStarTexture());
+        default:
+            break;
+        }
+#endif
+        switch (modifier.DataType)
+        {
+#if HAVE_PARTICLE
+        case Modifier::SPRAY_PARTICLE:
+        {
+            bool update = false;
+            auto parameter = (SprayParticleModifier::Parameter*)modifier.Data.data();
+            update |= ImGui::InputInt("Now" Q, &parameter->now, 0, 0, ImGuiInputTextFlags_ReadOnly);
+            update |= ImGui::InputInt("Count" Q, &parameter->count, 1, 100);
+            update |= ImGui::InputFloat("Size" Q, &parameter->size, 1, 100);
+            update |= ImGui::InputFloat("Speed" Q, &parameter->speed, 1, 100);
+            update |= ImGui::InputFloat("Variation" Q, &parameter->variation, 1, 100);
+            update |= ImGui::InputFloat("Start" Q, &parameter->start, 1, 100);
+            update |= ImGui::InputFloat("Life" Q, &parameter->life, 1, 100);
+            update |= ImGui::InputFloat("Birth" Q, &parameter->birth, 1, 100);
+            update |= ImGui::InputFloat("Width" Q, &parameter->range.x, 1, 100);
+            update |= ImGui::InputFloat("Height" Q, &parameter->range.y, 1, 100);
+            if (update)
             {
-#if HAVE_PARTICLE
-                switch (modifier.DataType)
-                {
-                case Modifier::SPRAY_PARTICLE:
-                case Modifier::SUPERSPRAY_PARTICLE:
-                    if (ImGui::Button("Spray") && modifier.DataType != Modifier::SPRAY_PARTICLE)
-                        ParticleTools::ConvertParticle(modifier, "Spray"_CC);
-                    ImGui::SameLine();
-                    if (ImGui::Button("SuperSpray") && modifier.DataType != Modifier::SUPERSPRAY_PARTICLE)
-                        ParticleTools::ConvertParticle(modifier, "SuperSpray"_CC);
-                default:
-                    break;
-                }
-#endif
-                switch (modifier.DataType)
-                {
-#if HAVE_PARTICLE
-                case Modifier::SPRAY_PARTICLE:
-                {
-                    bool update = false;
-                    auto parameter = (SprayParticleModifier::Parameter*)modifier.Data.data();
-                    float variation = parameter->variation * 100.0f;
-                    update |= ImGui::InputInt("Now" Q, &parameter->now, 0, 0, ImGuiInputTextFlags_ReadOnly);
-                    update |= ImGui::InputInt("Count" Q, &parameter->count, 1, 100);
-                    update |= ImGui::InputFloat("Size" Q, &parameter->size, 1, 100);
-                    update |= ImGui::InputFloat("Speed" Q, &parameter->speed, 1, 100);
-                    update |= ImGui::SliderFloat("Variation" Q, &variation, 0, 100);
-                    update |= ImGui::InputFloat("Start" Q, &parameter->start, 1, 100);
-                    update |= ImGui::InputFloat("Life" Q, &parameter->life, 1, 100);
-                    update |= ImGui::InputFloat("Birth" Q, &parameter->birth, 1, 100);
-                    update |= ImGui::InputFloat("Width" Q, &parameter->range.x, 1, 100);
-                    update |= ImGui::InputFloat("Height" Q, &parameter->range.y, 1, 100);
-                    if (update)
-                    {
-                        parameter->variation = variation / 100.0f;
-                        parameter->CalculateBound();
-                    }
-                    break;
-                }
-                case Modifier::SUPERSPRAY_PARTICLE:
-                {
-                    bool update = false;
-                    auto parameter = (SuperSprayParticleModifier::Parameter*)modifier.Data.data();
-                    xxVector2 offset = parameter->offset * 180.0f / float(M_PI);
-                    xxVector2 spread = parameter->spread * 360.0f / float(M_PI);
-                    float speedVariation = parameter->speedVariation * 100.0f;
-                    float lifeVariation = parameter->lifeVariation * 100.0f;
-                    float sizeVariation = parameter->sizeVariation * 100.0f;
-                    float spinVariation = parameter->spinVariation * 100.0f;
-                    float phase = parameter->phase * 180.0f / float(M_PI);
-                    float phaseVariation = parameter->phaseVariation * 100.0f;
-                    update |= ImGui::InputInt("Now" Q, &parameter->now, 0, 0, ImGuiInputTextFlags_ReadOnly);
-                    update |= ImGui::InputInt("Count" Q, &parameter->count, 1, 100);
-                    update |= ImGui::SliderFloat("Offset" Q, &offset.x, 0, 360);
-                    update |= ImGui::SliderFloat("Spread" Q, &spread.x, 0, 360);
-                    update |= ImGui::SliderFloat("Offset" Q, &offset.y, 0, 360);
-                    update |= ImGui::SliderFloat("Spread" Q, &spread.y, 0, 360);
-                    update |= ImGui::InputFloat("Speed" Q, &parameter->speed, 1, 100);
-                    update |= ImGui::SliderFloat("Variation" Q, &speedVariation, 0, 100);
-                    update |= ImGui::InputFloat("Start" Q, &parameter->start, 1, 100);
-                    update |= ImGui::InputFloat("Stop" Q, &parameter->stop, 1, 100);
-                    update |= ImGui::InputFloat("Life" Q, &parameter->life, 1, 100);
-                    update |= ImGui::SliderFloat("Variation" Q, &lifeVariation, 0, 100);
-                    update |= ImGui::InputFloat("Size" Q, &parameter->size, 1, 100);
-                    update |= ImGui::SliderFloat("Variation" Q, &sizeVariation, 0, 100);
-                    update |= ImGui::InputFloat("Grow" Q, &parameter->grow, 1, 100);
-                    update |= ImGui::InputFloat("Fade" Q, &parameter->fade, 1, 100);
-                    update |= ImGui::InputFloat("Spin" Q, &parameter->spin, 1, 100);
-                    update |= ImGui::SliderFloat("Variation" Q, &spinVariation, 0, 100);
-                    update |= ImGui::SliderFloat("Phase" Q, &phase, 0, 360);
-                    update |= ImGui::SliderFloat("Variation" Q, &phaseVariation, 0, 100);
-                    update |= ImGui::InputFloat("Width" Q, &parameter->range.x, 1, 100);
-                    update |= ImGui::InputFloat("Height" Q, &parameter->range.y, 1, 100);
-                    if (update)
-                    {
-                        parameter->offset = offset * float(M_PI) / 180.0f;
-                        parameter->spread = spread * float(M_PI) / 360.0f;
-                        parameter->speedVariation = speedVariation / 100.0f;
-                        parameter->lifeVariation = lifeVariation / 100.0f;
-                        parameter->sizeVariation = sizeVariation / 100.0f;
-                        parameter->spinVariation = spinVariation / 100.0f;
-                        parameter->phase = phase * float(M_PI) / 180.0f;
-                        parameter->phaseVariation = phaseVariation / 100.0f;
-                        parameter->CalculateBound();
-                    }
-                    break;
-                }
-#endif
-                default:
-                    int sizeCount[3];
-                    sizeCount[0] = (int)modifier.Data.size();
-                    sizeCount[1] = (int)Modifier::Count(modifier);
-                    float time[2];
-                    time[0] = data.start;
-                    time[1] = data.time;
-                    ImGui::InputInt2("Size / Count" Q, sizeCount, ImGuiInputTextFlags_ReadOnly);
-                    ImGui::InputFloat2("Start / Current" Q, time, "%.3f", ImGuiInputTextFlags_ReadOnly);
-                    ImGui::SliderInt("Index" Q, (int*)&data.index, 0, sizeCount[1] - 1, "%d", ImGuiSliderFlags_ReadOnly);
-                    break;
-                }
+                parameter->CalculateBound();
             }
+            break;
+        }
+        case Modifier::SUPERSPRAY_PARTICLE:
+        {
+            bool update = false;
+            auto parameter = (SuperSprayParticleModifier::Parameter*)modifier.Data.data();
+            xxVector2 offset = parameter->offset * float(180.0f / M_PI);
+            xxVector2 spread = parameter->spread * float(360.0f / M_PI);
+            float speedVariation = parameter->speedVariation * 100.0f;
+            float sizeVariation = parameter->sizeVariation * 100.0f;
+            float spinVariation = parameter->spinVariation * 100.0f;
+            float phase = parameter->phase * float(180.0f / M_PI);
+            float phaseVariation = parameter->phaseVariation * 100.0f;
+            update |= ImGui::InputInt("Now" Q, &parameter->now, 0, 0, ImGuiInputTextFlags_ReadOnly);
+            update |= ImGui::InputInt("Count" Q, &parameter->count, 1, 100);
+            update |= ImGui::SliderFloat("Offset" Q, &offset.x, 0, 360);
+            update |= ImGui::SliderFloat("Spread" Q, &spread.x, 0, 360);
+            update |= ImGui::SliderFloat("Offset" Q, &offset.y, 0, 360);
+            update |= ImGui::SliderFloat("Spread" Q, &spread.y, 0, 360);
+            update |= ImGui::InputFloat("Speed" Q, &parameter->speed, 1, 100);
+            update |= ImGui::SliderFloat("Variation" Q, &speedVariation, 0, 100);
+            update |= ImGui::InputFloat("Start" Q, &parameter->start, 1, 100);
+            update |= ImGui::InputFloat("Stop" Q, &parameter->stop, 1, 100);
+            update |= ImGui::InputFloat("Life" Q, &parameter->life, 1, 100);
+            update |= ImGui::InputFloat("Variation" Q, &parameter->lifeVariation, 0, 100);
+            update |= ImGui::InputFloat("Size" Q, &parameter->size, 1, 100);
+            update |= ImGui::SliderFloat("Variation" Q, &sizeVariation, 0, 100);
+            update |= ImGui::InputFloat("Grow" Q, &parameter->grow, 1, 100);
+            update |= ImGui::InputFloat("Fade" Q, &parameter->fade, 1, 100);
+            update |= ImGui::InputFloat("Spin" Q, &parameter->spin, 1, 100);
+            update |= ImGui::SliderFloat("Variation" Q, &spinVariation, 0, 100);
+            update |= ImGui::SliderFloat("Phase" Q, &phase, 0, 360);
+            update |= ImGui::SliderFloat("Variation" Q, &phaseVariation, 0, 100);
+            update |= ImGui::InputFloat("Width" Q, &parameter->range.x, 1, 100);
+            update |= ImGui::InputFloat("Height" Q, &parameter->range.y, 1, 100);
+            if (update)
+            {
+                parameter->offset = offset * float(M_PI / 180.0f);
+                parameter->spread = spread * float(M_PI / 360.0f);
+                parameter->speedVariation = speedVariation / 100.0f;
+                parameter->sizeVariation = sizeVariation / 100.0f;
+                parameter->spinVariation = spinVariation / 100.0f;
+                parameter->phase = phase * float(M_PI / 180.0f);
+                parameter->phaseVariation = phaseVariation / 100.0f;
+                parameter->CalculateBound();
+            }
+            break;
+        }
+#endif
+        default:
+            int sizeCount[3];
+            sizeCount[0] = (int)modifier.Data.size();
+            sizeCount[1] = (int)Modifier::Count(modifier);
+            float time[2];
+            time[0] = data.start;
+            time[1] = data.time;
+            ImGui::InputInt2("Size / Count" Q, sizeCount, ImGuiInputTextFlags_ReadOnly);
+            ImGui::InputFloat2("Start / Current" Q, time, "%.3f", ImGuiInputTextFlags_ReadOnly);
+            ImGui::SliderInt("Index" Q, (int*)&data.index, 0, sizeCount[1] - 1, "%d", ImGuiSliderFlags_ReadOnly);
+            break;
         }
     }
 }
@@ -477,77 +478,77 @@ void Inspector::UpdateModifier(const UpdateData& updateData, std::vector<xxModif
 void Inspector::UpdateWindow(const UpdateData& updateData, MiniGUI::WindowPtr const& window)
 {
 #if HAVE_MINIGUI
+    if (ImGui::CollapsingHeader(ICON_FA_WINDOW_MAXIMIZE "Window" Q, nullptr, ImGuiTreeNodeFlags_DefaultOpen) == false)
+        return;
+
     static std::string temp;
     float point;
     xxVector2 point2;
     xxMatrix3x4 colors;
 
-    if (ImGui::CollapsingHeader(ICON_FA_WINDOW_MAXIMIZE "Window" Q, nullptr, ImGuiTreeNodeFlags_DefaultOpen))
+    ImGui::InputTextEx("Name" Q, nullptr, window->Name);
+
+    ImGui::Separator();
+    if (ImGui::InputTextMultiline("Text" Q, temp = window->GetText()))
+        window->SetText(temp);
+
+    static int colorMode = 0;
+    bool hovered = false;
+    colors = window->GetTextColor();
+    switch (colorMode)
     {
-        ImGui::InputTextEx("Name" Q, nullptr, window->Name);
-
-        ImGui::Separator();
-        if (ImGui::InputTextMultiline("Text" Q, temp = window->GetText()))
-            window->SetText(temp);
-
-        static int colorMode = 0;
-        bool hovered = false;
-        colors = window->GetTextColor();
-        switch (colorMode)
+    case 0:
+        if (ImGui::ColorEdit3("Color" Q, colors[0]))
         {
-        case 0:
-            if (ImGui::ColorEdit3("Color" Q, colors[0]))
-            {
-                colors[3] = colors[2] = colors[1] = colors[0];
-                window->SetTextColor(colors);
-            }
-            hovered |= ImGui::IsItemHovered();
-            break;
-        case 1:
-            if (ImGui::ColorEdit3("Color Top" Q, colors[0]))
-            {
-                colors[2] = colors[0];
-                window->SetTextColor(colors);
-            }
-            hovered |= ImGui::IsItemHovered();
-            if (ImGui::ColorEdit3("Color Bottom" Q, colors[1]))
-            {
-                colors[3] = colors[1];
-                window->SetTextColor(colors);
-            }
-            hovered |= ImGui::IsItemHovered();
-            break;
-        case 2:
-            if (ImGui::ColorEdit3("Color LT" Q, colors[0]))
-                window->SetTextColor(colors);
-            hovered |= ImGui::IsItemHovered();
-            if (ImGui::ColorEdit3("Color LB" Q, colors[1]))
-                window->SetTextColor(colors);
-            hovered |= ImGui::IsItemHovered();
-            if (ImGui::ColorEdit3("Color RT" Q, colors[2]))
-                window->SetTextColor(colors);
-            hovered |= ImGui::IsItemHovered();
-            if (ImGui::ColorEdit3("Color RB" Q, colors[3]))
-                window->SetTextColor(colors);
-            hovered |= ImGui::IsItemHovered();
-            break;
+            colors[3] = colors[2] = colors[1] = colors[0];
+            window->SetTextColor(colors);
         }
-        if (hovered && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-            colorMode = (colorMode + 1) % 3;
-
-        if (ImGui::SliderFloat("Scale" Q, &(point = window->GetTextScale()), 1.0f, 256.0f))
-            window->SetTextScale(point);
-        if (ImGui::SliderFloat("Shadow" Q, &(point = window->GetTextShadow()), 0.0f, 1.0f))
-            window->SetTextShadow(point);
-
-        ImGui::Separator();
-        if (ImGui::SliderFloat2("Local" Q, (point2 = window->GetScale()), 0.0f, 1.0f))
-            window->SetScale(point2);
-        if (ImGui::SliderFloat2("" Q, (point2 = window->GetOffset()), 0.0f, 1.0f))
-            window->SetOffset(point2);
-        ImGui::SliderFloat2("World" Q, window->GetWorldScale(), 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_ReadOnly);
-        ImGui::SliderFloat2("" Q, (point2 = window->GetWorldOffset()), 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_ReadOnly);
+        hovered |= ImGui::IsItemHovered();
+        break;
+    case 1:
+        if (ImGui::ColorEdit3("Color Top" Q, colors[0]))
+        {
+            colors[2] = colors[0];
+            window->SetTextColor(colors);
+        }
+        hovered |= ImGui::IsItemHovered();
+        if (ImGui::ColorEdit3("Color Bottom" Q, colors[1]))
+        {
+            colors[3] = colors[1];
+            window->SetTextColor(colors);
+        }
+        hovered |= ImGui::IsItemHovered();
+        break;
+    case 2:
+        if (ImGui::ColorEdit3("Color LT" Q, colors[0]))
+            window->SetTextColor(colors);
+        hovered |= ImGui::IsItemHovered();
+        if (ImGui::ColorEdit3("Color LB" Q, colors[1]))
+            window->SetTextColor(colors);
+        hovered |= ImGui::IsItemHovered();
+        if (ImGui::ColorEdit3("Color RT" Q, colors[2]))
+            window->SetTextColor(colors);
+        hovered |= ImGui::IsItemHovered();
+        if (ImGui::ColorEdit3("Color RB" Q, colors[3]))
+            window->SetTextColor(colors);
+        hovered |= ImGui::IsItemHovered();
+        break;
     }
+    if (hovered && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+        colorMode = (colorMode + 1) % 3;
+
+    if (ImGui::SliderFloat("Scale" Q, &(point = window->GetTextScale()), 1.0f, 256.0f))
+        window->SetTextScale(point);
+    if (ImGui::SliderFloat("Shadow" Q, &(point = window->GetTextShadow()), 0.0f, 1.0f))
+        window->SetTextShadow(point);
+
+    ImGui::Separator();
+    if (ImGui::SliderFloat2("Local" Q, (point2 = window->GetScale()), 0.0f, 1.0f))
+        window->SetScale(point2);
+    if (ImGui::SliderFloat2("" Q, (point2 = window->GetOffset()), 0.0f, 1.0f))
+        window->SetOffset(point2);
+    ImGui::SliderFloat2("World" Q, window->GetWorldScale(), 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_ReadOnly);
+    ImGui::SliderFloat2("" Q, (point2 = window->GetWorldOffset()), 0.0f, 1.0f, "%.3f", ImGuiSliderFlags_ReadOnly);
 #endif
 }
 //==============================================================================
