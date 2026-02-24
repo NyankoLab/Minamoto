@@ -179,7 +179,7 @@ unsigned int Mesh::GetIndex(int index) const
 void Mesh::BinaryRead(xxBinary& binary)
 {
     xxMesh::BinaryRead(binary);
-    for (int i = STORAGE0; i < MAX; ++i)
+    for (int i = STORAGE0; i < BUFFERMAX; ++i)
     {
         ActiveCount[i] = Count[i];
     }

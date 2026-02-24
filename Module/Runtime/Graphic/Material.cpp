@@ -194,13 +194,16 @@ struct MaterialSelector
 //  Material
 //==============================================================================
 xxMaterialPtr Material::DefaultMaterial;
+unsigned int Material::FrameCount;
 //------------------------------------------------------------------------------
 void Material::Setup(xxDrawData const& data)
 {
-    auto* node = data.node;
-    if (node->ConstantDatas.size() <= data.materialIndex)
-        node->ConstantDatas.resize(data.materialIndex + 1);
-    auto* constantData = data.constantData = &node->ConstantDatas[data.materialIndex];
+    size_t materialIndex = data.materialIndex * 3 + FrameCount % 3;
+
+    auto& constantDatas = data.node->ConstantDatas;
+    if (constantDatas.size() <= materialIndex)
+        constantDatas.resize(materialIndex + 1);
+    auto* constantData = data.constantData = &constantDatas[materialIndex];
 
     if (constantData->ready == 0)
     {
@@ -270,77 +273,93 @@ void Material::CreatePipeline(xxDrawData const& data)
         return;
 
     auto* constantData = data.constantData;
-    if (constantData->pipeline == 0)
+    if (constantData->pipeline)
+        return;
+
+    if (m_blendState == 0)
     {
-        if (m_blendState == 0)
+        if (Blending)
         {
-            if (Blending)
-            {
-                m_blendState = xxCreateBlendState(m_device, BlendSourceColor.c_str(),
-                                                            BlendOperationColor.c_str(),
-                                                            BlendDestinationColor.c_str(),
-                                                            BlendSourceAlpha.c_str(),
-                                                            BlendOperationAlpha.c_str(),
-                                                            BlendDestinationAlpha.c_str());
-            }
-            else
-            {
-                m_blendState = xxCreateBlendState(m_device, "1", "+", "0", "1", "+", "0");
-            }
-        }
-        if (m_depthStencilState == 0)
-        {
-            m_depthStencilState = xxCreateDepthStencilState(m_device, DepthTest.c_str(), DepthWrite);
-        }
-        if (m_rasterizerState == 0)
-        {
-            m_rasterizerState = xxCreateRasterizerState(m_device, Cull, (DebugWireframe == false), Scissor);
-        }
-        if (constantData->meshShader == 0 && constantData->vertexShader == 0 && constantData->fragmentShader == 0)
-        {
-            if (constantData->meshShader == 0 && mesh->Count[xxMesh::STORAGE0])
-            {
-                constantData->meshShader = xxCreateMeshShader(m_device, GetShader(data, 'mesh').c_str());
-            }
-            if (constantData->meshShader == 0 && constantData->vertexShader == 0)
-            {
-                constantData->vertexShader = xxCreateVertexShader(m_device, GetShader(data, 'vert').c_str(), vertexAttribute);
-            }
-            if (constantData->fragmentShader == 0)
-            {
-                constantData->fragmentShader = xxCreateFragmentShader(m_device, GetShader(data, 'frag').c_str());
-            }
-        }
-        if (m_renderPass == 0)
-        {
-            m_renderPass = xxCreateRenderPass(m_device, true, true, true, true, true, true);
-        }
-        if (data.materialIndex == SELECT)
-        {
-            uint64_t blendState;
-            if (Blending)
-            {
-                blendState = xxCreateBlendState(m_device, BlendSourceColor.c_str(),
-                                                          BlendOperationColor.c_str(),
-                                                          BlendDestinationColor.c_str(),
-                                                          BlendSourceAlpha.c_str(),
-                                                          BlendOperationAlpha.c_str(),
-                                                          BlendDestinationAlpha.c_str());
-            }
-            else
-            {
-                blendState = xxCreateBlendState(m_device, "1", "+", "1", "1", "+", "0");
-            }
-            uint64_t rasterizerState = xxCreateRasterizerState(m_device, Cull, (DebugWireframe == false), Scissor);
-            constantData->pipeline = xxCreatePipeline(m_device, m_renderPass, blendState, m_depthStencilState, rasterizerState, vertexAttribute, constantData->meshShader, constantData->vertexShader, constantData->fragmentShader);
-            xxDestroyBlendState(blendState);
-            xxDestroyRasterizerState(rasterizerState);
+            m_blendState = xxCreateBlendState(m_device, BlendSourceColor.c_str(),
+                                                        BlendOperationColor.c_str(),
+                                                        BlendDestinationColor.c_str(),
+                                                        BlendSourceAlpha.c_str(),
+                                                        BlendOperationAlpha.c_str(),
+                                                        BlendDestinationAlpha.c_str());
         }
         else
         {
-            constantData->pipeline = xxCreatePipeline(m_device, m_renderPass, m_blendState, m_depthStencilState, m_rasterizerState, vertexAttribute, constantData->meshShader, constantData->vertexShader, constantData->fragmentShader);
+            m_blendState = xxCreateBlendState(m_device, "1", "+", "0", "1", "+", "0");
         }
     }
+    if (m_depthStencilState == 0)
+    {
+        m_depthStencilState = xxCreateDepthStencilState(m_device, DepthTest.c_str(), DepthWrite);
+    }
+    if (m_rasterizerState == 0)
+    {
+        m_rasterizerState = xxCreateRasterizerState(m_device, Cull, (DebugWireframe == false), Scissor);
+    }
+    if (constantData->meshShader == 0 && constantData->vertexShader == 0 && constantData->fragmentShader == 0)
+    {
+        if (constantData->meshShader == 0 && mesh->Count[xxMesh::STORAGE0])
+        {
+            constantData->meshShader = xxCreateMeshShader(m_device, GetShader(data, 'mesh').c_str());
+        }
+        if (constantData->meshShader == 0 && constantData->vertexShader == 0)
+        {
+            constantData->vertexShader = xxCreateVertexShader(m_device, GetShader(data, 'vert').c_str(), vertexAttribute);
+        }
+        if (constantData->fragmentShader == 0)
+        {
+            constantData->fragmentShader = xxCreateFragmentShader(m_device, GetShader(data, 'frag').c_str());
+        }
+    }
+    if (m_renderPass == 0)
+    {
+        m_renderPass = xxCreateRenderPass(m_device, true, true, true, true, true, true);
+    }
+
+    if (data.materialIndex == SELECT)
+    {
+        uint64_t blendState;
+        if (Blending)
+        {
+            blendState = xxCreateBlendState(m_device, BlendSourceColor.c_str(),
+                                                      BlendOperationColor.c_str(),
+                                                      BlendDestinationColor.c_str(),
+                                                      BlendSourceAlpha.c_str(),
+                                                      BlendOperationAlpha.c_str(),
+                                                      BlendDestinationAlpha.c_str());
+        }
+        else
+        {
+            blendState = xxCreateBlendState(m_device, "1", "+", "1", "1", "+", "0");
+        }
+        uint64_t rasterizerState = xxCreateRasterizerState(m_device, Cull, (DebugWireframe == false), Scissor);
+        constantData->pipeline = xxCreatePipeline(m_device,
+                                                  m_renderPass,
+                                                  blendState,
+                                                  m_depthStencilState,
+                                                  rasterizerState,
+                                                  vertexAttribute,
+                                                  constantData->meshShader,
+                                                  constantData->vertexShader,
+                                                  constantData->fragmentShader);
+        xxDestroyBlendState(blendState);
+        xxDestroyRasterizerState(rasterizerState);
+        return;
+    }
+
+    constantData->pipeline = xxCreatePipeline(m_device,
+                                              m_renderPass,
+                                              m_blendState,
+                                              m_depthStencilState,
+                                              m_rasterizerState,
+                                              vertexAttribute,
+                                              constantData->meshShader,
+                                              constantData->vertexShader,
+                                              constantData->fragmentShader);
 }
 //------------------------------------------------------------------------------
 void Material::CreateConstant(xxDrawData const& data) const

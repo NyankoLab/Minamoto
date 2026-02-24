@@ -33,7 +33,7 @@ protected:
     virtual ~Mesh();
 
 public:
-    int                         ActiveCount[MAX] = {};
+    int                         ActiveCount[BUFFERMAX] = {};
 
 public:
     static void                 Initialize();

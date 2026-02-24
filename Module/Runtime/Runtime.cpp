@@ -67,6 +67,7 @@ void Runtime::Initialize()
 void Runtime::Update()
 {
     Buffer::Update();
+    Material::FrameCount++;
 }
 //------------------------------------------------------------------------------
 void Runtime::Shutdown(bool suspend)

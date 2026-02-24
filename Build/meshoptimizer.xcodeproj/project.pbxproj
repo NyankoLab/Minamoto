@@ -59,6 +59,14 @@
 		D68CAE692D17F85F00ACE81B /* vertexfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE292D17F85F00ACE81B /* vertexfilter.cpp */; };
 		D68CAE6A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE272D17F85F00ACE81B /* vcacheoptimizer.cpp */; };
 		D68CAE6B2D17F85F00ACE81B /* clusterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D68CAE1C2D17F85F00ACE81B /* clusterizer.cpp */; };
+		F5927B952F4C4EB700AD8F1C /* meshletutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B942F4C4EB700AD8F1C /* meshletutils.cpp */; };
+		F5927B962F4C4EB700AD8F1C /* meshletcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B932F4C4EB700AD8F1C /* meshletcodec.cpp */; };
+		F5927B972F4C4EB700AD8F1C /* meshletutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B942F4C4EB700AD8F1C /* meshletutils.cpp */; };
+		F5927B982F4C4EB700AD8F1C /* meshletcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B932F4C4EB700AD8F1C /* meshletcodec.cpp */; };
+		F5927B992F4C4EB700AD8F1C /* meshletutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B942F4C4EB700AD8F1C /* meshletutils.cpp */; };
+		F5927B9A2F4C4EB700AD8F1C /* meshletcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B932F4C4EB700AD8F1C /* meshletcodec.cpp */; };
+		F5927B9B2F4C4EB700AD8F1C /* meshletutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B942F4C4EB700AD8F1C /* meshletutils.cpp */; };
+		F5927B9C2F4C4EB700AD8F1C /* meshletcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5927B932F4C4EB700AD8F1C /* meshletcodec.cpp */; };
 		F5F46BBD2D9AE23B007BD314 /* partition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBB2D9AE23B007BD314 /* partition.cpp */; };
 		F5F46BBE2D9AE23B007BD314 /* indexanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBA2D9AE23B007BD314 /* indexanalyzer.cpp */; };
 		F5F46BBF2D9AE23B007BD314 /* rasterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F46BBC2D9AE23B007BD314 /* rasterizer.cpp */; };
@@ -95,6 +103,8 @@
 		D68CAE292D17F85F00ACE81B /* vertexfilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = vertexfilter.cpp; path = ../SDK/meshoptimizer/src/vertexfilter.cpp; sourceTree = SOURCE_ROOT; };
 		D68CAE2B2D17F85F00ACE81B /* vfetchoptimizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = vfetchoptimizer.cpp; path = ../SDK/meshoptimizer/src/vfetchoptimizer.cpp; sourceTree = SOURCE_ROOT; };
 		D6AA5DB92BD7DA9E00AE1C30 /* ClangPlatform.Darwin.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ClangPlatform.Darwin.xcconfig; sourceTree = "<group>"; };
+		F5927B932F4C4EB700AD8F1C /* meshletcodec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = meshletcodec.cpp; path = ../SDK/meshoptimizer/src/meshletcodec.cpp; sourceTree = SOURCE_ROOT; };
+		F5927B942F4C4EB700AD8F1C /* meshletutils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = meshletutils.cpp; path = ../SDK/meshoptimizer/src/meshletutils.cpp; sourceTree = SOURCE_ROOT; };
 		F5F46BBA2D9AE23B007BD314 /* indexanalyzer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = indexanalyzer.cpp; path = ../SDK/meshoptimizer/src/indexanalyzer.cpp; sourceTree = SOURCE_ROOT; };
 		F5F46BBB2D9AE23B007BD314 /* partition.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = partition.cpp; path = ../SDK/meshoptimizer/src/partition.cpp; sourceTree = SOURCE_ROOT; };
 		F5F46BBC2D9AE23B007BD314 /* rasterizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rasterizer.cpp; path = ../SDK/meshoptimizer/src/rasterizer.cpp; sourceTree = SOURCE_ROOT; };
@@ -151,6 +161,8 @@
 				F5F46BBA2D9AE23B007BD314 /* indexanalyzer.cpp */,
 				D68CAE1D2D17F85F00ACE81B /* indexcodec.cpp */,
 				D68CAE1E2D17F85F00ACE81B /* indexgenerator.cpp */,
+				F5927B932F4C4EB700AD8F1C /* meshletcodec.cpp */,
+				F5927B942F4C4EB700AD8F1C /* meshletutils.cpp */,
 				D68CAE1F2D17F85F00ACE81B /* meshoptimizer.h */,
 				D68CAE212D17F85F00ACE81B /* overdrawoptimizer.cpp */,
 				F5F46BBB2D9AE23B007BD314 /* partition.cpp */,
@@ -307,6 +319,8 @@
 				D68CAE452D17F85F00ACE81B /* quantization.cpp in Sources */,
 				D68CAE462D17F85F00ACE81B /* simplifier.cpp in Sources */,
 				D68CAE472D17F85F00ACE81B /* indexgenerator.cpp in Sources */,
+				F5927B952F4C4EB700AD8F1C /* meshletutils.cpp in Sources */,
+				F5927B962F4C4EB700AD8F1C /* meshletcodec.cpp in Sources */,
 				D68CAE492D17F85F00ACE81B /* vertexfilter.cpp in Sources */,
 				D68CAE4A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */,
 				D68CAE4B2D17F85F00ACE81B /* clusterizer.cpp in Sources */,
@@ -330,6 +344,8 @@
 				D68CAE552D17F85F00ACE81B /* quantization.cpp in Sources */,
 				D68CAE562D17F85F00ACE81B /* simplifier.cpp in Sources */,
 				D68CAE572D17F85F00ACE81B /* indexgenerator.cpp in Sources */,
+				F5927B9B2F4C4EB700AD8F1C /* meshletutils.cpp in Sources */,
+				F5927B9C2F4C4EB700AD8F1C /* meshletcodec.cpp in Sources */,
 				D68CAE592D17F85F00ACE81B /* vertexfilter.cpp in Sources */,
 				D68CAE5A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */,
 				D68CAE5B2D17F85F00ACE81B /* clusterizer.cpp in Sources */,
@@ -353,6 +369,8 @@
 				D68CAE652D17F85F00ACE81B /* quantization.cpp in Sources */,
 				D68CAE662D17F85F00ACE81B /* simplifier.cpp in Sources */,
 				D68CAE672D17F85F00ACE81B /* indexgenerator.cpp in Sources */,
+				F5927B972F4C4EB700AD8F1C /* meshletutils.cpp in Sources */,
+				F5927B982F4C4EB700AD8F1C /* meshletcodec.cpp in Sources */,
 				D68CAE692D17F85F00ACE81B /* vertexfilter.cpp in Sources */,
 				D68CAE6A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */,
 				D68CAE6B2D17F85F00ACE81B /* clusterizer.cpp in Sources */,
@@ -376,6 +394,8 @@
 				D68CAE352D17F85F00ACE81B /* quantization.cpp in Sources */,
 				D68CAE362D17F85F00ACE81B /* simplifier.cpp in Sources */,
 				D68CAE372D17F85F00ACE81B /* indexgenerator.cpp in Sources */,
+				F5927B992F4C4EB700AD8F1C /* meshletutils.cpp in Sources */,
+				F5927B9A2F4C4EB700AD8F1C /* meshletcodec.cpp in Sources */,
 				D68CAE392D17F85F00ACE81B /* vertexfilter.cpp in Sources */,
 				D68CAE3A2D17F85F00ACE81B /* vcacheoptimizer.cpp in Sources */,
 				D68CAE3B2D17F85F00ACE81B /* clusterizer.cpp in Sources */,

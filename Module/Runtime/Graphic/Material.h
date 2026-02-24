@@ -66,6 +66,7 @@ public:
     bool                    DebugWireframe = false;
 
     static xxMaterialPtr    DefaultMaterial;
+    static unsigned int     FrameCount;
 
     static void             Initialize();
     static void             Shutdown();
