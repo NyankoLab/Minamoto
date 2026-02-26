@@ -34,12 +34,12 @@ bool Profiler::Update(const UpdateData& updateData, bool& show)
             static uint64_t const min = 0;
             static uint64_t const max = NSEC_PER_SEC / 60;
             uint64_t value = uint64_t(pair.second * NSEC_PER_SEC);
-            ImGui::SliderScalar(pair.first, ImGuiDataType_U64, &value, &min, &max, "%lluus", ImGuiInputTextFlags_ReadOnly);
+            ImGui::SliderScalar(pair.first, ImGuiDataType_U64, &value, &min, &max, "%'lluns", ImGuiInputTextFlags_ReadOnly);
         }
         for (auto const& [hashName, pair] : counters)
         {
             uint64_t value = uint64_t(pair.second);
-            ImGui::InputScalar(pair.first, ImGuiDataType_U64, &value, nullptr, nullptr, "%llu", ImGuiInputTextFlags_ReadOnly);
+            ImGui::InputScalar(pair.first, ImGuiDataType_U64, &value, nullptr, nullptr, "%'llu", ImGuiInputTextFlags_ReadOnly);
         }
     }
     ImGui::End();
