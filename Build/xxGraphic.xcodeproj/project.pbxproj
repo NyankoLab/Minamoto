@@ -85,6 +85,8 @@
 		D6DA664F23258F7A00953C5B /* xxGraphicNULL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D644A0A6231EDE9B00B75B77 /* xxGraphicNULL.cpp */; };
 		D6DA665023258F8E00953C5B /* xxSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D644A0A2231EDE9A00B75B77 /* xxSystem.cpp */; };
 		D6E815272C076530003D43E8 /* xxGraphicInternalD3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6E815262C076530003D43E8 /* xxGraphicInternalD3D.cpp */; };
+		F5984FBB2F991043008E4308 /* xxGraphicMetal4.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5984FBA2F991043008E4308 /* xxGraphicMetal4.mm */; };
+		F5984FBC2F991043008E4308 /* xxGraphicMetal4.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5984FBA2F991043008E4308 /* xxGraphicMetal4.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -237,6 +239,8 @@
 		D6F761BF233C8E9F006BE7E1 /* xxGraphicD3D7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xxGraphicD3D7.h; path = ../SDK/xxGraphic/xxGraphicD3D7.h; sourceTree = "<group>"; };
 		D6F761C0233C8E9F006BE7E1 /* xxGraphicD3D6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xxGraphicD3D6.h; path = ../SDK/xxGraphic/xxGraphicD3D6.h; sourceTree = "<group>"; };
 		D6F761C1233C8E9F006BE7E1 /* xxGraphicD3D7.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xxGraphicD3D7.cpp; path = ../SDK/xxGraphic/xxGraphicD3D7.cpp; sourceTree = "<group>"; };
+		F5984FB92F991043008E4308 /* xxGraphicMetal4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = xxGraphicMetal4.h; path = ../SDK/xxGraphic/xxGraphicMetal4.h; sourceTree = SOURCE_ROOT; };
+		F5984FBA2F991043008E4308 /* xxGraphicMetal4.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = xxGraphicMetal4.mm; path = ../SDK/xxGraphic/xxGraphicMetal4.mm; sourceTree = SOURCE_ROOT; };
 		F5EF984A2F1393BE00468345 /* glslang_c_interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = glslang_c_interface.h; path = ../SDK/xxGraphic/vulkan/glslang_c_interface.h; sourceTree = SOURCE_ROOT; };
 		F5EF984B2F1393BE00468345 /* glslang_c_shader_types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = glslang_c_shader_types.h; path = ../SDK/xxGraphic/vulkan/glslang_c_shader_types.h; sourceTree = SOURCE_ROOT; };
 		F5EF984C2F1393BE00468345 /* visibility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = visibility.h; path = ../SDK/xxGraphic/vulkan/visibility.h; sourceTree = SOURCE_ROOT; };
@@ -516,6 +520,8 @@
 				D6A727F1232318E4009981AD /* xxGraphicMetal.mm */,
 				CE9D56B924D165130037EBE6 /* xxGraphicMetal2.h */,
 				CE9D56B824D165130037EBE6 /* xxGraphicMetal2.mm */,
+				F5984FB92F991043008E4308 /* xxGraphicMetal4.h */,
+				F5984FBA2F991043008E4308 /* xxGraphicMetal4.mm */,
 			);
 			name = Metal;
 			sourceTree = "<group>";
@@ -541,8 +547,8 @@
 		D6A86A5F25EA32D400074B9C /* internal */ = {
 			isa = PBXGroup;
 			children = (
-				D6A86A9925EA790000074B9C /* xxGraphicInternalMetal.mm */,
 				D6A86A6125EA32F100074B9C /* xxGraphicInternalMetal.h */,
+				D6A86A9925EA790000074B9C /* xxGraphicInternalMetal.mm */,
 			);
 			name = internal;
 			sourceTree = "<group>";
@@ -801,6 +807,7 @@
 				D690A370232D90DC00A149EF /* xxGraphicVulkan.cpp in Sources */,
 				D690A36E232C346500A149EF /* xxGraphicVulkanAsm.cpp in Sources */,
 				D6DA665023258F8E00953C5B /* xxSystem.cpp in Sources */,
+				F5984FBC2F991043008E4308 /* xxGraphicMetal4.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -819,6 +826,7 @@
 				D667B7BA23577DC40092806F /* xxGraphicGLES3.cpp in Sources */,
 				D667B7B723577DC40092806F /* xxGraphicGLES31.cpp in Sources */,
 				D667B7B923577DC40092806F /* xxGraphicGLES32.cpp in Sources */,
+				F5984FBB2F991043008E4308 /* xxGraphicMetal4.mm in Sources */,
 				D6A727F3232318E4009981AD /* xxGraphicMetal.mm in Sources */,
 				CE9D56BA24D165130037EBE6 /* xxGraphicMetal2.mm in Sources */,
 				D644A0B0231EDE9B00B75B77 /* xxGraphicNULL.cpp in Sources */,

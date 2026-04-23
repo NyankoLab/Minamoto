@@ -442,6 +442,14 @@ static void ImGui_ImplXX_DestroyWindow(ImGuiViewport* viewport)
     // The main viewport (owned by the application) will always have RendererUserData == NULL since we didn't create the data for it.
     if (ImGuiViewportDataXX* data = (ImGuiViewportDataXX*)viewport->RendererUserData)
     {
+        if (viewport->DrawData && viewport->DrawData->Textures)
+            for (ImTextureData* tex : *viewport->DrawData->Textures)
+                if (tex->Status == ImTextureStatus_OK || tex->Status == ImTextureStatus_WantUpdates)
+                {
+                    tex->Status = ImTextureStatus_WantDestroy;
+                    ImGui_ImplXX_UpdateTexture(tex);
+                }
+
         for (unsigned int i = 0; i < 4; ++i)
         {
             xxDestroyBuffer(g_device, data->VertexBuffers[i]);

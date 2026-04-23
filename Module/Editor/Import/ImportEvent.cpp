@@ -101,6 +101,7 @@ double ImportEvent::Execute()
     bool show = true;
     if (ImGui::Begin(title.c_str(), &show, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking))
     {
+        ImGui::SetNextItemWidth(384.0f);
         ImGui::InputText("File", name.data(), name.size(), ImGuiInputTextFlags_ReadOnly);
         ImGui::SliderInt("Node", &nodeCount, 1, 1000, "%d", ImGuiSliderFlags_ReadOnly);
         ImGui::SliderInt("Mesh", &meshCount, 1, 1000, "%d", ImGuiSliderFlags_ReadOnly);

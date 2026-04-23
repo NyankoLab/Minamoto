@@ -66,7 +66,7 @@ void DearImGui::Create(void* view, float scale, float font)
     // Setup scaling
     ImGuiStyle& style = ImGui::GetStyle();
     style.ScaleAllSizes(scale);             // Bake a fixed style scale. (until we have a solution for dynamic style scaling, changing this requires resetting Style + calling this again)
-    style.FontScaleMain = 1.0f / font / font;
+    style.FontScaleMain = 1.0f / font;
     style.FontScaleDpi = scale;             // Set initial font scale. (using io.ConfigDpiScaleFonts=true makes this unnecessary. We leave both here for documentation purpose)
     io.ConfigDpiScaleFonts = true;          // [Experimental] Automatically overwrite style.FontScaleDpi in Begin() when Monitor DPI changes. This will scale fonts but _NOT_ scale sizes/padding for now.
     io.ConfigDpiScaleViewports = true;      // [Experimental] Scale Dear ImGui and Platform Windows when Monitor DPI changes.
@@ -93,21 +93,32 @@ void DearImGui::Create(void* view, float scale, float font)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
+    struct stat st;
+
     // Load / Merge Fonts
     ImFontConfig font_config;
-    font_config.SizePixels          = 13.0f * font;
+
+    static ImWchar const ascii_ranges[] = { 0x20, 0x7F, 0 };
+    font_config.SizePixels          = 13.0f;
     font_config.RasterizerMultiply  = 1.0f;
+#if defined(xxMACOS)
+    if (stat("/System/Library/Fonts/Helvetica.ttc", &st) == 0)
+        io.Fonts->AddFontFromFileTTF("/System/Library/Fonts/Helvetica.ttc", 13.0f, &font_config, ascii_ranges);
+    else
+#endif
     io.Fonts->AddFontDefault(&font_config);
 
     static ImWchar const icons_ranges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
     font_config.MergeMode           = true;
     font_config.PixelSnapH          = true;
-    font_config.GlyphOffset.y       = 2.0f * font;
-    font_config.GlyphMinAdvanceX    = 13.0f * font * 2.0f;
+#if defined(xxWINDOWS)
+    font_config.GlyphOffset.y       = 2.0f;
+#endif
+    font_config.GlyphMinAdvanceX    = 13.0f * 2.0f;
 #if defined(xxMACOS)
-    io.Fonts->AddFontFromFileTTF("../Resources/" FONT_ICON_FILE_NAME_FA, 13.0f * font, &font_config, icons_ranges);
+    io.Fonts->AddFontFromFileTTF("../Resources/" FONT_ICON_FILE_NAME_FA, 13.0f, &font_config, icons_ranges);
 #elif defined(xxWINDOWS)
-    io.Fonts->AddFontFromFileTTF("module/" FONT_ICON_FILE_NAME_FA, 13.0f * font, &font_config, icons_ranges);
+    io.Fonts->AddFontFromFileTTF("module/" FONT_ICON_FILE_NAME_FA, 13.0f, &font_config, icons_ranges);
 #endif
     font_config.GlyphOffset.y       = 0.0f;
     font_config.GlyphMinAdvanceX    = 0.0f;
@@ -117,17 +128,16 @@ void DearImGui::Create(void* view, float scale, float font)
     font_config.OversampleV         = 1;
     font_config.PixelSnapH          = true;
     font_config.MergeMode           = true;
-    font_config.SizePixels          = 13.0f * font;
-    font_config.RasterizerMultiply  = 2.0f / font;
+    font_config.SizePixels          = 13.0f;
+    font_config.RasterizerMultiply  = 2.0f;
 #if defined(xxMACOS)
-    struct stat st;
     if (stat("/System/Library/Fonts/PingFang.ttc", &st) == 0)
         io.Fonts->AddFontFromFileTTF("/System/Library/Fonts/PingFang.ttc", 13.0f, &font_config, fonts_ranges);
 #elif defined(xxWINDOWS)
     if (GetFileAttributesA("C:\\Windows\\Fonts\\meiryo.ttc") != INVALID_FILE_ATTRIBUTES)
-        io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\meiryo.ttc", 13.0f * font, &font_config, fonts_ranges);
+        io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\meiryo.ttc", 13.0f, &font_config, fonts_ranges);
     else if (GetFileAttributesA("C:\\Windows\\Fonts\\msjh.ttc") != INVALID_FILE_ATTRIBUTES)
-        io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\msjh.ttc", 13.0f * font, &font_config, fonts_ranges);
+        io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\msjh.ttc", 13.0f, &font_config, fonts_ranges);
 #endif
 
     // Setup Platform/Renderer bindings

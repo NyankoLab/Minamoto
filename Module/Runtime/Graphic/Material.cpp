@@ -24,7 +24,8 @@ struct MaterialSelector
         HLSL10,
         HLSLVK,
         MSL1,
-        MSL2
+        MSL2,
+        MSL4,
     };
 
     std::string& shader;
@@ -91,6 +92,7 @@ struct MaterialSelector
         else if (language == HLSLVK) { string = glsl; }
         else if (language == MSL1)   { string = msl;  }
         else if (language == MSL2)   { string = msl;  }
+        else if (language == MSL4)   { string = msl;  }
         Append(string);
     }
     void GH(bool available, std::string_view glsl, std::string_view hlsl)
@@ -103,6 +105,7 @@ struct MaterialSelector
         else if (language == HLSLVK) { string = hlsl; }
         else if (language == MSL1)   { string = hlsl; }
         else if (language == MSL2)   { string = hlsl; }
+        else if (language == MSL4)   { string = hlsl; }
         Append(string);
     }
     void GHM(bool available, std::string_view glsl, std::string_view hlsl, std::string_view msl)
@@ -115,6 +118,7 @@ struct MaterialSelector
         else if (language == HLSLVK) { string = hlsl; }
         else if (language == MSL1)   { string = msl;  }
         else if (language == MSL2)   { string = msl;  }
+        else if (language == MSL4)   { string = msl;  }
         Append(string);
     }
     void GHHM(bool available, std::string_view glsl, std::string_view hlsl, std::string_view hlsl10, std::string_view msl)
@@ -127,6 +131,7 @@ struct MaterialSelector
         else if (language == HLSLVK) { string = hlsl10; }
         else if (language == MSL1)   { string = msl;    }
         else if (language == MSL2)   { string = msl;    }
+        else if (language == MSL4)   { string = msl;    }
         Append(string);
     }
     void GHMM(bool available, std::string_view glsl, std::string_view hlsl, std::string_view msl1, std::string_view msl2)
@@ -139,6 +144,7 @@ struct MaterialSelector
         else if (language == HLSLVK) { string = hlsl; }
         else if (language == MSL1)   { string = msl1; }
         else if (language == MSL2)   { string = msl2; }
+        else if (language == MSL4)   { string = msl1; }
         Append(string);
     }
     void HM(bool available, std::string_view hlsl, std::string_view msl)
@@ -151,6 +157,7 @@ struct MaterialSelector
         else if (language == HLSLVK) { string = hlsl; }
         else if (language == MSL1)   { string = msl;  }
         else if (language == MSL2)   { string = msl;  }
+        else if (language == MSL4)   { string = msl;  }
         Append(string);
     }
     void HMM(bool available, std::string_view hlsl, std::string_view msl1, std::string_view msl2)
@@ -163,6 +170,7 @@ struct MaterialSelector
         else if (language == HLSLVK) { string = hlsl; }
         else if (language == MSL1)   { string = msl1; }
         else if (language == MSL2)   { string = msl2; }
+        else if (language == MSL4)   { string = msl1; }
         Append(string);
     }
     void HHMM(bool available, std::string_view hlsl, std::string_view hlsl10, std::string_view msl1, std::string_view msl2)
@@ -175,6 +183,7 @@ struct MaterialSelector
         else if (language == HLSLVK) { string = hlsl10; }
         else if (language == MSL1)   { string = msl1;   }
         else if (language == MSL2)   { string = msl2;   }
+        else if (language == MSL4)   { string = msl1;   }
         Append(string);
     }
     void HHHMM(bool available, std::string_view hlsl, std::string_view hlsl10, std::string_view hlslvk, std::string_view msl1, std::string_view msl2)
@@ -187,6 +196,7 @@ struct MaterialSelector
         else if (language == HLSLVK) { string = hlslvk; }
         else if (language == MSL1)   { string = msl1;   }
         else if (language == MSL2)   { string = msl2;   }
+        else if (language == MSL4)   { string = msl1;   }
         Append(string);
     }
 };
@@ -445,6 +455,7 @@ std::string Material::GetShader(xxDrawData const& data, int type) const
 
     char const* deviceString = xxGetInstanceName();
     MaterialSelector::Language language = MaterialSelector::GLSL;
+    if (language == 0 && strstr(deviceString, "Metal 4"))    language = MaterialSelector::MSL4;
     if (language == 0 && strstr(deviceString, "Metal 2"))    language = MaterialSelector::MSL2;
     if (language == 0 && strstr(deviceString, "Metal"))      language = MaterialSelector::MSL1;
     if (language == 0 && strstr(deviceString, "Direct3D 1")) language = MaterialSelector::HLSL10;
@@ -563,7 +574,8 @@ void Material::ShaderDefault(xxDrawData const& data, struct MaterialSelector& s)
     }
     if (s.language == MaterialSelector::GLSL ||
         s.language == MaterialSelector::MSL1 ||
-        s.language == MaterialSelector::MSL2)
+        s.language == MaterialSelector::MSL2 ||
+        s.language == MaterialSelector::MSL4)
     {
         s.Define("mul(a, b)", "(a * b)");
     }
@@ -662,10 +674,10 @@ void Material::ShaderConstant(xxDrawData const& data, struct MaterialSelector& s
     s.HHMM(true,  "",                                          "};",                                    "};",                                         ""                                       );
     s.HHMM(true,  "",                                          "",                                      "struct Sampler",                             ""                                       );
     s.HHMM(true,  "",                                          "",                                      "{",                                          ""                                       );
-    s.HHHMM(base, "", "Texture2D<float4> Base;", "[[vk::binding(" T0 ", 0)]] Texture2D<float4> Base;",  "texture2d<float> Base [[texture(0)]];",      "texture2d<float> Base [[id(" T0 ")]];"  );
-    s.HHHMM(bump, "", "Texture2D<float4> Bump;", "[[vk::binding(" T1 ", 0)]] Texture2D<float4> Bump;",  "texture2d<float> Bump [[texture(1)]];",      "texture2d<float> Bump [[id(" T1 ")]];"  );
-    s.HHHMM(base, "", "sampler BaseSampler;",    "[[vk::binding(" S0 ", 0)]] sampler BaseSampler;",     "sampler BaseSampler [[sampler(0)]];",        "sampler BaseSampler [[id(" S0 ")]];"    );
-    s.HHHMM(bump, "", "sampler BumpSampler;",    "[[vk::binding(" S1 ", 0)]] sampler BumpSampler;",     "sampler BumpSampler [[sampler(1)]];",        "sampler BumpSampler [[id(" S1 ")]];"    );
+    s.HHHMM(base, "", "sampler BaseSampler;",    "[[vk::binding(" S0 ", 0)]] sampler BaseSampler;",     "sampler BaseSampler [[sampler(" S0 ")]];",   "sampler BaseSampler [[id(" S0 ")]];"    );
+    s.HHHMM(bump, "", "sampler BumpSampler;",    "[[vk::binding(" S1 ", 0)]] sampler BumpSampler;",     "sampler BumpSampler [[sampler(" S1 ")]];",   "sampler BumpSampler [[id(" S1 ")]];"    );
+    s.HHHMM(base, "", "Texture2D<float4> Base;", "[[vk::binding(" T0 ", 0)]] Texture2D<float4> Base;",  "texture2d<float> Base [[texture(" T0 ")]];", "texture2d<float> Base [[id(" T0 ")]];"  );
+    s.HHHMM(bump, "", "Texture2D<float4> Bump;", "[[vk::binding(" T1 ", 0)]] Texture2D<float4> Bump;",  "texture2d<float> Bump [[texture(" T1 ")]];", "texture2d<float> Bump [[id(" T1 ")]];"  );
     s.HHMM(base,  "uniform sampler2D BaseSampler;",            "",                                      "",                                           ""                                       );
     s.HHMM(bump,  "uniform sampler2D BumpSampler;",            "",                                      "",                                           ""                                       );
     s.HHMM(true,  "",                                          "",                                      "};",                                         "};"                                     );

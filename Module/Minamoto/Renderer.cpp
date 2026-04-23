@@ -26,6 +26,7 @@
 #include <xxGraphic/xxGraphicGLES32.h>
 #include <xxGraphic/xxGraphicMetal.h>
 #include <xxGraphic/xxGraphicMetal2.h>
+#include <xxGraphic/xxGraphicMetal4.h>
 #include <xxGraphic/xxGraphicNULL.h>
 #include <xxGraphic/xxGraphicVulkan.h>
 
@@ -85,6 +86,7 @@ static struct { char const* const shortName; char const* const fullName; uint64_
 #if defined(xxMACOS) || defined(xxIOS)
     { "MTL",            xxGetInstanceNameMetal(),           xxCreateInstanceMetal           },
     { "MTL2",           xxGetInstanceNameMetal2(),          xxCreateInstanceMetal2          },
+    { "MTL4",           xxGetInstanceNameMetal4(),          xxCreateInstanceMetal4          },
 #endif
     { "NULL",           xxGetInstanceNameNULL(),            xxCreateInstanceNULL            },
     { "VK",             xxGetInstanceNameVulkan(),          xxCreateInstanceVulkan          },
@@ -105,7 +107,7 @@ bool Renderer::Create(void* view, int width, int height, char const* shortName)
 #if defined(xxWINDOWS)
         shortName = "D3D11";
 #elif defined(xxMACOS) || defined(xxIOS)
-        shortName = "MTL2";
+        shortName = "MTL4";
 #else
         shortName = "GLES2";
 #endif
