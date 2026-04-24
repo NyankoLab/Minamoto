@@ -107,6 +107,9 @@ static void ImGui_ImplXX_SetupRenderState(ImDrawData* draw_data, uint64_t comman
     xxSetVertexConstantBuffer(commandEncoder, constantBuffer, 16 * 3 * sizeof(float));
 }
 
+// Draw callbacks
+static void ImGui_ImplXX_DrawCallback_ResetRenderState(const ImDrawList*, const ImDrawCmd*) {} // Intentionally empty. Used as an identifier for rendering loop to call its code. Simpler to implement this way.
+
 // Render function.
 // (this used to be set in io.RenderDrawListsFn and called by ImGui::Render(), but you can now call this directly from your main loop)
 void ImGui_ImplXX_RenderDrawData(ImDrawData* draw_data, uint64_t commandEncoder)
@@ -202,7 +205,7 @@ void ImGui_ImplXX_RenderDrawData(ImDrawData* draw_data, uint64_t commandEncoder)
             {
                 // User callback, registered via ImDrawList::AddCallback()
                 // (ImDrawCallback_ResetRenderState is a special callback value used by the user to request the renderer to reset render state.)
-                if (pcmd->UserCallback == ImDrawCallback_ResetRenderState)
+                if (pcmd->UserCallback == ImGui_ImplXX_DrawCallback_ResetRenderState)
                 {
                     xxSetVertexBuffers(commandEncoder, 1, &vertexBuffer, g_vertexAttribute);
                     ImGui_ImplXX_SetupRenderState(draw_data, commandEncoder, constantBuffer);
@@ -278,6 +281,7 @@ bool ImGui_ImplXX_Init(uint64_t instance, uint64_t device, uint64_t renderPass)
 
     ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
     platform_io.Renderer_TextureMaxWidth = platform_io.Renderer_TextureMaxHeight = 4096;
+    platform_io.DrawCallback_ResetRenderState = ImGui_ImplXX_DrawCallback_ResetRenderState;
 
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         ImGui_ImplXX_InitPlatformInterface();
@@ -292,6 +296,15 @@ void ImGui_ImplXX_Shutdown()
     g_renderPass = 0;
     g_device = 0;
     g_instance = 0;
+}
+
+static void ImGui_ImplXX_DestroyTexture(ImTextureData* tex)
+{
+    xxDestroyTexture(tex->TexID);
+
+    // Clear identifiers and mark as destroyed (in order to allow e.g. calling InvalidateDeviceObjects while running)
+    tex->SetTexID(ImTextureID_Invalid);
+    tex->SetStatus(ImTextureStatus_Destroyed);
 }
 
 void ImGui_ImplXX_UpdateTexture(ImTextureData* tex)
@@ -344,15 +357,7 @@ void ImGui_ImplXX_UpdateTexture(ImTextureData* tex)
     }
     else if (tex->Status == ImTextureStatus_WantDestroy)
     {
-        uint64_t texture = tex->TexID;
-        if (texture == 0)
-            return;
-        IM_ASSERT(tex->TexID == texture);
-        xxDestroyTexture(texture);
-
-        // Clear identifiers and mark as destroyed (in order to allow e.g. calling InvalidateDeviceObjects while running)
-        tex->SetTexID(ImTextureID_Invalid);
-        tex->SetStatus(ImTextureStatus_Destroyed);
+        ImGui_ImplXX_DestroyTexture(tex);
     }
 }
 
@@ -386,6 +391,12 @@ void ImGui_ImplXX_InvalidateDeviceObjects()
 {
     if (g_device == 0)
         return;
+
+    // Destroy all textures
+    for (ImTextureData* tex : ImGui::GetPlatformIO().Textures)
+        if (tex->RefCount == 1)
+            ImGui_ImplXX_DestroyTexture(tex);
+
     xxDestroySampler(g_sampler);
     xxDestroyVertexAttribute(g_vertexAttribute);
     xxDestroyShader(g_device, g_vertexShader);
@@ -442,14 +453,6 @@ static void ImGui_ImplXX_DestroyWindow(ImGuiViewport* viewport)
     // The main viewport (owned by the application) will always have RendererUserData == NULL since we didn't create the data for it.
     if (ImGuiViewportDataXX* data = (ImGuiViewportDataXX*)viewport->RendererUserData)
     {
-        if (viewport->DrawData && viewport->DrawData->Textures)
-            for (ImTextureData* tex : *viewport->DrawData->Textures)
-                if (tex->Status == ImTextureStatus_OK || tex->Status == ImTextureStatus_WantUpdates)
-                {
-                    tex->Status = ImTextureStatus_WantDestroy;
-                    ImGui_ImplXX_UpdateTexture(tex);
-                }
-
         for (unsigned int i = 0; i < 4; ++i)
         {
             xxDestroyBuffer(g_device, data->VertexBuffers[i]);
